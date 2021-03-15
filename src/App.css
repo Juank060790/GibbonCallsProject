@@ -1,0 +1,33 @@
+/* Login */
+
+.loginPage {
+  background-image: url("./containers/LoginPage/images/coverLogin.jpg");
+  display: flex;
+  min-height: 100vh;
+}
+
+.transparentLogin {
+  border-style: solid;
+}
+
+.Signincol {
+  background: #ffffff;
+  border-style: solid;
+  width: 100%;
+  padding: 0 !important;
+  
+}
+
+.formlogin {
+   width: 80%;
+   margin: auto;
+}
+
+.logincontainer{
+     margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 100%;
+}
