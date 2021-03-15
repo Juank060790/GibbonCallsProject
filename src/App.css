@@ -19,7 +19,7 @@ body{
 
 
 .loginPage {
-  background-image: url("./containers/LoginPage/images/coverLogin.jpg");
+  background-image: url("./images/coverLogin.jpg");
   display: flex;
   flex-wrap: wrap;
   min-height: 100vh;
@@ -62,4 +62,15 @@ body{
         margin-top: 3rem;
        padding-bottom: 2rem;
     }
+  }
+
+
+  /* Not Found Page */
+
+  .notfoundpagecontainer{
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+  .notfoundpage{
+    margin-top:20%;
   }
