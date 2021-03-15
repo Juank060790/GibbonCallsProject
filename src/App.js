@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { authActions } from "./redux/actions/auth.actions";
 import { ClipLoader } from "react-spinners";
 import Routes from "./Routes";
+import AlertMsg from "./layouts/Alerts";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ function App() {
   }, [dispatch]);
   return (
     <div className="App">
+      <AlertMsg />
       <>
         {isAuthenticated === undefined ? (
           <div className="vh-100 vw-100 d-flex justify-content-center align-items-center">

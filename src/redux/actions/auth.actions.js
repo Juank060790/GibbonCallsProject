@@ -8,12 +8,11 @@ const loginRequest = (email, password) => async (dispatch) => {
     const res = await api.post("/login", { email, password });
     console.log("REQUESTTOKEN", res);
     dispatch({ type: types.LOGIN_SUCCESS, payload: res.data });
-    api.defaults.headers.common["authorization"] =
-      "Bearer " + res.data.data.token;
-    localStorage.setItem("accessToken", res.data.token);
-
-    let name = res.data.email;
-    console.log("NAME", name);
+    // api.defaults.headers.common["authorization"] =
+    //   "Bearer " + res.data.data.token;
+    // localStorage.setItem("accessToken", res.data.token);
+    let name = res.data.user.email;
+    console.log("NAME", res.data.user.email);
     dispatch(alertActions.setAlert(`Welcome back, ${name}`, "success"));
   } catch (error) {
     dispatch({ type: types.LOGIN_FAILURE, payload: error });

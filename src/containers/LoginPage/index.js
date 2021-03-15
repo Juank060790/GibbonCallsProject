@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Form, Button, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../redux/actions/auth.actions";
@@ -31,10 +31,10 @@ const LoginPage = () => {
   if (isAuthenticated) return <Redirect to="/dashboard" />;
   return (
     <div className="loginPage">
-      <Col lg={7} className="transparentLogin">
-        Hey
+      <Col lg={7} md={12} sm={12} xs={12} className="transparentLogin">
+        <div></div>
       </Col>
-      <Col className="Signincol" lg={5}>
+      <Col className="Signincol" lg={5} md={12} sm={12} xs={12}>
         {" "}
         <div className="logincontainer">
           <Form className="formlogin" onSubmit={handleSubmit}>
@@ -42,7 +42,7 @@ const LoginPage = () => {
               <p className="lead">
                 <i className="fas fa-user" /> Welcome back
               </p>
-              <h1 className="text-primary">Login</h1>
+              <h1 className="heavyweight">Login</h1>
             </div>
             <Form.Group>
               <p>Password</p>
@@ -91,13 +91,10 @@ const LoginPage = () => {
                 Loading...
               </Button>
             ) : (
-              <Button className="btn-block" type="submit" variant="danger">
-                Login
-              </Button>
+              <button className="btn-block btn-login" type="submit">
+                Login now
+              </button>
             )}
-            <p>
-              Don't have an account? <Link to="/register">Sign Up</Link>
-            </p>
           </Form>
         </div>
       </Col>
