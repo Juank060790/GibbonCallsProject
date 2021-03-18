@@ -5,7 +5,7 @@ import { alertActions } from "./alert.actions";
 const loginRequest = (email, password) => async (dispatch) => {
   dispatch({ type: types.LOGIN_REQUEST, payload: null });
   try {
-    const res = await api.post("/login", { email, password });
+    const res = await api.post("user/login", { email, password });
     console.log("REQUESTTOKEN", res);
     dispatch({ type: types.LOGIN_SUCCESS, payload: res.data });
     // api.defaults.headers.common["authorization"] =
@@ -22,7 +22,7 @@ const loginRequest = (email, password) => async (dispatch) => {
 const register = (name, email, password) => async (dispatch) => {
   dispatch({ type: types.REGISTER_REQUEST, payload: null });
   try {
-    const res = await api.post("/users", { name, email, password });
+    const res = await api.post("user/users", { name, email, password });
     dispatch({ type: types.REGISTER_SUCCESS, payload: res.data.data });
   } catch (error) {
     dispatch({ type: types.REGISTER_FAILURE, payload: error });
@@ -36,10 +36,10 @@ const getCurrentUser = (accessToken) => async (dispatch) => {
     api.defaults.headers.common["authorization"] = bearerToken;
   }
   try {
-    const res = await api.get("/users/me");
+    const res = await api.get("user/me");
     dispatch({
       type: types.GET_CURRENT_USER_SUCCESS,
-      payload: res.data.data,
+      payload: res.data,
     });
   } catch (error) {
     dispatch({ type: types.GET_CURRENT_USER_FAILURE, payload: error });
