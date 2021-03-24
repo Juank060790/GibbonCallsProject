@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import TableDashboard from "../../components/TableDashboard";
 import { authActions } from "../../redux/actions/auth.actions";
 
 function Dashboard() {
@@ -11,6 +12,7 @@ function Dashboard() {
     <div>
       <button onClick={handleLogout}>Logout</button>
       <h1>DASHB</h1>
+      <TableDashboard />
     </div>
   );
 }

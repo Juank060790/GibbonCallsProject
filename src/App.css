@@ -1,22 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap");
 
-
-body{
-  font-family: 'Roboto', serif;  letter-spacing: 1px;
-  font-weight: 400 ;
+body {
+  font-family: "Roboto", serif;
+  letter-spacing: 1px;
+  font-weight: 400;
 }
 
 /* Text utils */
 
-.lightweight{
-    font-weight: 400 ;
+.lightweight {
+  font-weight: 400;
 }
 
-.heavyweight{
-    font-weight: 700 ;
+.heavyweight {
+  font-weight: 700;
 }
 /* Login */
-
 
 .loginPage {
   background-image: url("./images/coverLogin.jpg");
@@ -48,29 +47,46 @@ body{
 }
 
 .btn-login {
-    border-radius: 5px;
+  border-radius: 5px;
   background-color: #04c45c;
   color: white;
   border: none;
   padding: 15px;
-
 }
 
-
 @media (max-width: 992px) {
-    .logincontainer{
-        margin-top: 3rem;
-       padding-bottom: 2rem;
-    }
+  .logincontainer {
+    margin-top: 3rem;
+    padding-bottom: 2rem;
   }
+}
 
+/* Not Found Page */
 
-  /* Not Found Page */
+.notfoundpagecontainer {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+.notfoundpage {
+  margin-top: 20%;
+}
 
-  .notfoundpagecontainer{
-    min-height: 100vh;
-    min-width: 100vw;
-  }
-  .notfoundpage{
-    margin-top:20%;
-  }
+/* TABLE */
+
+.tableHeader {
+  background-color: #d7ebd6;
+}
+
+.tableKey {
+  color: #333333;
+}
+
+.textareacomments {
+  border: none;
+  border-radius: 6px;
+  background-color: #d7ebd6;
+}
+
+.submitcommentbtn{
+  
+}
