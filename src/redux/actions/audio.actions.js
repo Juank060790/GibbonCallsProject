@@ -5,8 +5,9 @@ import { alertActions } from "./alert.actions";
 const audiosRequest = (
   page = 1,
   limit = 5,
+  sortBy = "audioId",
+  order = ""
   // query = null,
-  sortBy = "audioId"
 ) => async (dispatch) => {
   dispatch({ type: types.AUDIO_REQUEST, payload: null });
   try {
@@ -14,12 +15,12 @@ const audiosRequest = (
     // if (query) {
     //   queryString = `&title[$regex]=${query}&title[$options]=i`;
     // }
-    let sortBy = "";
-    if (sortBy?.key) {
-      sortBy = `&sortBy[${sortBy.key}]=${sortBy.ascending}`;
-    }
+    // let sortBy = "";
+    // if (sortBy?.key) {
+    //   sortBy = `&sortBy[${sortBy.key}]=${sortBy.ascending}`;
+    // }
     const res = await api.get(
-      `audio/audiolist/filter/page${page}/limit${limit}/sortBy${sortBy}`
+      `audio/audiolist/filter/page${page}/limit${limit}/sortBy${sortBy}/order${order}`
     );
     console.log("RESULTAUDIOSSS", res.data);
     dispatch({

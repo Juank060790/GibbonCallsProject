@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { audioActions } from "../redux/actions";
 
 export default function TableDashboard() {
-  const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
-  const [sortBy, setSortBy] = useState({ key: "", ascending: -1 });
-  const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recordDate");
+  const [order, setOrder] = useState("desc");
   const dispatch = useDispatch();
   const params = useParams();
   const loading = useSelector((state) => state.audio.loading);
   const totalPageNum = useSelector((state) => state.audio.totalPageNum);
-  const limit = 10;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  // const limit = 10;
   const audios = useSelector((state) => state.audio.audio);
   console.log("Audios Table", audios);
+  // const [query, setQuery] = useState("");
+
+  const query = (e) => {
+    e.preventDefault();
+    setOrder("asc");
+    setSortBy("recordDate");
+    setLimit(10);
+  };
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(page, query, limit, sortBy));
-  }, [dispatch, page, query, limit, sortBy]);
+    dispatch(audioActions.audiosRequest(page, limit, sortBy, order));
+  }, [dispatch, page, limit, sortBy, order]);
   return (
     <>
-      {" "}
+      <div>
+        <Button onClick={query}></Button>{" "}
+      </div>
       {audios.length ? (
         <Table responsive>
           <thead className="text-center tableHeader">
