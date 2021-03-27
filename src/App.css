@@ -1,9 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap");
 
+
 body {
   font-family: "Roboto", serif;
   letter-spacing: 1px;
   font-weight: 400;
+}
+
+.spinnerContainer{
+  width: 100%;
+}
+.spinnerloading{
+  margin: 25%;
 }
 
 /* Text utils */
@@ -73,12 +81,42 @@ body {
 
 /* TABLE */
 
+.reloadBtnContainer{
+  margin-left: 2%;
+  margin-bottom: 1%;
+}
+.reloadButton{
+  width: 48px;
+  height: 48px;
+  padding: 2rem;
+  background: url("./images/icons8-cloud-refresh-64.png");
+  border: none;
+}
 .tableHeader {
   background-color: #d7ebd6;
+  border-top:1px solid black;
+  color:#686464 ;
+}
+
+.tableSingleKey{
+  vertical-align: middle !important;
+  
 }
 
 .tableKey {
   color: #333333;
+  font-size: 14px;
+  border-top:2px solid rgba(0, 0, 0, 0.5);
+
+}
+
+.tableKey:hover{
+  background-color: #6fcf97c4;
+}
+
+.textareacomments:hover{
+  background-color: #333333;
+  color: white;
 }
 
 .textareacomments {
@@ -88,5 +126,12 @@ body {
 }
 
 .submitcommentbtn{
-  
+  border: brown;
+  display: none;
+  position: absolute;
+    z-index: 2;
+}
+
+.submitcommentbtn:hover{
+  display: block;
 }

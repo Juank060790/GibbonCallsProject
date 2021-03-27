@@ -11,7 +11,10 @@ function Dashboard() {
   return (
     <div>
       <button onClick={handleLogout}>Logout</button>
-      <h1>DASHB</h1>
+      <h1 className="heavyweight">
+        Gibbon
+        <br /> Calls
+      </h1>
       <TableDashboard />
     </div>
   );

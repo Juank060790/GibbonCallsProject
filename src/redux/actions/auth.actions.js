@@ -6,11 +6,9 @@ const loginRequest = (email, password) => async (dispatch) => {
   dispatch({ type: types.LOGIN_REQUEST, payload: null });
   try {
     const res = await api.post("user/login", { email, password });
-    console.log("REQUESTTOKEN", res);
     dispatch({ type: types.LOGIN_SUCCESS, payload: res.data });
-    // api.defaults.headers.common["authorization"] =
-    //   "Bearer " + res.data.data.token;
-    // localStorage.setItem("accessToken", res.data.token);
+    api.defaults.headers.common["authorization"] = "Bearer " + res.data.token;
+    localStorage.setItem("accessToken", res.data.token);
     let name = res.data.user.email;
     console.log("NAME", res.data.user.email);
     dispatch(alertActions.setAlert(`Welcome back, ${name}`, "success"));
@@ -37,6 +35,7 @@ const getCurrentUser = (accessToken) => async (dispatch) => {
   }
   try {
     const res = await api.get("user/me");
+    // console.log("PAYLOAAAAAD----->", res);
     dispatch({
       type: types.GET_CURRENT_USER_SUCCESS,
       payload: res.data,
