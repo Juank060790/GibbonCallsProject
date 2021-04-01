@@ -4,7 +4,7 @@ import PrivateRoute from "./PrivateRoutes";
 import LoginPage from "../containers/LoginPage";
 import Dashboard from "../containers/Dashboard";
 import NotFoundPage from "./NotFoundPage";
-import SingleAudio from "../containers/SingleAudio";
+import SingleAudio from "../containers/SingleAudio/SingleAudio";
 
 const Routes = () => {
   return (

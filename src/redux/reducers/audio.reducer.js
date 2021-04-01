@@ -2,11 +2,9 @@ import * as types from "../constants/audio.constants";
 
 const initialState = {
   audio: [],
-  totalResults: 0,
-  totalPages: 0,
-  currentPage: 0,
   loading: false,
   selectedAudio: null,
+  starDoc: null,
 };
 
 const audioReducer = (state = initialState, action) => {
@@ -21,7 +19,6 @@ const audioReducer = (state = initialState, action) => {
         ...state,
         audio: payload,
         loading: false,
-        totalPageNum: payload.totalPages,
       };
 
     case types.GET_SINGLE_AUDIO_REQUEST_SUCCESS:

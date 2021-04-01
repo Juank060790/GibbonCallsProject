@@ -1,50 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-// import { useParams } from "react-router-dom";
 import { audioActions } from "../redux/actions";
 import CircleLoader from "react-spinners/CircleLoader";
 import { css } from "@emotion/core";
 import { useHistory } from "react-router";
-// import "../Styles.scss";
+import PaginationItem from "./Pagination";
 
 export default function TableDashboard() {
-  // const [searchInput, setSearchInput] = useState("");
-  const [sortBy, setSortBy] = useState("recordDate");
+  const [sortBy, setSortBy] = useState("audioId");
   const [order, setOrder] = useState("desc");
   const dispatch = useDispatch();
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
-  const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const history = useHistory();
-  // const params = useParams();
-  // const totalPageNum = useSelector((state) => state.audio.totalPageNum);
-  // const limit = 10;
-  // console.log("Audios Table", audios);
+  const [startDoc, setStartDoc] = useState(null);
 
-  // const [query, setQuery] = useState("");
+  console.log("STATE OF STARDOC", startDoc, audios);
 
   const query = (e) => {
     e.preventDefault();
-    setOrder("asc");
-    setSortBy("recordDate");
-    setLimit(10);
+    setOrder("desc");
+    setSortBy("audioId");
+    setLimit(4);
+  };
+
+  const handleClickOnNext = () => {
+    if (audios.length >= 1 && !loading) {
+      setStartDoc(audios[audios.length - 1].audioId);
+      console.log("NEXT PAGE", startDoc);
+    }
+  };
+
+  const handleClickOnPrev = () => {
+    if (audios.length <= 1 && !loading) {
+      setStartDoc(audios[0].audioId);
+      console.log("PREVIOUS PAGE", startDoc);
+    }
   };
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(page, limit, sortBy, order));
-  }, [dispatch, page, limit, sortBy, order]);
+    dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
+  }, [dispatch, limit, sortBy, order, startDoc]);
 
   const override = css`
     display: block;
     margin: 0 auto;
   `;
 
-  const toAudioId = (id) => {
-    console.log("AUDIOOOOOOO", id);
-    history.push(`/audio/audiolist/${id}`);
+  const toAudioId = (audioId) => {
+    history.push(`/audio/audiolist/${audioId}`);
   };
+
   return (
     <>
       <div className="reloadBtnContainer">
@@ -62,7 +70,7 @@ export default function TableDashboard() {
             <th>Comments</th>
           </tr>
         </thead>
-        {loading ? (
+        {/* {loading ? (
           <CircleLoader
             className="spinnerloading"
             color="#04c45c"
@@ -70,59 +78,65 @@ export default function TableDashboard() {
             loading={loading}
             css={override}
           />
-        ) : (
-          <>
-            {audios.length ? (
-              <tbody>
-                {audios.map((audio, index) => (
-                  <tr className="text-center tableKey" key={audio.audioId}>
-                    <td
-                      onClick={() => toAudioId(audio?.audioId)}
-                      className="tableSingleKey"
-                    >
-                      {audio.audioId}
-                    </td>
-                    <td
-                      onClick={() => toAudioId(audio?.audioId)}
-                      className="tableSingleKey"
-                    >
-                      {audio.fileName}
-                    </td>
-                    <td
-                      onClick={() => toAudioId(audio?.audioId)}
-                      className="tableSingleKey"
-                    >
-                      {audio.recordDate}
-                    </td>
-                    <td
-                      onClick={() => toAudioId(audio?.audioId)}
-                      className="tableSingleKey"
-                    >
-                      {audio.duration}
-                    </td>
-                    <td
-                      onClick={() => toAudioId(audio?.audioId)}
-                      className="tableSingleKey"
-                    >
-                      {audio.gibbonCalls}
-                    </td>
-                    <td className="tableSingleKey commentKey">
-                      <form>
-                        <textarea className="textareacomments"></textarea>
-                        <input className="submitcommentbtn " type="submit" />
-                      </form>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            ) : (
-              <tbody>
-                <p>No AudioS </p>
-              </tbody>
-            )}
-          </>
-        )}
+        ) : ( */}
+        <>
+          {audios.length ? (
+            <tbody>
+              {audios.map((audio, index) => (
+                <tr className="text-center tableKey" key={audio.audioId}>
+                  <td
+                    onClick={() => toAudioId(audio?.audioId)}
+                    className="tableSingleKey"
+                  >
+                    {audio.audioId}
+                  </td>
+                  <td
+                    onClick={() => toAudioId(audio?.audioId)}
+                    className="tableSingleKey"
+                  >
+                    {audio.fileName}
+                  </td>
+                  <td
+                    onClick={() => toAudioId(audio?.audioId)}
+                    className="tableSingleKey"
+                  >
+                    {audio.recordDate}
+                  </td>
+                  <td
+                    onClick={() => toAudioId(audio?.audioId)}
+                    className="tableSingleKey"
+                  >
+                    {audio.duration}
+                  </td>
+                  <td
+                    onClick={() => toAudioId(audio?.audioId)}
+                    className="tableSingleKey"
+                  >
+                    {audio.gibbonCalls}
+                  </td>
+                  <td className="tableSingleKey commentKey">
+                    <form>
+                      <textarea className="textareacomments"></textarea>
+                      <input className="submitcommentbtn " type="submit" />
+                    </form>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            <tbody>
+              <p>No AudioS </p>
+            </tbody>
+          )}
+        </>
+        {/* )} */}
       </Table>
+      <PaginationItem
+        audios={audios}
+        loading={loading}
+        handleClickOnNext={handleClickOnNext}
+        handleClickOnPrev={handleClickOnPrev}
+      />
     </>
   );
 }
