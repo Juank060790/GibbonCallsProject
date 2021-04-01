@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions } from "../redux/actions";
-import CircleLoader from "react-spinners/CircleLoader";
 import { css } from "@emotion/core";
 import { useHistory } from "react-router";
 import PaginationItem from "./Pagination";
@@ -70,15 +69,6 @@ export default function TableDashboard() {
             <th>Comments</th>
           </tr>
         </thead>
-        {/* {loading ? (
-          <CircleLoader
-            className="spinnerloading"
-            color="#04c45c"
-            size={150}
-            loading={loading}
-            css={override}
-          />
-        ) : ( */}
         <>
           {audios.length ? (
             <tbody>
@@ -129,7 +119,6 @@ export default function TableDashboard() {
             </tbody>
           )}
         </>
-        {/* )} */}
       </Table>
       <PaginationItem
         audios={audios}
