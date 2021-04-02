@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Modal, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { audioActions } from "../redux/actions";
+import { audioActions, callActions } from "../redux/actions";
 import { css } from "@emotion/core";
 import { useHistory } from "react-router";
 import PaginationItem from "./Pagination";
@@ -13,10 +13,14 @@ export default function TableDashboard() {
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
   const [limit, setLimit] = useState(10);
-  const history = useHistory();
   const [startDoc, setStartDoc] = useState(null);
-
-  console.log("STATE OF STARDOC", startDoc, audios);
+  const calls = useSelector((state) => state.call);
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  const callsIds = selectedAudio?.gibbonCallsIds;
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const callsperAudio = [];
 
   const query = (e) => {
     e.preventDefault();
@@ -39,6 +43,25 @@ export default function TableDashboard() {
     }
   };
 
+  const toAudioId = (audioId, callsIds) => {
+    console.log("audioId", audioId, "CALLSIDS", callsIds);
+    if (audioId) {
+      dispatch(audioActions.getSingleAudio(audioId));
+    }
+    if (callsIds) {
+      getCalls(callsIds);
+    }
+    handleShow();
+  };
+
+  const getCalls = (callsIds) => {
+    callsIds?.forEach((call) => {
+      dispatch(callActions.getSingleCall(call));
+      callsperAudio.push(calls);
+      console.log("CALLSSETSTATE", callsperAudio);
+    });
+  };
+
   useEffect(() => {
     dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
   }, [dispatch, limit, sortBy, order, startDoc]);
@@ -47,10 +70,6 @@ export default function TableDashboard() {
     display: block;
     margin: 0 auto;
   `;
-
-  const toAudioId = (audioId) => {
-    history.push(`/audio/audiolist/${audioId}`);
-  };
 
   return (
     <>
@@ -75,31 +94,31 @@ export default function TableDashboard() {
               {audios.map((audio, index) => (
                 <tr className="text-center tableKey" key={audio.audioId}>
                   <td
-                    onClick={() => toAudioId(audio?.audioId)}
+                    onClick={() => toAudioId(audio?.audioId, callsIds)}
                     className="tableSingleKey"
                   >
                     {audio.audioId}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId)}
+                    onClick={() => toAudioId(audio?.audioId, callsIds)}
                     className="tableSingleKey"
                   >
                     {audio.fileName}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId)}
+                    onClick={() => toAudioId(audio?.audioId, callsIds)}
                     className="tableSingleKey"
                   >
                     {audio.recordDate}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId)}
+                    onClick={() => toAudioId(audio?.audioId, callsIds)}
                     className="tableSingleKey"
                   >
                     {audio.duration}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId)}
+                    onClick={() => toAudioId(audio?.audioId, callsIds)}
                     className="tableSingleKey"
                   >
                     {audio.gibbonCalls}
@@ -126,6 +145,59 @@ export default function TableDashboard() {
         handleClickOnNext={handleClickOnNext}
         handleClickOnPrev={handleClickOnPrev}
       />
+      <Modal
+        show={show}
+        onHide={handleClose}
+        size={"xl"}
+        dialogClassName="modal-100w"
+        centered={true}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedAudio?.audioId}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {" "}
+          <Table responsive>
+            <thead className="text-center tableHeader">
+              <tr>
+                <th>Id N&deg;</th>
+                <th>Time Stamp</th>
+                <th>Spectogram</th>
+                <th>Action</th>
+                <th>Tags</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <>
+              {callsperAudio ? (
+                <tbody>
+                  {callsperAudio?.map((call, index) => (
+                    <tr className="text-center tableKey">
+                      <td className="tableSingleKey">
+                        {selectedAudio.audioId}
+                      </td>
+                      <td className="tableSingleKey">{call.timeStart}</td>
+                      <td className="tableSingleKey">IMG</td>
+                      <td className="tableSingleKey">Action</td>
+                      <td className="tableSingleKey">{call.label}</td>
+                      <td className="tableSingleKey commentKey">
+                        <form>
+                          <textarea className="textareacomments"></textarea>
+                          <input className="submitcommentbtn " type="submit" />
+                        </form>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ) : (
+                <tbody>
+                  <p>No AudioS </p>
+                </tbody>
+              )}
+            </>
+          </Table>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

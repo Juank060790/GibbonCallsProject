@@ -3,7 +3,6 @@ import * as types from "../constants/call.constants";
 const initialState = {
   call: [],
   loading: false,
-  //   starDoc: null,
 };
 
 const callReducer = (state = initialState, action) => {
@@ -14,7 +13,7 @@ const callReducer = (state = initialState, action) => {
     case types.GET_SINGLE_CALL_REQUEST_SUCCESS:
       return {
         ...state,
-        call: [...state.call, payload],
+        call: payload,
         loading: false,
       };
     case types.GET_SINGLE_CALL_REQUEST_FAILURE:

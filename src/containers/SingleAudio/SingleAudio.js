@@ -7,28 +7,24 @@ import { useParams } from "react-router-dom";
 
 export default function SingleAudio() {
   const loading = useSelector((state) => state.audio.loading);
-  const audio = useSelector((state) => state.audio.selectedAudio);
-  const call = useSelector((state) => state.call);
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
   const history = useHistory();
   const params = useParams();
-  const callsIds = audio?.gibbonCallsIds;
+  // const callsIds = selectedAudio?.gibbonCallsIds;
   const handleGoBackClick = (e) => {
     history.goBack();
   };
 
-  console.log("CALLS LIST", call);
+  // console.log("CALLS LIST", selectedAudio, "GIBBBONCAAAAALLLLSSSS", callsIds);
 
-  const getCalls = (callsIds) => {
-    callsIds?.forEach((call) => {
-      console.log("CALLS MAP", call);
-      dispatch(callActions.getSingleCall(call));
-    });
-  };
-
-  useEffect(() => {
-    getCalls(callsIds);
-  }, [dispatch]);
+  // const getCalls = (callsIds) => {
+  //   callsIds?.forEach((calls) => {
+  //     console.log("CALLS MAP", calls);
+  //     dispatch(callActions.getSingleCall(calls));
+  //   });
+  // };
 
   useEffect(() => {
     if (params?.id) {
@@ -53,11 +49,11 @@ export default function SingleAudio() {
           </tr>
         </thead>
         <>
-          {call.length ? (
+          {calls.length ? (
             <tbody>
-              {call.map((call, index) => (
+              {calls.map((call, index) => (
                 <tr className="text-center tableKey">
-                  <td className="tableSingleKey">{audio.audioId}</td>
+                  <td className="tableSingleKey">{selectedAudio.audioId}</td>
                   <td className="tableSingleKey">{call?.timeStart}</td>
                   <td className="tableSingleKey">IMG</td>
                   <td className="tableSingleKey">Action</td>
