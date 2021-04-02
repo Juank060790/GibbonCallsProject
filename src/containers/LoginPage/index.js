@@ -45,7 +45,7 @@ const LoginPage = () => {
               <h1 className="heavyweight">Login</h1>
             </div>
             <Form.Group>
-              <p>Password</p>
+              <p>Email</p>
               <Form.Control
                 type="email"
                 required
@@ -59,7 +59,7 @@ const LoginPage = () => {
               )}
             </Form.Group>
             <Form.Group>
-              <p>Email</p>
+              <p>Password</p>
               <Form.Control
                 type="password"
                 placeholder="Password"
