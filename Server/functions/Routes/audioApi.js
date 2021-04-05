@@ -1,22 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getAudioList,
   getSingleAudio,
   createSingleAudio,
   deleteSingleAudio,
   getFilteredAudioList,
   addCommentRawAudio,
-  getCallsSingleAudio,
+  deleteSingleCallId,
 } = require("../Controllers/Audio");
 const FBAuth = require("../Utils/fbauth");
-
-// /**
-//  * @route Get
-//  * @description Get all data
-//  * @access  private
-//  */
-// router.get("/audiolist", FBAuth, getAudioList);
 
 /**
  * @route Get
@@ -39,6 +31,13 @@ router.post("/createaudio", FBAuth, createSingleAudio);
  */
 router.delete("/deletesingleaudio/:audioId", FBAuth, deleteSingleAudio);
 
+// /**
+//  * @route DELETE
+//  * @description Delete single audio call id
+//  * @access  private
+//  */
+// router.delete("/deletesinglecallid", FBAuth, deleteSingleCallId);
+
 /**
  * @route get
  * @description Get filtered Audio List
@@ -56,14 +55,5 @@ router.get(
  * @access  private
  */
 router.put("/audiolist/addcomment/:audioId", FBAuth, addCommentRawAudio);
-
-// CALLS
-
-/**
- * @route Get
- * @description Get Calls of a single audio
- * @access  private
- */
-router.get("/calls/:callId", FBAuth, getCallsSingleAudio);
 
 module.exports = router;

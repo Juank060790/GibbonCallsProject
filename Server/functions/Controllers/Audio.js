@@ -7,7 +7,6 @@ exports.getSingleAudio = (req, res) => {
   db.doc(`rawData/${req.params.audioId}`)
     .get()
     .then((doc) => {
-      // console.log("DOOOCCC", doc);
       if (doc.exists) {
         singleAudio = doc.data();
 
@@ -34,6 +33,15 @@ exports.deleteSingleAudio = (req, res) => {
       console.error("Error removing document: ", error);
     });
 };
+
+// exports.deleteSingleCallId = (req, res) => {
+//   const FieldValue = admin.firestore.FieldValue;
+//   const callIdRef = db.collection("rawData/00000012/gibbonCAllsIds");
+//   const result = await callIdRef.update({
+//     ScgbtSs9rsrZ18LlfZjO: FieldValue.delete(),
+//   });
+//   console.log("result", result);
+// };
 
 exports.createSingleAudio = (req, res) => {
   const createAudio = {
@@ -76,15 +84,7 @@ exports.getFilteredAudioList = (req, res) => {
     order: req.params.order || "desc",
   };
 
-  // const startIndex = (query.page - 1) * query.limit;
-  // let latestDoc = query.latestDoc;
-
   console.log("request after", query, "PAGEEE AUDIOID");
-
-  // const batch = db.batch();
-  // batch.set();
-
-  // const endIndex = query.page * index;
 
   sortBy = query.sortBy;
   order = query.order;
@@ -122,25 +122,5 @@ exports.addCommentRawAudio = (req, res) => {
     })
     .catch((err) => {
       return res.status(500).json({ error: err.code });
-    });
-};
-
-// SINGLE CALLS
-
-exports.getCallsSingleAudio = (req, res) => {
-  let singleCall = {};
-  db.doc(`calls/${req.params.callId}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        singleCall = doc.data();
-        return res.json(singleCall);
-      } else {
-        return res.status(404).json({ error: "Audio not found" });
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err.code });
     });
 };

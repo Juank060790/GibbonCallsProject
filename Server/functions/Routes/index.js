@@ -9,4 +9,8 @@ router.use("/user", authApi);
 const audioApi = require("./audioApi");
 router.use("/audio", audioApi);
 
+// Calls
+const callsApi = require("./callsApi");
+router.use("/calls", callsApi);
+
 module.exports = router;
