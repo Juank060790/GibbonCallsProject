@@ -1,6 +1,7 @@
 const { db, admin } = require("../Utils/admin");
 const config = require("../Utils/config");
 const firebase = require("firebase");
+const { v4: uuidv4 } = require("uuid");
 
 // Get SINGLE call from Raw Audio.
 exports.getCallsSingleAudio = (req, res) => {
@@ -32,5 +33,40 @@ exports.deleteSingleCall = (req, res) => {
     })
     .catch((error) => {
       console.error("Error removing document: ", error);
+    });
+};
+
+// Create Single Call
+
+exports.createSingleCall = (req, res) => {
+  const callId = uuidv4();
+  console.log("CALLID", callId);
+  const createSingleCall = {
+    callId: callId,
+    timeStart: req.body.timeStart,
+    timeEnd: req.body.timeEnd,
+    spectogram: req.body.spectogram,
+    label: req.body.label,
+    comment: req.body.comment,
+  };
+
+  db.doc(`/calls/${createSingleCall.callId}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        return res.status(400).json("this call can not be added");
+      } else {
+        return db
+          .doc(`/calls/${createSingleCall.callId}`)
+          .set(createSingleCall);
+      }
+    })
+    .then(() => {
+      return res
+        .status(201)
+        .json({ createAudio: "Call was created successfully " });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.code });
     });
 };

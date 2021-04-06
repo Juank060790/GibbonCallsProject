@@ -6,4 +6,4 @@ const functions = require("firebase-functions");
 app.use(cors());
 app.use("/", indexRouter);
 
-exports.api = functions.https.onRequest(app);
+exports.api = functions.region("asia-northeast1").https.onRequest(app);

@@ -27,7 +27,8 @@ export default function ModalCall({
           <thead className="text-center tableHeader">
             <tr>
               <th>Id N&deg;</th>
-              <th>Time Stamp</th>
+              <th>Time Start</th>
+              <th>Time End</th>
               <th>Spectogram</th>
               <th>Action</th>
               <th>Tags</th>
@@ -36,22 +37,25 @@ export default function ModalCall({
           </thead>
           <>
             <tbody>
-              <tr className="text-center tableKey">
-                <td className="tableSingleKey"></td>
-                <td className="tableSingleKey"></td>
-                <td className="tableSingleKey">IMG</td>
-                <td className="tableSingleKey">Action</td>
-                <td className="tableSingleKey"></td>
-                <td className="tableSingleKey commentKey">
-                  <form>
-                    <textarea className="textareacomments"></textarea>
-                    <input className="submitcommentbtn " type="submit" />
-                  </form>
-                </td>
-              </tr>
+              {callsperAudio.map((call, index) => (
+                <tr className="text-center tableKey">
+                  <td className="tableSingleKey" index={index}>
+                    {call.call.callId}
+                  </td>
+                  <td className="tableSingleKey">{call.call.timeStart}</td>
+                  <td className="tableSingleKey">{call.call.timeStart}</td>
+                  <td className="tableSingleKey">Img</td>
+                  <td className="tableSingleKey">Action</td>
+                  <td className="tableSingleKey">{call.label}</td>
+                  <td className="tableSingleKey commentKey">
+                    <form>
+                      <textarea className="textareacomments"></textarea>
+                      <input className="submitcommentbtn " type="submit" />
+                    </form>
+                  </td>
+                </tr>
+              ))}
             </tbody>
-
-            <tbody></tbody>
           </>
         </Table>
       </Modal.Body>

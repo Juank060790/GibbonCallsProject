@@ -9,21 +9,24 @@ import PaginationItem from "./Pagination";
 export default function TableDashboard() {
   // UseSelector brings the state from the reducers.
   // Dispatch send data to redux actions and reducers.
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setCallsperAudio([]);
+  };
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
   const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const callsIds = selectedAudio?.gibbonCallsIds;
+  const callsIds = selectedAudio?.gibbonCallList;
   const dispatch = useDispatch();
   const [startDoc, setStartDoc] = useState(null);
   const [show, setShow] = useState(false);
   const [sortBy, setSortBy] = useState("audioId");
   const [order, setOrder] = useState("desc");
   const [limit, setLimit] = useState(10);
-  const callsperAudio = [];
-
+  const [callsperAudio, setCallsperAudio] = useState([]);
+  console.log("SELECTEDAUDIO------>", callsIds, "---------");
   // To load the audios from storage (to be fixed)
   const query = (e) => {
     e.preventDefault();
@@ -47,26 +50,24 @@ export default function TableDashboard() {
     }
   };
 
-  // Get individual Rawaudio with a Modal.
-  const toAudioId = (audioId, callsIds) => {
-    // console.log("audioId", audioId, "CALLSIDS", callsIds);
-    if (audioId) {
-      dispatch(audioActions.getSingleAudio(audioId));
-    }
-    if (callsIds) {
-      getCalls(callsIds);
-    }
-    handleShow();
-  };
-
   // Get an individual calls  inside of a RawAudio (To be fixed)
-  // This function returns an array with single calls of a Raw Audio.
+  // This function returns the state with single calls of a Raw Audio into a state([]).
   const getCalls = (callsIds) => {
     callsIds?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
       callsperAudio.push(calls);
-      console.log("CALLSSETSTATE", callsperAudio);
+      setCallsperAudio(callsperAudio);
     });
+  };
+
+  // Get individual Rawaudio with a Modal.
+  const toAudioId = (audioId, callsIds) => {
+    if (audioId) {
+      dispatch(audioActions.getSingleAudio(audioId));
+      getCalls(callsIds);
+      console.log("CALLSSID", callsIds);
+      handleShow();
+    }
   };
 
   // Every time there is a change on this values the component will rerender
@@ -166,9 +167,9 @@ export default function TableDashboard() {
               ))}
             </tbody>
           ) : (
-            <tbody>
-              <p>No AudioS </p>
-            </tbody>
+            <thead className="text-center tableHeader">
+              <tr>No Audios</tr>
+            </thead>
           )}
         </>
       </Table>

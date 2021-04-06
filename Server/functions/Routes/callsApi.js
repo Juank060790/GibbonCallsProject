@@ -4,6 +4,7 @@ const FBAuth = require("../Utils/fbauth");
 const {
   getCallsSingleAudio,
   deleteSingleCall,
+  createSingleCall,
 } = require("../Controllers/Calls");
 
 // CALLS
@@ -21,5 +22,12 @@ router.get("/:callId", FBAuth, getCallsSingleAudio);
  * @access  private
  */
 router.delete("/deletecall//:callId", FBAuth, deleteSingleCall);
+
+/**
+ * @route POST
+ * @description Create Single Call
+ * @access  private
+ */
+router.post("/createcall", FBAuth, createSingleCall);
 
 module.exports = router;
