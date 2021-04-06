@@ -2,6 +2,7 @@ const { db, admin } = require("../Utils/admin");
 const config = require("../Utils/config");
 const firebase = require("firebase");
 
+// Get SINGLE call from Raw Audio.
 exports.getCallsSingleAudio = (req, res) => {
   let singleCall = {};
   db.doc(`calls/${req.params.callId}`)
@@ -20,6 +21,7 @@ exports.getCallsSingleAudio = (req, res) => {
     });
 };
 
+// Delete single call from firebase.
 exports.deleteSingleCall = (req, res) => {
   db.collection("calls")
     .doc(`${req.params.callId}`)

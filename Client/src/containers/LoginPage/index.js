@@ -6,29 +6,32 @@ import { authActions } from "../../redux/actions/auth.actions";
 import "../../App.css";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "admin@admin.com",
-    password: "123456",
-  });
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const loading = useSelector((state) => state.auth.loading);
   // eslint-disable-next-line
   const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
 
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  const loading = useSelector((state) => state.auth.loading);
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const [formData, setFormData] = useState({
+    email: "admin@admin.com",
+    password: "123456",
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Validate data if needed
     const { email, password } = formData;
     dispatch(authActions.loginRequest(email, password));
   };
+
   if (isAuthenticated) return <Redirect to="/dashboard" />;
+
   return (
     <div className="loginPage">
       <Col lg={7} md={12} sm={12} xs={12} className="transparentLogin">

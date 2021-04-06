@@ -93,14 +93,10 @@ body {
 }
 
 
-.savebutton{
-}
 
 .savebuttoncontainer :hover{
 background-color: #686464;
 border-radius: 5px;
-margin: 1rem;
-padding: 10px;
 }
 
 .reloadBtnContainer{

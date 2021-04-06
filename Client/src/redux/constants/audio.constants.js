@@ -1,3 +1,5 @@
+// Constants just connect the Actions to reducers
+
 export const AUDIO_REQUEST = "AUDIO.AUDIO_REQUEST";
 export const AUDIO_REQUEST_SUCCESS = "AUDIO.AUDIO_REQUEST_SUCCESS";
 export const AUDIO_REQUEST_FAILURE = "AUDIO.AUDIO_REQUEST_FAILURE";

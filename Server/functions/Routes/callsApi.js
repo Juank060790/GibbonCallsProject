@@ -16,7 +16,7 @@ const {
 router.get("/:callId", FBAuth, getCallsSingleAudio);
 
 /**
- * @route POST
+ * @route DELETE
  * @description Delete Single Call
  * @access  private
  */

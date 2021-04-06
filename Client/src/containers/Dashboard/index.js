@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import TableDashboard from "../../components/TableDashboard";
 import { authActions } from "../../redux/actions/auth.actions";
 
+// Dashboard (Main page with the table)
+
 function Dashboard() {
   const dispatch = useDispatch();
   const handleLogout = () => {

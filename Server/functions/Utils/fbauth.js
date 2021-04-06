@@ -1,3 +1,6 @@
+// Firebase Authenticator validator, it helps in the api to check if the user is authenticate it or not.
+// If the user auth, the user will have acces to the apis using this validator.
+
 const { admin, db } = require("./admin");
 
 module.exports = (req, res, next) => {

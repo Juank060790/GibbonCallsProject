@@ -1,3 +1,5 @@
+// Constants just connect the Actions to reducers
+
 export const REGISTER_REQUEST = "AUTH.REGISTER_REQUEST";
 export const REGISTER_SUCCESS = "AUTH.REGISTER_SUCCESS";
 export const REGISTER_FAILURE = "AUTH.REGISTER_FAILURE";

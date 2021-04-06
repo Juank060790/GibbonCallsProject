@@ -93,6 +93,7 @@ exports.login = (req, res) => {
     });
 };
 
+// On request gets authenticated user if there's a token.
 exports.getAuthenticatedUser = (req, res) => {
   let userData;
   db.doc(`/users/${req.user.userName}`)
@@ -102,7 +103,6 @@ exports.getAuthenticatedUser = (req, res) => {
         userData = doc.data();
         return res.json(userData);
       }
-      // return res.json(userData);
     })
     .catch((err) => {
       console.error(err);

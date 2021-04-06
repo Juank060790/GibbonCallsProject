@@ -2,6 +2,7 @@ const { db, admin } = require("../Utils/admin");
 const config = require("../Utils/config");
 const firebase = require("firebase");
 
+// Get single audio from firestore.
 exports.getSingleAudio = (req, res) => {
   let singleAudio = {};
   db.doc(`rawData/${req.params.audioId}`)
@@ -21,6 +22,7 @@ exports.getSingleAudio = (req, res) => {
     });
 };
 
+// Delete single audio from firestore
 exports.deleteSingleAudio = (req, res) => {
   db.collection("rawData")
     .doc(`${req.params.audioId}`)
@@ -34,15 +36,7 @@ exports.deleteSingleAudio = (req, res) => {
     });
 };
 
-// exports.deleteSingleCallId = (req, res) => {
-//   const FieldValue = admin.firestore.FieldValue;
-//   const callIdRef = db.collection("rawData/00000012/gibbonCAllsIds");
-//   const result = await callIdRef.update({
-//     ScgbtSs9rsrZ18LlfZjO: FieldValue.delete(),
-//   });
-//   console.log("result", result);
-// };
-
+// Create a single Raw Audio document in firestore
 exports.createSingleAudio = (req, res) => {
   const createAudio = {
     audioId: req.body.audioId,
@@ -76,6 +70,7 @@ exports.createSingleAudio = (req, res) => {
     });
 };
 
+// Get List of Raw Audios for the table in the dashboard, here we are able to do filters with different values.
 exports.getFilteredAudioList = (req, res) => {
   let query = {
     startDoc: req.params.startDoc || 0,
@@ -110,6 +105,7 @@ exports.getFilteredAudioList = (req, res) => {
     .catch((err) => console.error(err));
 };
 
+// Add comment to Raw Audio.
 exports.addCommentRawAudio = (req, res) => {
   let comment = req.body.comments;
   db.collection("rawData")

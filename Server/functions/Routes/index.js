@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 
+// Routes to Apis
+
 // authApi
 const authApi = require("./authApi");
 router.use("/user", authApi);

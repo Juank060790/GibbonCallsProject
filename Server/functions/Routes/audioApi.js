@@ -31,16 +31,9 @@ router.post("/createaudio", FBAuth, createSingleAudio);
  */
 router.delete("/deletesingleaudio/:audioId", FBAuth, deleteSingleAudio);
 
-// /**
-//  * @route DELETE
-//  * @description Delete single audio call id
-//  * @access  private
-//  */
-// router.delete("/deletesinglecallid", FBAuth, deleteSingleCallId);
-
 /**
- * @route get
- * @description Get filtered Audio List
+ * @route GET
+ * @description Get full filtered Audio List
  * @access  private
  */
 router.get(
@@ -50,10 +43,17 @@ router.get(
 );
 
 /**
- * @route POST
+ * @route PUT
  * @description Add comment to RawAudio
  * @access  private
  */
 router.put("/audiolist/addcomment/:audioId", FBAuth, addCommentRawAudio);
 
 module.exports = router;
+
+// /**
+//  * @route DELETE
+//  * @description Delete single audio call id
+//  * @access  private
+//  */
+// router.delete("/deletesinglecallid", FBAuth, deleteSingleCallId);

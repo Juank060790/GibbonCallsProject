@@ -1,3 +1,4 @@
+// Check if the email has valida characters.
 const isEmail = (email) => {
   const regx = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
   if (email.match(regx)) {
@@ -6,12 +7,13 @@ const isEmail = (email) => {
     return false;
   }
 };
-
+// Check if the value is empty.
 const isEmpty = (string) => {
   if (string.trim() == "") return true;
   else return false;
 };
 
+// Validate if the signup data is valid and match.
 exports.validateSignupData = (data) => {
   let errors = {};
 
@@ -38,6 +40,7 @@ exports.validateSignupData = (data) => {
   };
 };
 
+// Validate login data.
 exports.validateLoginData = (data) => {
   let errors = {};
 

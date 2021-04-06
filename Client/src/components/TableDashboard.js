@@ -6,29 +6,30 @@ import { audioActions, callActions } from "../redux/actions";
 import PaginationItem from "./Pagination";
 
 export default function TableDashboard() {
-  const [startDoc, setStartDoc] = useState(null);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
   const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const callsIds = selectedAudio?.gibbonCallsIds;
   const dispatch = useDispatch();
+  const [startDoc, setStartDoc] = useState(null);
+  const [show, setShow] = useState(false);
   const [sortBy, setSortBy] = useState("audioId");
   const [order, setOrder] = useState("desc");
   const [limit, setLimit] = useState(10);
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const callsperAudio = [];
 
+  // To load the audios from storage (to be fixed)
   const query = (e) => {
     e.preventDefault();
-    setOrder("desc");
-    setSortBy("audioId");
-    setLimit(4);
+    // setOrder("desc");
+    // setSortBy("audioId");
+    // setLimit(4);
   };
-  // Pagination
 
+  // Pagination (to be fixed)
   const handleClickOnNext = () => {
     if (audios.length >= 1 && !loading) {
       setStartDoc(audios[audios.length - 1].audioId);
@@ -43,8 +44,7 @@ export default function TableDashboard() {
     }
   };
 
-  // Get individual audio with a Modal
-
+  // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, callsIds) => {
     console.log("audioId", audioId, "CALLSIDS", callsIds);
     if (audioId) {
@@ -56,6 +56,7 @@ export default function TableDashboard() {
     handleShow();
   };
 
+  // Get an individual calls  inside of a RawAudio
   const getCalls = (callsIds) => {
     callsIds?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
@@ -64,9 +65,12 @@ export default function TableDashboard() {
     });
   };
 
+  // Every time there is a change pn this values the component will rerender
   useEffect(() => {
     dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
   }, [dispatch, limit, sortBy, order, startDoc]);
+
+  // ------- To do (Filters, add/delete comment in Main table) ----------.
 
   return (
     <>
