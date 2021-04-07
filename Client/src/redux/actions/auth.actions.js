@@ -10,7 +10,6 @@ const loginRequest = (email, password) => async (dispatch) => {
     api.defaults.headers.common["authorization"] = "Bearer " + res.data.token;
     localStorage.setItem("accessToken", res.data.token);
     let name = res.data.user.email;
-    console.log("NAME", res.data.user.email);
     dispatch(alertActions.setAlert(`Welcome back, ${name}`, "success"));
   } catch (error) {
     dispatch({ type: types.LOGIN_FAILURE, payload: error });
@@ -30,8 +29,8 @@ const register = (name, email, password) => async (dispatch) => {
 const getCurrentUser = (accessToken) => async (dispatch) => {
   dispatch({ type: types.GET_CURRENT_USER_REQUEST, payload: null });
   if (accessToken) {
-    const bearerToken = "Bearer " + accessToken;
-    api.defaults.headers.common["authorization"] = bearerToken;
+    const bearer = "Bearer " + accessToken;
+    api.defaults.headers.common["authorization"] = bearer;
   }
   try {
     const res = await api.get("user/me");

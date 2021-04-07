@@ -28,7 +28,6 @@ exports.deleteSingleAudio = (req, res) => {
     .doc(`${req.params.audioId}`)
     .delete()
     .then(() => {
-      console.log("Audio successfully deleted!");
       return res.status(200).json("Audio successfully deleted!");
     })
     .catch((error) => {
@@ -73,19 +72,16 @@ exports.createSingleAudio = (req, res) => {
 // Get List of Raw Audios for the table in the dashboard, here we are able to do filters with different values.
 exports.getFilteredAudioList = (req, res) => {
   let query = {
-    startDoc: req.params.startDoc || 0,
     limit: req.params.limit,
     sortBy: req.params.sortBy || "recordDate",
     order: req.params.order || "desc",
+    startDoc: req.params.startDoc || 0,
   };
-
-  console.log("request after", query, "PAGEEE AUDIOID");
 
   sortBy = query.sortBy;
   order = query.order;
   startDoc = query.startDoc;
   limit = parseInt(query.limit) || 10;
-  console.log("STARTDOC", startDoc);
   db.collection("rawData")
     .orderBy(sortBy, order)
     .startAfter(startDoc)

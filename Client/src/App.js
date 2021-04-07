@@ -25,7 +25,6 @@ function App() {
   }, [dispatch]);
   return (
     <div className="App">
-      <AlertMsg />
       <>
         {isAuthenticated === undefined ? (
           <div className="vh-100 vw-100 d-flex justify-content-center align-items-center">

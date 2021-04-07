@@ -28,7 +28,6 @@ exports.deleteSingleCall = (req, res) => {
     .doc(`${req.params.callId}`)
     .delete()
     .then(() => {
-      console.log("Call successfully deleted!");
       return res.status(200).json("Call successfully deleted!");
     })
     .catch((error) => {
@@ -40,7 +39,6 @@ exports.deleteSingleCall = (req, res) => {
 
 exports.createSingleCall = (req, res) => {
   const callId = uuidv4();
-  console.log("CALLID", callId);
   const createSingleCall = {
     callId: callId,
     timeStart: req.body.timeStart,

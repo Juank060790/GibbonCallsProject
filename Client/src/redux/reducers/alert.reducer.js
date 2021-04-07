@@ -1,4 +1,5 @@
 import * as types from "../constants/alert.constants";
+
 const initialState = [];
 
 const alertReducer = (state = initialState, action) => {

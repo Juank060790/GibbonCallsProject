@@ -20,7 +20,7 @@ export default function TableDashboard() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const callsIds = selectedAudio?.gibbonCallList;
   const dispatch = useDispatch();
-  const [startDoc, setStartDoc] = useState(null);
+  const [startDoc, setStartDoc] = useState();
   const [show, setShow] = useState(false);
   const [sortBy, setSortBy] = useState("audioId");
   const [order, setOrder] = useState("desc");
@@ -71,9 +71,9 @@ export default function TableDashboard() {
   };
 
   // Every time there is a change on this values the component will rerender
-  useEffect(() => {
-    dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
-  }, [dispatch, limit, sortBy, order, startDoc]);
+  // useEffect(() => {
+  //   dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
+  // }, [dispatch, limit, sortBy, order, startDoc]);
 
   // ------- To do (Filters, add/delete comment in Main table) ----------.
 
