@@ -34,7 +34,6 @@ const getCurrentUser = (accessToken) => async (dispatch) => {
   }
   try {
     const res = await api.get("user/me");
-    // console.log("PAYLOAAAAAD----->", res);
     dispatch({
       type: types.GET_CURRENT_USER_SUCCESS,
       payload: res.data,

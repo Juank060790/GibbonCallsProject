@@ -11,6 +11,13 @@ const {
 const FBAuth = require("../Utils/fbauth");
 
 /**
+ * @route GET
+ * @description Get full filtered Audio List
+ * @access  private
+ */
+router.get("/audiolist/filter/:limit/:sortBy/:order", getFilteredAudioList);
+
+/**
  * @route Get
  * @description Get single audio
  * @access  private
@@ -30,17 +37,6 @@ router.post("/createaudio", FBAuth, createSingleAudio);
  * @access  private
  */
 router.delete("/deletesingleaudio/:audioId", FBAuth, deleteSingleAudio);
-
-/**
- * @route GET
- * @description Get full filtered Audio List
- * @access  private
- */
-router.get(
-  "/audiolist/filter/:limit/:sortBy/:order/:startDoc",
-  FBAuth,
-  getFilteredAudioList
-);
 
 /**
  * @route PUT

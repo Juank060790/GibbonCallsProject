@@ -5,15 +5,14 @@ import api from "../api";
 // Get a list of Raw Audios
 const audiosRequest = (
   // recieve the request with these specific values (limit, sortBy, order, startDoc).
-  limit = 5,
-  sortBy = "",
-  order = "",
-  startDoc = null
+  limit = 10,
+  sortBy = "audioId",
+  order = "desc"
 ) => async (dispatch) => {
   dispatch({ type: types.AUDIO_REQUEST, payload: null });
   try {
     const res = await api.get(
-      `audio/audiolist/filter/${limit}/${sortBy}/${order}/${startDoc}`
+      `audio/audiolist/filter/${limit}/${sortBy}/${order}`
     );
     // Dispatch the data to the reducer auido.reducer if success.
     dispatch({
@@ -42,7 +41,12 @@ const getSingleAudio = (audioId) => async (dispatch) => {
   }
 };
 
+const clearSelectedAudioReducer = () => (dispatch) => {
+  dispatch({ type: types.CLEAR_SELECTED_AUDIO, payload: null });
+};
+
 export const audioActions = {
   audiosRequest,
   getSingleAudio,
+  clearSelectedAudioReducer,
 };

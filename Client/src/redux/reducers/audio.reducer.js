@@ -31,6 +31,8 @@ const audioReducer = (state = initialState, action) => {
     case types.AUDIO_REQUEST_FAILURE:
     case types.GET_SINGLE_AUDIO_REQUEST_FAILURE:
       return { ...state, loading: false };
+    case types.CLEAR_SELECTED_AUDIO:
+      return { ...state, selectedAudio: undefined };
     default:
       return state;
   }

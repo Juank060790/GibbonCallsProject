@@ -75,16 +75,16 @@ exports.getFilteredAudioList = (req, res) => {
     limit: req.params.limit,
     sortBy: req.params.sortBy || "recordDate",
     order: req.params.order || "desc",
-    startDoc: req.params.startDoc || 0,
+    // startDoc: req.params.startDoc || 0,
   };
 
   sortBy = query.sortBy;
   order = query.order;
-  startDoc = query.startDoc;
+  // startDoc = query.startDoc;
   limit = parseInt(query.limit) || 10;
   db.collection("rawData")
     .orderBy(sortBy, order)
-    .startAfter(startDoc)
+    // .startAfter(startDoc)
     .limit(limit)
     .get()
     .then((data) => {

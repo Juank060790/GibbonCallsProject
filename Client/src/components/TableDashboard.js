@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
@@ -11,6 +11,8 @@ export default function TableDashboard() {
   // Dispatch send data to redux actions and reducers.
   const handleClose = () => {
     setShow(false);
+    dispatch(callActions.clearCallsReducer());
+    dispatch(audioActions.clearSelectedAudioReducer());
     setCallsperAudio([]);
   };
   const handleShow = () => setShow(true);
@@ -20,61 +22,47 @@ export default function TableDashboard() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const callsIds = selectedAudio?.gibbonCallList;
   const dispatch = useDispatch();
-  const [startDoc, setStartDoc] = useState();
   const [show, setShow] = useState(false);
-  const [sortBy, setSortBy] = useState("audioId");
-  const [order, setOrder] = useState("desc");
-  const [limit, setLimit] = useState(10);
   const [callsperAudio, setCallsperAudio] = useState([]);
-  console.log("SELECTEDAUDIO------>", callsIds, "---------");
+
   // To load the audios from storage (to be fixed)
   const query = (e) => {
     e.preventDefault();
-    // setOrder("desc");
-    // setSortBy("audioId");
-    // setLimit(4);
   };
 
   // Pagination (to be fixed add counter in the model schema)
   const handleClickOnNext = () => {
-    if (audios.length >= 1 && !loading) {
-      setStartDoc(audios[audios.length - 1].audioId);
-      // console.log("NEXT PAGE", startDoc);
-    }
+    // if (audios.length >= 1 && !loading) {
+    //   setStartDoc(audios[audios.length - 1].audioId);
+    // }
   };
-
   const handleClickOnPrev = () => {
-    if (audios.length <= 1 && !loading) {
-      setStartDoc(audios[0].audioId);
-      // console.log("PREVIOUS PAGE", startDoc);
-    }
+    // if (audios.length <= 1 && !loading) {
+    //   setStartDoc(audios[0].audioId);
+    // }
   };
 
   // Get an individual calls  inside of a RawAudio (To be fixed)
   // This function returns the state with single calls of a Raw Audio into a state([]).
-  const getCalls = (callsIds) => {
-    callsIds?.forEach((call) => {
+  const getCalls = (gibbonCallList) => {
+    gibbonCallList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
-      callsperAudio.push(calls);
-      setCallsperAudio(callsperAudio);
+      // callsperAudio.push(calls);
+      setCallsperAudio(calls);
     });
-  };
-
-  // Get individual Rawaudio with a Modal.
-  const toAudioId = (audioId, callsIds) => {
-    if (audioId) {
-      dispatch(audioActions.getSingleAudio(audioId));
-      getCalls(callsIds);
-      console.log("CALLSSID", callsIds);
-      handleShow();
-    }
+    handleShow();
   };
 
   // Every time there is a change on this values the component will rerender
   // useEffect(() => {
-  //   dispatch(audioActions.audiosRequest(limit, sortBy, order, startDoc));
-  // }, [dispatch, limit, sortBy, order, startDoc]);
+  //   dispatch(audioActions.audiosRequest(limit, sortBy, order));
+  // }, [dispatch, limit, sortBy, order]);
 
+  // Get individual Rawaudio with a Modal.
+  const toAudioId = (audioId, gibbonCallList) => {
+    dispatch(audioActions.getSingleAudio(audioId));
+    getCalls(gibbonCallList);
+  };
   // ------- To do (Filters, add/delete comment in Main table) ----------.
 
   return (
@@ -100,31 +88,41 @@ export default function TableDashboard() {
               {audios.map((audio, index) => (
                 <tr className="text-center tableKey" key={audio.audioId}>
                   <td
-                    onClick={() => toAudioId(audio?.audioId, callsIds)}
+                    onClick={() =>
+                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                    }
                     className="tableSingleKey"
                   >
                     {audio.audioId}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId, callsIds)}
+                    onClick={() =>
+                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                    }
                     className="tableSingleKey"
                   >
                     {audio.fileName}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId, callsIds)}
+                    onClick={() =>
+                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                    }
                     className="tableSingleKey"
                   >
                     {audio.recordDate}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId, callsIds)}
+                    onClick={() =>
+                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                    }
                     className="tableSingleKey"
                   >
                     {audio.duration}
                   </td>
                   <td
-                    onClick={() => toAudioId(audio?.audioId, callsIds)}
+                    onClick={() =>
+                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                    }
                     className="tableSingleKey"
                   >
                     {audio.gibbonCalls}
@@ -142,15 +140,21 @@ export default function TableDashboard() {
                           {/* <input className="submitcommentbtn" value="Submit" /> */}
                         </div>
                         <div className="buttonscomments">
-                          <div className="savebuttoncontainer">
+                          <Button
+                            value="Submit"
+                            type="submit"
+                            variant="outline-success"
+                            size="sm"
+                          >
+                            {" "}
                             <FontAwesomeIcon
                               className="savebutton m-2"
                               // onSubmit={"#"}
                               icon={["fas", "check"]}
                               color="#04c45c"
-                            ></FontAwesomeIcon>{" "}
-                          </div>
-                          <div>
+                            ></FontAwesomeIcon>
+                          </Button>{" "}
+                          <Button variant="outline-danger" size="sm">
                             <FontAwesomeIcon
                               className="m-2"
                               // onSubmit={"#"}
@@ -158,7 +162,7 @@ export default function TableDashboard() {
                               size="1x"
                               color="red"
                             ></FontAwesomeIcon>{" "}
-                          </div>
+                          </Button>{" "}
                         </div>
                       </div>
                     </form>
@@ -168,7 +172,9 @@ export default function TableDashboard() {
             </tbody>
           ) : (
             <thead className="text-center tableHeader">
-              <tr>No Audios</tr>
+              <tr>
+                <th>No Audios</th>
+              </tr>
             </thead>
           )}
         </>

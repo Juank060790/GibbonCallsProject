@@ -14,15 +14,16 @@ const callReducer = (state = initialState, action) => {
       return { ...state, loading: true };
 
     // This case will return all the state including the single call.
-
     case types.GET_SINGLE_CALL_REQUEST_SUCCESS:
       return {
         ...state,
-        call: payload,
+        call: [...state.call, payload],
         loading: false,
       };
     case types.GET_SINGLE_CALL_REQUEST_FAILURE:
       return { ...state, loading: false };
+    case types.CLEAR_CALLS:
+      return { ...state, call: [] };
     default:
       return state;
   }

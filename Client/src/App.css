@@ -96,7 +96,7 @@ body {
 
 .savebuttoncontainer :hover{
 background-color: #686464;
-border-radius: 5px;
+/* border-radius: 5px; */
 }
 
 .reloadBtnContainer{

@@ -1,14 +1,11 @@
 import React from "react";
 import { Modal, Table } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
-export default function ModalCall({
-  selectedAudio,
-  callsperAudio,
-  handleClose,
-  showModal,
-}) {
+export default function ModalCall({ selectedAudio, handleClose, showModal }) {
+  const calls = useSelector((state) => state.call.call);
+
   // const showModal = show;
-  console.log("SELECTEDMODAL", callsperAudio);
 
   return (
     <Modal
@@ -37,13 +34,11 @@ export default function ModalCall({
           </thead>
           <>
             <tbody>
-              {callsperAudio.map((call, index) => (
-                <tr className="text-center tableKey">
-                  <td className="tableSingleKey" index={index}>
-                    {call.call.callId}
-                  </td>
-                  <td className="tableSingleKey">{call.call.timeStart}</td>
-                  <td className="tableSingleKey">{call.call.timeStart}</td>
+              {calls?.map((call, index) => (
+                <tr className="text-center tableKey" key={index}>
+                  <td className="tableSingleKey">{call.callId}</td>
+                  <td className="tableSingleKey">{call.timeStart}</td>
+                  <td className="tableSingleKey">{call.timeStart}</td>
                   <td className="tableSingleKey">Img</td>
                   <td className="tableSingleKey">Action</td>
                   <td className="tableSingleKey">{call.label}</td>

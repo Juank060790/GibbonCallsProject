@@ -13,7 +13,7 @@ exports.getCallsSingleAudio = (req, res) => {
         singleCall = doc.data();
         return res.json(singleCall);
       } else {
-        return res.status(404).json({ error: "Audio not found" });
+        return res.status(404).json({ error: "Call not found" });
       }
     })
     .catch((err) => {
