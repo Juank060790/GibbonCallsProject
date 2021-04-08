@@ -1,6 +1,6 @@
 import * as types from "../constants/audio.constants";
 import api from "../api";
-// import { alertActions } from "./alert.actions";
+import { alertActions } from "./alert.actions";
 
 // Get a list of Raw Audios
 const audiosRequest = (
@@ -41,12 +41,33 @@ const getSingleAudio = (audioId) => async (dispatch) => {
   }
 };
 
+// Helps to clear audio reducer when close modal.
 const clearSelectedAudioReducer = () => (dispatch) => {
   dispatch({ type: types.CLEAR_SELECTED_AUDIO, payload: null });
+};
+
+// Create new comment to audio.
+const addCommentRawAudio = (comment, audioId) => async (dispatch) => {
+  dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  try {
+    const res = await api.put(`audio/audiolist/addcomment/${audioId}`, {
+      comment,
+      audioId,
+    });
+
+    dispatch({
+      type: types.CREATE_COMMENT_RAW_AUDIO_SUCCESS,
+      payload: res.data.data,
+    });
+    dispatch(alertActions.setAlert("New comment has been Added!", "success"));
+  } catch (error) {
+    dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
+  }
 };
 
 export const audioActions = {
   audiosRequest,
   getSingleAudio,
   clearSelectedAudioReducer,
+  addCommentRawAudio,
 };

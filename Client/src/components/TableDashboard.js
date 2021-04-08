@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Form, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
@@ -24,6 +24,21 @@ export default function TableDashboard() {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
+  const [formData, setFormData] = useState({ comment: "" });
+  const [audioIdOnComment, setAudioIdOnComment] = useState("");
+
+  //Add Raw Audio Comment functions
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate data if needed
+    const { comment } = formData;
+    console.log("COMMENT", formData, audioIdOnComment);
+    const audioId = audioIdOnComment;
+    dispatch(audioActions.addCommentRawAudio(comment, audioId));
+  };
 
   // To load the audios from storage (to be fixed)
   const query = (e) => {
@@ -128,20 +143,23 @@ export default function TableDashboard() {
                     {audio.gibbonCalls}
                   </td>
                   <td className="tableSingleKey commentKey">
-                    <form>
+                    <Form onSubmit={handleSubmit} key={audio.audioId}>
                       <div className="commentsection">
-                        <div>
-                          {" "}
-                          <textarea
-                            className="textareacomments"
-                            type="submit"
-                            id="commentBox"
-                          ></textarea>
-                          {/* <input className="submitcommentbtn" value="Submit" /> */}
-                        </div>
+                        <Form.Group
+                          className="textareacomments"
+                          controlId={audio.audioId}
+                        >
+                          <Form.Control
+                            onClick={() => setAudioIdOnComment(audio?.audioId)}
+                            key={audio.audioId}
+                            type="textarea"
+                            required
+                            name="comment"
+                            onChange={handleChange}
+                          />
+                        </Form.Group>{" "}
                         <div className="buttonscomments">
                           <Button
-                            value="Submit"
                             type="submit"
                             variant="outline-success"
                             size="sm"
@@ -165,7 +183,7 @@ export default function TableDashboard() {
                           </Button>{" "}
                         </div>
                       </div>
-                    </form>
+                    </Form>
                   </td>
                 </tr>
               ))}

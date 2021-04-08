@@ -103,9 +103,10 @@ exports.getFilteredAudioList = (req, res) => {
 
 // Add comment to Raw Audio.
 exports.addCommentRawAudio = (req, res) => {
-  let comment = req.body.comments;
+  let comment = req.body.comment;
+  let audioId = req.body.audioId;
   db.collection("rawData")
-    .doc(`${req.params.audioId}`)
+    .doc(`${audioId}`)
     .update({
       comments: comment,
     })
