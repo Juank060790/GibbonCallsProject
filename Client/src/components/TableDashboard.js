@@ -20,7 +20,7 @@ export default function TableDashboard() {
   const loading = useSelector((state) => state.audio.loading);
   const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const callsIds = selectedAudio?.gibbonCallList;
+  // const callsIds = selectedAudio?.gibbonCallList;
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
@@ -33,12 +33,13 @@ export default function TableDashboard() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate data if needed
     const { comment } = formData;
     console.log("COMMENT", formData, audioIdOnComment);
     const audioId = audioIdOnComment;
     dispatch(audioActions.addCommentRawAudio(comment, audioId));
   };
+
+  useEffect(() => {}, [dispatch, audioIdOnComment, audios]);
 
   // To load the audios from storage (to be fixed)
   const query = (e) => {
@@ -69,9 +70,6 @@ export default function TableDashboard() {
   };
 
   // Every time there is a change on this values the component will rerender
-  // useEffect(() => {
-  //   dispatch(audioActions.audiosRequest(limit, sortBy, order));
-  // }, [dispatch, limit, sortBy, order]);
 
   // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, gibbonCallList) => {
@@ -144,45 +142,60 @@ export default function TableDashboard() {
                   </td>
                   <td className="tableSingleKey commentKey">
                     <Form onSubmit={handleSubmit} key={audio.audioId}>
-                      <div className="commentsection">
-                        <Form.Group
-                          className="textareacomments"
-                          controlId={audio.audioId}
-                        >
-                          <Form.Control
-                            onClick={() => setAudioIdOnComment(audio?.audioId)}
-                            key={audio.audioId}
-                            type="textarea"
-                            required
-                            name="comment"
-                            onChange={handleChange}
-                          />
-                        </Form.Group>{" "}
-                        <div className="buttonscomments">
-                          <Button
-                            type="submit"
-                            variant="outline-success"
-                            size="sm"
-                          >
-                            {" "}
-                            <FontAwesomeIcon
-                              className="savebutton m-2"
-                              // onSubmit={"#"}
-                              icon={["fas", "check"]}
-                              color="#04c45c"
-                            ></FontAwesomeIcon>
-                          </Button>{" "}
-                          <Button variant="outline-danger" size="sm">
-                            <FontAwesomeIcon
-                              className="m-2"
-                              // onSubmit={"#"}
-                              icon={["fas", "times"]}
-                              size="1x"
-                              color="red"
-                            ></FontAwesomeIcon>{" "}
-                          </Button>{" "}
+                      {audio.comments ? (
+                        <div className="commentBox textareacomments">
+                          <div className="commentSubBox ">
+                            <p className="text-center">{audio.comments}</p>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <>
+                          <td className="tableSingleKey commentKey">
+                            <div className="buttonscomments">
+                              <Button
+                                type="submit"
+                                variant="outline-success"
+                                size="sm"
+                              >
+                                {" "}
+                                <FontAwesomeIcon
+                                  className="savebutton m-2"
+                                  // onSubmit={"#"}
+                                  icon={["fas", "check"]}
+                                  color="#04c45c"
+                                ></FontAwesomeIcon>
+                              </Button>{" "}
+                              <Button variant="outline-danger" size="sm">
+                                <FontAwesomeIcon
+                                  className="m-2"
+                                  // onSubmit={"#"}
+                                  icon={["fas", "times"]}
+                                  size="1x"
+                                  color="red"
+                                ></FontAwesomeIcon>{" "}
+                              </Button>{" "}
+                            </div>
+                          </td>
+                          <div className="addCommentBox commentBoxInput">
+                            <Form.Group
+                              style={{ backgroundColor: "#d7ebd6" }}
+                              className="textareacomments textareacommentsInput"
+                              controlId={audio.audioId}
+                            >
+                              <Form.Control
+                                onClick={() =>
+                                  setAudioIdOnComment(audio?.audioId)
+                                }
+                                key={audio.audioId}
+                                type="textarea"
+                                required
+                                name="comment"
+                                onChange={handleChange}
+                              />
+                            </Form.Group>{" "}
+                          </div>
+                        </>
+                      )}
                     </Form>
                   </td>
                 </tr>

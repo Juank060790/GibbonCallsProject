@@ -69,6 +69,17 @@ body {
   }
 }
 
+/* Dashboard */
+.logoMenu{
+  padding-top: 1rem;
+}
+
+.NavBar{
+display: flex;
+justify-content: space-between;
+}
+
+
 /* Not Found Page */
 
 .notfoundpagecontainer {
@@ -81,6 +92,40 @@ body {
 
 /* TABLE */
 
+.textareacomments {
+  border: none;
+  border-radius: 6px;
+  background-color: #d7ebd6 ;
+}
+.textareacomments:hover{
+  background-color: #333333;
+  color: white;
+}
+
+.textareacommentsInput{
+width: 100%;
+border: none !important;
+background-color: black !important ;
+}
+
+.commentBoxInput{
+  margin: auto;
+  max-width: 250px;
+  justify-content: center;
+}
+
+.commentBox{
+  margin: auto;
+  max-width: 250px;
+  border: 1px solid #d7ebd6;
+  width: 100%;
+  justify-content: center;
+
+}
+
+.commentSubBox{
+  margin: auto;
+}
 .commentsection{
   display: flex;
   align-items: center;
@@ -89,9 +134,12 @@ body {
 
 .buttonscomments{
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
+.addCommentBox{
+  display: flex;
+}
 
 
 .savebuttoncontainer :hover{
@@ -132,16 +180,6 @@ background-color: #686464;
   background-color: #6fcf97c4;
 }
 
-.textareacomments:hover{
-  background-color: #333333;
-  color: white;
-}
-
-.textareacomments {
-  border: none;
-  border-radius: 6px;
-  background-color: #d7ebd6;
-}
 
 .submitcommentbtn{
   border: brown;
