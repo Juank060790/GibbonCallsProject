@@ -12,6 +12,7 @@ const audioReducer = (state = initialState, action) => {
   switch (type) {
     case types.AUDIO_REQUEST:
     case types.GET_SINGLE_AUDIO_REQUEST:
+    case types.DELETE_COMMENT_RAW_AUDIO_REQUEST:
       return { ...state, loading: true };
 
     case types.AUDIO_REQUEST_SUCCESS:
@@ -21,6 +22,9 @@ const audioReducer = (state = initialState, action) => {
         loading: false,
       };
 
+    case types.DELETE_COMMENT_RAW_AUDIO_SUCCESS:
+      return { ...state, loading: false };
+
     case types.GET_SINGLE_AUDIO_REQUEST_SUCCESS:
       return {
         ...state,
@@ -29,6 +33,7 @@ const audioReducer = (state = initialState, action) => {
       };
 
     case types.AUDIO_REQUEST_FAILURE:
+    case types.DELETE_COMMENT_RAW_AUDIO_FAILURE:
     case types.GET_SINGLE_AUDIO_REQUEST_FAILURE:
       return { ...state, loading: false };
     case types.CLEAR_SELECTED_AUDIO:

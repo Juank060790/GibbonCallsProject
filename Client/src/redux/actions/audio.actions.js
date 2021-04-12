@@ -65,9 +65,25 @@ const addCommentRawAudio = (comment, audioId) => async (dispatch) => {
   }
 };
 
+const deleteCommentAudio = (audioId) => async (dispatch) => {
+  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  try {
+    const res = await api.put(`audio/audiolist/deletecomment/${audioId}`);
+
+    dispatch({
+      type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
+      payload: res.data,
+    });
+    dispatch(alertActions.setAlert("New comment has been DELETED!", "success"));
+  } catch (error) {
+    dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
+  }
+};
+
 export const audioActions = {
   audiosRequest,
   getSingleAudio,
   clearSelectedAudioReducer,
   addCommentRawAudio,
+  deleteCommentAudio,
 };

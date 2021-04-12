@@ -92,6 +92,10 @@ justify-content: space-between;
 
 /* TABLE */
 
+.tableSingleKeyBtn{
+  border-top: none !important;
+}
+
 .textareacomments {
   border: none;
   border-radius: 6px;
@@ -102,6 +106,9 @@ justify-content: space-between;
   color: white;
 }
 
+.inputComment{
+  width: inherit;
+}
 .textareacommentsInput{
 width: 100%;
 border: none !important;
@@ -110,13 +117,13 @@ background-color: black !important ;
 
 .commentBoxInput{
   margin: auto;
-  max-width: 250px;
+  width: 100%; 
   justify-content: center;
 }
 
 .commentBox{
   margin: auto;
-  max-width: 250px;
+  /* max-width: 250px; */
   border: 1px solid #d7ebd6;
   width: 100%;
   justify-content: center;
@@ -160,7 +167,7 @@ background-color: #686464;
 }
 .tableHeader {
   background-color: #d7ebd6;
-  border-top:1px solid black;
+  /* border-top:1px solid black; */
   color:#686464 ;
 }
 

@@ -7,6 +7,7 @@ const {
   getFilteredAudioList,
   addCommentRawAudio,
   deleteSingleCallId,
+  deleteCommentAudio,
 } = require("../Controllers/Audio");
 const FBAuth = require("../Utils/fbauth");
 
@@ -44,6 +45,13 @@ router.delete("/deletesingleaudio/:audioId", FBAuth, deleteSingleAudio);
  * @access  private
  */
 router.put("/audiolist/addcomment/:audioId", FBAuth, addCommentRawAudio);
+
+/**
+ * @route PUT
+ * @description Add comment to RawAudio
+ * @access  private
+ */
+router.put("/audiolist/deletecomment/:audioId", FBAuth, deleteCommentAudio);
 
 module.exports = router;
 

@@ -27,14 +27,22 @@ export default function TableDashboard() {
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
+  // console.log("audioiCOmmentID", audioIdOnComment, "onChange", formData);
+
   //Add Raw Audio Comment functions
+
+  const deleteCommentAudio = (audioId) => {
+    console.log("DELETERAW AUDIO COMMENT", audioId);
+    dispatch(audioActions.deleteCommentAudio(audioId));
+  };
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const { comment } = formData;
     console.log("COMMENT", formData, audioIdOnComment);
+    // e.preventDefault();
+    const { comment } = formData;
     const audioId = audioIdOnComment;
     dispatch(audioActions.addCommentRawAudio(comment, audioId));
   };
@@ -92,6 +100,7 @@ export default function TableDashboard() {
             <th>Record Date</th>
             <th>Duration</th>
             <th>Gibbon Calls</th>
+            <th>Action</th>
             <th>Comments</th>
           </tr>
         </thead>
@@ -140,64 +149,79 @@ export default function TableDashboard() {
                   >
                     {audio.gibbonCalls}
                   </td>
-                  <td className="tableSingleKey commentKey">
-                    <Form onSubmit={handleSubmit} key={audio.audioId}>
-                      {audio.comments ? (
-                        <div className="commentBox textareacomments">
-                          <div className="commentSubBox ">
-                            <p className="text-center">{audio.comments}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <td className="tableSingleKey commentKey">
-                            <div className="buttonscomments">
-                              <Button
-                                type="submit"
-                                variant="outline-success"
-                                size="sm"
-                              >
-                                {" "}
-                                <FontAwesomeIcon
-                                  className="savebutton m-2"
-                                  // onSubmit={"#"}
-                                  icon={["fas", "check"]}
-                                  color="#04c45c"
-                                ></FontAwesomeIcon>
-                              </Button>{" "}
-                              <Button variant="outline-danger" size="sm">
-                                <FontAwesomeIcon
-                                  className="m-2"
-                                  // onSubmit={"#"}
-                                  icon={["fas", "times"]}
-                                  size="1x"
-                                  color="red"
-                                ></FontAwesomeIcon>{" "}
-                              </Button>{" "}
-                            </div>
-                          </td>
-                          <div className="addCommentBox commentBoxInput">
-                            <Form.Group
-                              style={{ backgroundColor: "#d7ebd6" }}
-                              className="textareacomments textareacommentsInput"
-                              controlId={audio.audioId}
-                            >
-                              <Form.Control
-                                onClick={() =>
-                                  setAudioIdOnComment(audio?.audioId)
-                                }
-                                key={audio.audioId}
-                                type="textarea"
-                                required
-                                name="comment"
-                                onChange={handleChange}
-                              />
-                            </Form.Group>{" "}
-                          </div>
-                        </>
-                      )}
-                    </Form>
+                  <td className="tableSingleKeyBtn commentKey">
+                    <div className="buttonscomments">
+                      <Button
+                        disabled={audio.comments ? true : false}
+                        type="submit"
+                        form="commentForm"
+                        onClick={handleSubmit}
+                        variant="outline-success"
+                        size="sm"
+                      >
+                        {" "}
+                        <FontAwesomeIcon
+                          className="savebutton m-2"
+                          icon={["fas", "check"]}
+                          color="#04c45c"
+                        ></FontAwesomeIcon>
+                      </Button>{" "}
+                      <Button
+                        disabled={audio.comments ? false : true}
+                        onClick={() => deleteCommentAudio(audio?.audioId)}
+                        variant="outline-danger"
+                        size="sm"
+                      >
+                        <FontAwesomeIcon
+                          className="m-2"
+                          icon={["fas", "times"]}
+                          size="1x"
+                          color="red"
+                        ></FontAwesomeIcon>{" "}
+                      </Button>{" "}
+                    </div>
                   </td>
+                  {audio.comments ? (
+                    <td className="tableSingleKey commentKey">
+                      <div className="commentBox textareacomments">
+                        <div className="commentSubBox ">
+                          <p className="text-center">{audio.comments}</p>
+                        </div>
+                      </div>
+                    </td>
+                  ) : (
+                    <>
+                      <td className="tableSingleKey commentKey">
+                        <Form
+                          id="commentForm"
+                          // onSubmit={handleSubmit}
+                          key={audio.audioId}
+                        >
+                          <div className="commentBox textareacomments">
+                            <td className="tableSingleKeyBtn commentKey inputComment">
+                              <div className="addCommentBox commentBoxInput ">
+                                <Form.Group
+                                  style={{ backgroundColor: "#d7ebd6" }}
+                                  className="textareacomments textareacommentsInput"
+                                  controlId={audio.audioId}
+                                >
+                                  <Form.Control
+                                    onClick={() =>
+                                      setAudioIdOnComment(audio?.audioId)
+                                    }
+                                    key={audio.audioId}
+                                    type="textarea"
+                                    name="comment"
+                                    onChange={handleChange}
+                                  />
+                                </Form.Group>{" "}
+                              </div>
+                            </td>
+                          </div>
+                        </Form>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>

@@ -117,3 +117,18 @@ exports.addCommentRawAudio = (req, res) => {
       return res.status(500).json({ error: err.code });
     });
 };
+
+// Delete Comment from single audio from firestore
+exports.deleteCommentAudio = (req, res) => {
+  db.collection("rawData")
+    .doc(`${req.params.audioId}`)
+    .update({
+      comments: "",
+    })
+    .then(() => {
+      return res.status(200).json("Comment successfully deleted!");
+    })
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+};
