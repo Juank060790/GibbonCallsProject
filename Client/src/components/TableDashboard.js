@@ -14,6 +14,7 @@ export default function TableDashboard() {
     dispatch(callActions.clearCallsReducer());
     dispatch(audioActions.clearSelectedAudioReducer());
     setCallsperAudio([]);
+    setSpectogramImage("");
   };
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
@@ -28,6 +29,16 @@ export default function TableDashboard() {
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
   // console.log("audioiCOmmentID", audioIdOnComment, "onChange", formData);
+
+  // Spectogram
+  // Set the image to show in the modal of single calls, same as clear the img when you close the modal
+  const [spectogramImage, setSpectogramImage] = useState("");
+  const showSpectrogram = (spectogram, showModal) => {
+    if (spectogram) {
+      setSpectogramImage(spectogram);
+      console.log("NOTFOUND IMAGE", spectogramImage);
+    }
+  };
 
   //Add Raw Audio Comment functions
 
@@ -192,33 +203,32 @@ export default function TableDashboard() {
                   ) : (
                     <>
                       <td className="tableSingleKey commentKey">
-                        <Form
-                          id="commentForm"
-                          // onSubmit={handleSubmit}
-                          key={audio.audioId}
-                        >
-                          <div className="commentBox textareacomments">
-                            <td className="tableSingleKeyBtn commentKey inputComment">
-                              <div className="addCommentBox commentBoxInput ">
-                                <Form.Group
-                                  style={{ backgroundColor: "#d7ebd6" }}
-                                  className="textareacomments textareacommentsInput"
-                                  controlId={audio.audioId}
-                                >
-                                  <Form.Control
-                                    onClick={() =>
-                                      setAudioIdOnComment(audio?.audioId)
-                                    }
-                                    key={audio.audioId}
-                                    type="textarea"
-                                    name="comment"
-                                    onChange={handleChange}
-                                  />
-                                </Form.Group>{" "}
-                              </div>
-                            </td>
-                          </div>
-                        </Form>
+                        {" "}
+                        <div className="commentBox textareacomments">
+                          <Form
+                            id="commentForm"
+                            // onSubmit={handleSubmit}
+                            key={audio.audioId}
+                          >
+                            <div className="addCommentBox commentBoxInput ">
+                              <Form.Group
+                                style={{ backgroundColor: "#d7ebd6" }}
+                                className="textareacomments textareacommentsInput"
+                                controlId={audio.audioId}
+                              >
+                                <Form.Control
+                                  onClick={() =>
+                                    setAudioIdOnComment(audio?.audioId)
+                                  }
+                                  key={audio.audioId}
+                                  type="textarea"
+                                  name="comment"
+                                  onChange={handleChange}
+                                />
+                              </Form.Group>{" "}
+                            </div>
+                          </Form>
+                        </div>
                       </td>
                     </>
                   )}
@@ -245,6 +255,8 @@ export default function TableDashboard() {
         selectedAudio={selectedAudio}
         callsperAudio={callsperAudio}
         handleClose={handleClose}
+        spectogramImage={spectogramImage}
+        showSpectrogram={showSpectrogram}
       />
     </>
   );

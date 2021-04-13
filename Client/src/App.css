@@ -92,6 +92,7 @@ justify-content: space-between;
 
 /* TABLE */
 
+
 .tableSingleKeyBtn{
   border-top: none !important;
 }
@@ -110,11 +111,14 @@ justify-content: space-between;
   width: inherit;
 }
 .textareacommentsInput{
+  margin-bottom: auto !important;
 width: 100%;
 border: none !important;
-background-color: black !important ;
+/* background-color: black !important ; */
 }
-
+.form.group{
+  margin-bottom: 4rem !important;
+}
 .commentBoxInput{
   margin: auto;
   width: 100%; 
@@ -179,7 +183,8 @@ background-color: #686464;
 .tableKey {
   color: #333333;
   font-size: 14px;
-  border-top:2px solid rgba(0, 0, 0, 0.5);
+  border-top:1px solid rgba(0, 0, 0, 0.068);
+  padding: 1rem !important;
 
 }
 
@@ -216,3 +221,13 @@ background-color: #686464;
   min-height: 100%;
   border-radius: 0;
 }
+
+/* Media Player */
+
+.MediaPlayerContainer{
+  width: fit-content;
+  height: 300px;
+  border:#6fcf97c4 solid 2px;
+  margin: 2rem;
+}
+
