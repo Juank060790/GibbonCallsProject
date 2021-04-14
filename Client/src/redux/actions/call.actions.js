@@ -1,5 +1,6 @@
 import * as types from "../constants/call.constants";
 import api from "../api";
+import { alertActions } from "./alert.actions";
 
 // Get single Calls from RawAudio
 const getSingleCall = (callId) => async (dispatch) => {
@@ -12,7 +13,11 @@ const getSingleCall = (callId) => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
-    dispatch({ type: types.GET_SINGLE_CALL_REQUEST_FAILURE, payload: error });
+    dispatch({
+      type: types.GET_SINGLE_CALL_REQUEST_FAILURE,
+      payload: error.data,
+    });
+    dispatch(alertActions.setAlert("Not calls found", "danger"));
   }
 };
 

@@ -33,7 +33,7 @@ export default function TableDashboard() {
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
   const [spectogramImage, setSpectogramImage] = useState("");
-  const showSpectrogram = (spectogram, showModal) => {
+  const showSpectrogram = (spectogram) => {
     if (spectogram) {
       setSpectogramImage(spectogram);
       console.log("NOTFOUND IMAGE", spectogramImage);
@@ -58,7 +58,7 @@ export default function TableDashboard() {
     dispatch(audioActions.addCommentRawAudio(comment, audioId));
   };
 
-  useEffect(() => {}, [dispatch, audioIdOnComment, audios]);
+  useEffect(() => {}, [audioIdOnComment, audios, formData]);
 
   // To load the audios from storage (to be fixed)
   const query = (e) => {
@@ -82,7 +82,6 @@ export default function TableDashboard() {
   const getCalls = (gibbonCallList) => {
     gibbonCallList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
-      // callsperAudio.push(calls);
       setCallsperAudio(calls);
     });
     handleShow();

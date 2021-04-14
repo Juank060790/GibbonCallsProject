@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Modal, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
@@ -11,21 +11,7 @@ export default function ModalCall({
   showSpectrogram,
 }) {
   const calls = useSelector((state) => state.call.call);
-  // const [spectogramImage, setSpectogramImage] = useState("");
 
-  // const showSpectrogram = (spectogram, showModal) => {
-  //   if (spectogram) {
-  //     setSpectogramImage(spectogram);
-  //     console.log("NOTFOUND IMAGE", spectogramImage);
-  //   }
-  // };
-
-  // const clearSpectogram = () => {
-  //   if (showModal == false) {
-  //     console.log("HIDEEEE");
-  //     setSpectogramImage("");
-  //   }
-  // };
   useEffect(() => {
     console.log("Middle rendered", spectogramImage);
   }, [spectogramImage]);
