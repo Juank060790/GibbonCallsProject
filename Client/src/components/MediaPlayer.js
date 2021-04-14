@@ -27,16 +27,21 @@ export default function MediaPlayer(props) {
           )}
         </div>
       </Container>
-      {props.spectogramImage ? (
-        <div className="FileDetails">
-          <h4>File Details:</h4>
-          <p>Name:{props?.selectedAudio.fileName}</p>
-          <p>Duration:{props?.selectedAudio.duration}</p>
-          <p>Record Date: {props?.selectedAudio.recordDate}</p>
+      <div>
+        <div>
+          {props.selectedAudio ? (
+            <div className="FileDetails">
+              <h4>File Details:</h4>
+              <p>Name:{props?.selectedAudio.fileName}</p>
+              <p>Duration:{props?.selectedAudio.duration}</p>
+              <p>Record Date: {props?.selectedAudio.recordDate}</p>
+            </div>
+          ) : (
+            <p></p>
+          )}
         </div>
-      ) : (
-        <p></p>
-      )}
+        <div></div>
+      </div>
     </>
   );
 }

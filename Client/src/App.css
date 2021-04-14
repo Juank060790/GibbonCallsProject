@@ -1,16 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap");
 
-
 body {
   font-family: "Roboto", serif;
   letter-spacing: 1px;
   font-weight: 400;
 }
 
-.spinnerContainer{
+.spinnerContainer {
   width: 100%;
 }
-.spinnerloading{
+.spinnerloading {
   margin: 25%;
 }
 
@@ -70,15 +69,14 @@ body {
 }
 
 /* Dashboard */
-.logoMenu{
+.logoMenu {
   padding-top: 1rem;
 }
 
-.NavBar{
-display: flex;
-justify-content: space-between;
+.NavBar {
+  display: flex;
+  justify-content: space-between;
 }
-
 
 /* Not Found Page */
 
@@ -92,77 +90,76 @@ justify-content: space-between;
 
 /* TABLE */
 
-
-.tableSingleKeyBtn{
+.tableSingleKeyBtn {
   border-top: none !important;
 }
 
 .textareacomments {
   border: none;
   border-radius: 6px;
-  background-color: #d7ebd6 ;
+  background-color: #d7ebd6;
 }
-.textareacomments:hover{
+.textareacomments:hover {
   background-color: #333333;
   color: white;
 }
 
-.inputComment{
+.inputComment {
   width: inherit;
 }
-.textareacommentsInput{
+.textareacommentsInput {
   margin-bottom: auto !important;
-width: 100%;
-border: none !important;
-/* background-color: black !important ; */
+  width: 100%;
+  border: none !important;
+  /* background-color: black !important ; */
 }
-.form.group{
-  margin-bottom: 4rem !important;
+
+.form-control {
+  background-color: #d7ebd6 !important;
 }
-.commentBoxInput{
+
+.commentBoxInput {
   margin: auto;
-  width: 100%; 
+  width: 100%;
   justify-content: center;
 }
 
-.commentBox{
+.commentBox {
   margin: auto;
-  /* max-width: 250px; */
+  max-width: 250px;
   border: 1px solid #d7ebd6;
   width: 100%;
   justify-content: center;
-
 }
 
-.commentSubBox{
+.commentSubBox {
   margin: auto;
 }
-.commentsection{
+.commentsection {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.buttonscomments{
+.buttonscomments {
   display: flex;
   justify-content: center;
 }
 
-.addCommentBox{
+.addCommentBox {
   display: flex;
 }
 
-
-.savebuttoncontainer :hover{
-background-color: #686464;
-/* border-radius: 5px; */
+.savebuttoncontainer :hover {
+  background-color: #686464;
+  /* border-radius: 5px; */
 }
 
-.reloadBtnContainer{
+.reloadBtnContainer {
   margin-left: 2%;
   margin-bottom: 1%;
 }
-.reloadButton{
+.reloadButton {
   width: 48px;
   height: 48px;
   padding: 2rem;
@@ -172,44 +169,38 @@ background-color: #686464;
 .tableHeader {
   background-color: #d7ebd6;
   /* border-top:1px solid black; */
-  color:#686464 ;
+  color: #686464;
 }
 
-.tableSingleKey{
+.tableSingleKey {
   vertical-align: middle !important;
-  
 }
 
 .tableKey {
   color: #333333;
   font-size: 14px;
-  border-top:1px solid rgba(0, 0, 0, 0.068);
+  border-top: 1px solid rgba(0, 0, 0, 0.068);
   padding: 1rem !important;
-
 }
 
-.tableKey:hover{
-  background-color: #6fcf97c4;
+.tableKey:hover {
+  background-color: #6FCF97;
 }
 
-
-.submitcommentbtn{
+.submitcommentbtn {
   border: brown;
   display: none;
   position: absolute;
-    z-index: 2;
+  z-index: 2;
 }
 
-.submitcommentbtn:hover{
+.submitcommentbtn:hover {
   display: block;
 }
 
-
-
-
 /* MODAL */
 
-.modal-dialog{
+.modal-dialog {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -224,23 +215,74 @@ background-color: #686464;
 
 /* Media Player */
 
-.MediaPlayerContainer{
+.MediaPlayerContainer {
   width: fit-content;
   height: 304px;
-  border:#6fcf97c4 solid 2px;
+  border: #6fcf97c4 solid 2px;
   margin: 2rem;
 }
 
-.FileDetails{
+.FileDetails {
   line-height: 5px;
   font-weight: 600;
 }
 
-.spectogramContainer{
+.spectogramContainer {
   margin: auto;
 }
 
-.spectogramImage{
-max-width:100%;
-max-height:100%
+.spectogramImage {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Pagination */
+
+.marginNone {
+  margin-top: 1rem !important;
+  margin-bottom: none;
+}
+
+.footerPagination {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #d7ebd6;
+  color: #686464;
+  margin-right: 2rem;
+}
+
+.marginButtonPagination {
+  margin: 5px 60px 0px 60px;
+}
+.paginationButton {
+  font-size: 18px;
+  font-weight: 700;
+  position: relative;
+  top: calc(50% - 10px);
+}
+
+.footerPaginationContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
+}
+
+.previousNextbtn {
+  text-align: center;
+  padding: auto;
+  width: 30px;
+  height: 30px;
+  color: #686464;
+}
+
+.previousNextbtn:hover {
+  border-radius: 25px;
+  padding: 10px;
+  opacity: 0.7;
 }
