@@ -23,12 +23,12 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    console.log("Response:", response);
+    // console.log("Response:", response);
     return response;
   },
   function (error) {
     error = error.response.data.statusText;
-    console.log("RESPONSE ERROR", error);
+    // console.log("RESPONSE ERROR", error);
     store.dispatch(alertActions.setAlert(error.message, "danger"));
     return Promise.reject(error);
   }

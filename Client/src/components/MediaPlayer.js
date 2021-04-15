@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "react-bootstrap";
+import WaveSurfer from "wavesurfer.js";
 import notFoundImage from "../images/No_image_available.svg";
 
 export default function MediaPlayer(props) {
@@ -7,6 +8,7 @@ export default function MediaPlayer(props) {
 
   return (
     <>
+      <WaveSurfer />
       <Container className="MediaPlayerContainer">
         <div className="spectogramContainer text-center">
           {props.spectogramImage ? (

@@ -36,14 +36,14 @@ export default function TableDashboard() {
   const showSpectrogram = (spectogram) => {
     if (spectogram) {
       setSpectogramImage(spectogram);
-      console.log("NOTFOUND IMAGE", spectogramImage);
+      // console.log("NOTFOUND IMAGE", spectogramImage);
     }
   };
 
   //Add Raw Audio Comment functions
 
   const deleteCommentAudio = (audioId) => {
-    console.log("DELETERAW AUDIO COMMENT", audioId);
+    // console.log("DELETERAW AUDIO COMMENT", audioId);
     dispatch(audioActions.deleteCommentAudio(audioId));
   };
 
