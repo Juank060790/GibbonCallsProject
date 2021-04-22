@@ -200,6 +200,7 @@ body {
 
 /* MODAL */
 
+
 .modal-dialog {
   width: 100%;
   height: 100%;
@@ -291,17 +292,19 @@ body {
 
 /* Spectogram */
 
+
+
 #waveform{
   width: 100%;
   background: rgba(0,0,0,0.8);
 }
-#wave-spectrogram{
+/* #wavespectrogram{
   margin: 10px auto;
   position: relative;
 }
-#wave-spectrogram canvas{
+#wavespectrogram canvas{
   left: 0;
-}
+} */
 
 button{
   background: #eee;
@@ -319,4 +322,119 @@ button:active{
 }
 button:focus{
   outline: none;
+}
+/* 
+.containerInfoAudio{
+  margin-top: 10%;
+} */
+
+
+
+
+
+/* slider */
+
+.slidecontainer {
+  margin-top: 15px;
+  width: 20%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 3px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  border-radius: 35%;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+
+/* Switch */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.sliderSwitch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.sliderSwitch:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .sliderSwitch {
+  background-color: #2196F3;
+}
+
+input:focus + .sliderSwitch {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .sliderSwitch:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliderSwitchs */
+.sliderSwitch.round {
+  border-radius: 34px;
+}
+
+.sliderSwitch.round:before {
+  border-radius: 50%;
 }

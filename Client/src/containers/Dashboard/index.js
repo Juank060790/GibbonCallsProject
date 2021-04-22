@@ -22,7 +22,6 @@ function Dashboard() {
   return (
     <div>
       <Navbar />
-
       <TableDashboard />
     </div>
   );

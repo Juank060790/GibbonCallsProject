@@ -87,8 +87,6 @@ export default function TableDashboard() {
     handleShow();
   };
 
-  // Every time there is a change on this values the component will rerender
-
   // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, gibbonCallList) => {
     dispatch(audioActions.getSingleAudio(audioId));

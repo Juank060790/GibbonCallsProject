@@ -1,15 +1,15 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import WaveSurfer from "wavesurfer.js";
 import notFoundImage from "../images/No_image_available.svg";
+import WaveSpectogram from "./WaveSpectogram";
 
 export default function MediaPlayer(props) {
-  console.log("SElected Spectogram mediaplayer", props);
-
+  // console.log("SElected Spectogram mediaplayer MEdia player", props.audioCall);
+  const audioCallSpectogram = props?.audioCall;
   return (
     <>
-      <WaveSurfer />
       <Container className="MediaPlayerContainer">
+        {" "}
         <div className="spectogramContainer text-center">
           {props.spectogramImage ? (
             <img
@@ -28,8 +28,9 @@ export default function MediaPlayer(props) {
             />
           )}
         </div>
-      </Container>
-      <div>
+      </Container>{" "}
+      <WaveSpectogram audioCallSpectogram={audioCallSpectogram} />
+      <div className="containerInfoAudio">
         <div>
           {props.selectedAudio ? (
             <div className="FileDetails">

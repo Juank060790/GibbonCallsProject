@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
@@ -11,10 +11,17 @@ export default function ModalCall({
   showSpectrogram,
 }) {
   const calls = useSelector((state) => state.call.call);
+  const [audioCall, setAudioCall] = useState();
+  // console.log("AUIDO call==>", audioCall, calls);
 
   useEffect(() => {
     console.log("Middle rendered", spectogramImage);
   }, [spectogramImage]);
+
+  // This sets the state of each individual call onCLick
+  const showPlayCallAudio = (spectogramAudio) => {
+    setAudioCall(spectogramAudio);
+  };
 
   return (
     <Modal
@@ -22,16 +29,17 @@ export default function ModalCall({
       onHide={handleClose}
       size={"xl"}
       dialogClassName="modal-100w"
-      centered={true}
+      // centered={true}
     >
       <Modal.Header closeButton>
-        <Modal.Title>{selectedAudio?.audioId}</Modal.Title>
+        {/* <Modal.Title>{selectedAudio?.audioId}</Modal.Title> */}
       </Modal.Header>
       <Modal.Body>
         {" "}
         <MediaPlayer
           selectedAudio={selectedAudio}
           spectogramImage={spectogramImage}
+          audioCall={audioCall}
         />
         <Table responsive>
           <thead className="text-center tableHeader">
@@ -63,7 +71,12 @@ export default function ModalCall({
                       height="100px"
                     />
                   </td>
-                  <td className="tableSingleKey">Action</td>
+                  <td
+                    className="tableSingleKey"
+                    onClick={() => showPlayCallAudio(call.spectogramAudio)}
+                  >
+                    Action
+                  </td>
                   <td className="tableSingleKey">{call.label}</td>
                   <td className="tableSingleKey commentKey">
                     <form>
