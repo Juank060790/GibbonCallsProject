@@ -5,20 +5,29 @@ import { alertActions } from "./alert.actions";
 // Get a list of Raw Audios
 const audiosRequest = (
   // recieve the request with these specific values (limit, sortBy, order, startDoc).
-  limit = 10,
-  sortBy = "audioId",
-  order = "desc"
+  limit,
+  sortBy,
+  order,
+  page
 ) => async (dispatch) => {
   dispatch({ type: types.AUDIO_REQUEST, payload: null });
   try {
     const res = await api.get(
-      `audio/audiolist/filter/${limit}/${sortBy}/${order}`
+      `audio/audiolist/filter/${limit}/${sortBy}/${order}/${page}`
     );
-    // Dispatch the data to the reducer auido.reducer if success.
-    dispatch({
-      type: types.AUDIO_REQUEST_SUCCESS,
-      payload: res.data,
-    });
+
+    if (res.data.length > 0) {
+      // Dispatch the data to the reducer auido.reducer if success.
+      dispatch({
+        type: types.AUDIO_REQUEST_SUCCESS,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: types.AUDIO_REQUEST_NOMORE_DATA,
+        payload: "No more data",
+      });
+    }
   } catch (error) {
     dispatch({ type: types.AUDIO_REQUEST_FAILURE, payload: error });
   }

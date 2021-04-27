@@ -4,7 +4,7 @@ const initialState = {
   audio: [],
   loading: false,
   selectedAudio: null,
-  starDoc: null,
+  lastPage: false,
 };
 
 const audioReducer = (state = initialState, action) => {
@@ -20,6 +20,7 @@ const audioReducer = (state = initialState, action) => {
         ...state,
         audio: payload,
         loading: false,
+        lastPage: false,
       };
 
     case types.DELETE_COMMENT_RAW_AUDIO_SUCCESS:
@@ -38,6 +39,8 @@ const audioReducer = (state = initialState, action) => {
       return { ...state, loading: false };
     case types.CLEAR_SELECTED_AUDIO:
       return { ...state, selectedAudio: undefined };
+    case types.AUDIO_REQUEST_NOMORE_DATA:
+      return { ...state, lastPage: true, loading: false };
     default:
       return state;
   }

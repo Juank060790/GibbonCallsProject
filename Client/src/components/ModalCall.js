@@ -12,11 +12,8 @@ export default function ModalCall({
 }) {
   const calls = useSelector((state) => state.call.call);
   const [audioCall, setAudioCall] = useState();
-  // console.log("AUIDO call==>", audioCall, calls);
 
-  useEffect(() => {
-    console.log("Middle rendered", spectogramImage);
-  }, [spectogramImage]);
+  useEffect(() => {}, []);
 
   // This sets the state of each individual call onCLick
   const showPlayCallAudio = (spectogramAudio) => {
@@ -29,11 +26,8 @@ export default function ModalCall({
       onHide={handleClose}
       size={"xl"}
       dialogClassName="modal-100w"
-      // centered={true}
     >
-      <Modal.Header closeButton>
-        {/* <Modal.Title>{selectedAudio?.audioId}</Modal.Title> */}
-      </Modal.Header>
+      <Modal.Header closeButton></Modal.Header>
       <Modal.Body>
         {" "}
         <MediaPlayer

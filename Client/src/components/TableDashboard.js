@@ -16,19 +16,25 @@ export default function TableDashboard() {
     setCallsperAudio([]);
     setSpectogramImage("");
   };
+
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
+  const lastPage = useSelector((state) => state.audio.lastPage);
   const loading = useSelector((state) => state.audio.loading);
   const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  // const callsIds = selectedAudio?.gibbonCallList;
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
+  const [page, setPage] = useState(0);
+  const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
-  // console.log("audioiCOmmentID", audioIdOnComment, "onChange", formData);
+  console.log(`lastPage`, lastPage, "loading", loading);
+  useEffect(() => {
+    dispatch(audioActions.audiosRequest(5, "recordDate", "desc", page));
+  }, [page]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -51,7 +57,6 @@ export default function TableDashboard() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
-    console.log("COMMENT", formData, audioIdOnComment);
     // e.preventDefault();
     const { comment } = formData;
     const audioId = audioIdOnComment;
@@ -66,16 +71,23 @@ export default function TableDashboard() {
   };
 
   // Pagination (to be fixed add counter in the model schema)
-  const handleClickOnNext = () => {
-    // if (audios.length >= 1 && !loading) {
-    //   setStartDoc(audios[audios.length - 1].audioId);
-    // }
+  const handleClickOnNext = async () => {
+    await setPage(page + 1);
+
+    if (page > 0) {
+      setFirstPage(false);
+    }
   };
+
   const handleClickOnPrev = () => {
-    // if (audios.length <= 1 && !loading) {
-    //   setStartDoc(audios[0].audioId);
-    // }
+    if (page >= 1 && !loading) {
+      setPage(page - 1);
+    }
+    if (page === 0) {
+      setFirstPage(true);
+    }
   };
+  console.log(`page`, page);
 
   // Get an individual calls  inside of a RawAudio (To be fixed)
   // This function returns the state with single calls of a Raw Audio into a state([]).
@@ -115,7 +127,7 @@ export default function TableDashboard() {
         <>
           {audios.length ? (
             <tbody>
-              {audios.map((audio, index) => (
+              {audios.map((audio) => (
                 <tr className="text-center tableKey" key={audio.audioId}>
                   <td
                     onClick={() =>
@@ -139,7 +151,9 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.recordDate}
+                    {new Date(
+                      audio.recordDate._seconds * 1000
+                    ).toLocaleDateString("en-US")}
                   </td>
                   <td
                     onClick={() =>
@@ -242,6 +256,7 @@ export default function TableDashboard() {
         </>
       </Table>
       <PaginationItem
+        firstPage={firstPage}
         audios={audios}
         loading={loading}
         handleClickOnNext={handleClickOnNext}

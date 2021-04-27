@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import { WaveformContianer, Wave, PlayButton } from "./Waveform.styled";
 import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js";
@@ -13,8 +7,8 @@ import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
-import RangeSlider from "./RangeSlider";
-import { useSelector } from "react-redux";
+import RangeSlider from "react-bootstrap-range-slider";
+import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 
 export default function Waveform() {
   // const calls = useSelector((state) => state.call);
@@ -24,7 +18,7 @@ export default function Waveform() {
   const Waveform = useRef(null);
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
-  const [parentVal, setParentVal] = useState(20);
+  const [zoomValue, setZoomValue] = React.useState(20);
 
   // Get Start time and End time from each call(TO DO!)
 
@@ -32,8 +26,8 @@ export default function Waveform() {
 
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
-    barWidth: 1,
-    cursorWidth: 5,
+    barWidth: 0.9,
+    cursorWidth: 1,
     backend: "WebAudio",
     height: 128,
     progressColor: "#2D5BFF",
@@ -48,7 +42,7 @@ export default function Waveform() {
         container: "#wave-minimap",
         waveColor: "#777",
         progressColor: "#222",
-        height: 50,
+        height: 100,
       }),
       TimelinePlugin.create({
         container: "#wave-timeline",
@@ -64,24 +58,25 @@ export default function Waveform() {
           "font-size": "10px",
         },
       }),
-      SpectrogramPlugin.create({
-        fftSamples: 512,
-        container: "#wavespectrogram",
-        labels: true,
-        colorMap: colors,
-        pixelRatio: 2,
-        deferInit: SpectogramPluginInit,
-      }),
+      SpectogramPlugin,
     ],
   });
-
   let colors = colorMap({
     colorMap: "jet",
     nshades: 512,
     format: "float",
   });
 
-  const url = `https://00f74ba44bbcc5574f34eab9034e3971243e115ccb-apidata.googleusercontent.com/download/storage/v1/b/test-gibbon-bucket/o/19700101_013658.wav?jk=AFshE3X3p31lEi5i05VmxHftclKziSxWPSc7jNuYzfDJitlWTyEvlmWKYiCduQWzy_hEls_D0QoCYyUYW-WNx3XhctL44kvv-qQh-Ax7mIsXWgxAVbpLHiqL_OcgBnPau4knDiFMWGlLTfxjf1b6Vfe2DpWCSmrBhpt-d9qM3OZMvKmmw3ZGVk02NeyV4vgNudIPKTU9GQ2r6ZF0COeba9DNY_H-RKcygnlZmUbmJ4Ib677PcXLXQOSymqex6svuBAt93jd86RCDSTjz2tGivH9sQVCCqHK9MqnnAXPMLsDuQ_LeS9ae9BNDyHpbhtAlbUfpT7uR47PK0MgWDS1285-MGJIlAsu4k-xbpm-s5tytc9PHI3KXZIEwvpb23l-PNUk8ZNtZ6ti_wZcF0Ga4nAt48nGk88nLSLCDG2pVCH0U1yzs1wCNKvfREJGv3hjq8VHXEEz41kvNKkGtuhX0aWQ9ewtM-tdaCapG_0dT3FcS3U3OD-VhxFVtV8Z593j-l0hHXPXoQENosFxEaJY8gnoTp7NfnvDO32iy-RAUAxWSqCznlRdpcjNHUoET-qTrDlaLTP-kk5Nfu723of5hqedaRt8e1pGyiyhin6SZ-qOy1szSmee1ajb20GuGIb_vzKeEC4xyJ1N1k5zmYfyVRO7aV689DLvmKsF4yD0jFgJXFr0FsSOgTfAe8ovyTfPBZ_r3hvDf_yeN91lOPNcmUMxJMxspH9B0jz_ZBDrvQT8bQo-3cW5W4nmlas40bNNyKuTapIiePAKaXau8fSik88uAtiB173ipSAtCD0Apsw6yL2NQ3MIKe4jjmg--OPfThoEweg9yHxKftJ78cVEYv6tHAIp-fCsW21nXBR77Bd466C0NZONynHY_w2BljoUY59-56CijL2nJ4BlRLfb51K_1_3wzRULRxSABeBHWvKFl0GZSUi5TR6enT2pbWGYJkJcNmRvmus8-bpk-7zGj&isca=1`;
+  let SpectogramPlugin = SpectrogramPlugin.create({
+    fftSamples: 512,
+    container: "#wavespectrogram",
+    labels: true,
+    colorMap: colors,
+    pixelRatio: 2,
+    deferInit: SpectogramPluginInit,
+  });
+
+  const url = `https://00f74ba44b784a47d4d5f6e266083bf2ed98d26f80-apidata.googleusercontent.com/download/storage/v1/b/test-gibbon-bucket/o/19700101_013658.wav?jk=AFshE3VBXKv1K8JtYiwdq9P0z-Ps1GUXI8zco2ai6l5N5khcGzNKySKDeql1HkEVLZGQJcmetUTYxgVR_WWpoet8VaFVpKWKuY8Okgq2Z2lPSJvP_8jGoHzXkUQvLV61hjfrwiAWn3_YOInTfdwx4_sPouJCx5v43eS6QmWu93VgXaytGIhKwQq1JjojpXl4F9q5AkImlNRRLmUH3mZyoq-qA6Qa3mJyIKAhC340ltayDXtOHFKaA21-eQ23tCslm8a7hwlhxDZDWEc-13YmKJgA3eFonq7ln_M1AeSgADVmnrTGWopzu40xNW0Ze0ZD2Ip4S73mnclU7_02ZagQWcfZfopdYwSwMQflg-xPyIDuQYtk2JmZPhroRqOETu3BiN29ib1R7FSsbR-OeHruD-NyTYXY_iu49e-xk5wmAg6LfHCbZT27jQonimwbhrf4Ho80sDXbZwI2NTbAriTDQaSur2ANf8FCqv_zG9ozfGHk8VX2_1FzBX08b8-cGCar2W5_endXQmp0bjLsa1a_wnhex5IM6Qh77RWwLlsNbQ_XrMXgjZShURSfX64D1a3xZC785owddjN__Us3OzRDlfFLSgGzTRjbyxSkFb56oL5AOYm5ZFJmm1TqDTFUmgwrNQ3eJuwGn6G3TwugV96sBFc8zE8W7ijbkhAYQQvPkW37iZMmrbFmi3XG0dajWk8C1NR-swB_deeOiTXJGAoORFYme_k_1EOvN8ajjDIGsZB-T21WZdmGUSUH3I2-f1TuqH-lW1BmPJcEbYya5jjiy8olQD4te2Yihvhl1aaUbx-y3eMTPxZ72Lb5G26vl3hle2Nwj1RieVToQrCB8PQdUfqj5ZTw15FpcSQtVYAV-MSLbhq0FDdXOftFUyST8JY16S7ag_uO5neiMyHvKfUzS9YOVOmc9pBPmMfORA42iaCYGBKSilC1ZtSdvwyAtMe1yWWRCx3FDKtQ4lkT02X5&isca=1`;
 
   useEffect(() => {
     setPlay(false);
@@ -89,9 +84,6 @@ export default function Waveform() {
     const options = WaveformOptions(waveformRef.current);
     Waveform.current = WaveSurfer.create(options);
     Waveform.current.load(url);
-
-    // Zoom
-    Waveform.current.zoom(Number(parentVal));
 
     /* Regions */
 
@@ -150,23 +142,7 @@ export default function Waveform() {
       });
     });
     return () => Waveform.current.destroy();
-  }, [parentVal, SpectogramPluginInit]);
-
-  /**
-   * Random RGBA color.
-   */
-  function randomColor(alpha) {
-    return (
-      "rgba(" +
-      [
-        ~~(Math.random() * 255),
-        ~~(Math.random() * 255),
-        ~~(Math.random() * 255),
-        alpha || 1,
-      ] +
-      ")"
-    );
-  }
+  }, [SpectogramPluginInit, url]);
 
   function editAnnotation(region) {
     let form = document.forms.edit;
@@ -208,24 +184,28 @@ export default function Waveform() {
     Waveform.current.playPause();
   };
 
+  /**
+   * Random RGBA color.
+   */
+  function randomColor(alpha) {
+    return (
+      "rgba(" +
+      [
+        ~~(Math.random() * 255),
+        ~~(Math.random() * 255),
+        ~~(Math.random() * 255),
+        alpha || 1,
+      ] +
+      ")"
+    );
+  }
+
   // Slider
 
-  const sliderValueChanged = useCallback((val) => {
-    // console.log("NEW VALUE", val);
-    setParentVal(val);
-  });
-
-  const sliderProps = useMemo(
-    () => ({
-      min: 0,
-      max: 200,
-      value: parentVal,
-      step: 1,
-      label: "This is a Zoom slider",
-      onChange: (e) => sliderValueChanged(e),
-    }),
-    [parentVal]
-  );
+  useEffect(() => {
+    // Zoom
+    Waveform.current.zoom(Number(zoomValue));
+  }, [zoomValue]);
 
   // Switch
   const ShowSpectogram = () => {
@@ -235,13 +215,14 @@ export default function Waveform() {
       setSpectogramPluginInit(false);
     }
   };
+
   return (
     <div>
       {" "}
       <div>
         <div className="d-flex flex-column ">
           Show Spectogram
-          <label class="switch">
+          <label className="switch">
             <input
               id="SpectogramPluginInit"
               type="checkbox"
@@ -251,8 +232,16 @@ export default function Waveform() {
           </label>
           <div className="d-flex flex-column">
             <div>Zoom</div>
-            <div>
-              <RangeSlider {...sliderProps} />
+            <div className="slidecontainer ">
+              <RangeSlider
+                className="slider"
+                value={zoomValue}
+                onChange={(e) => setZoomValue(e.target.value)}
+                variant="success"
+                size="sm"
+                min={10}
+                max={200}
+              />
             </div>
           </div>
         </div>

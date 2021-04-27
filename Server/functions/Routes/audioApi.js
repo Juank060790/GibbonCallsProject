@@ -8,6 +8,7 @@ const {
   addCommentRawAudio,
   deleteSingleCallId,
   deleteCommentAudio,
+  getFilterByDate,
 } = require("../Controllers/Audio");
 const FBAuth = require("../Utils/fbauth");
 
@@ -16,7 +17,11 @@ const FBAuth = require("../Utils/fbauth");
  * @description Get full filtered Audio List
  * @access  private
  */
-router.get("/audiolist/filter/:limit/:sortBy/:order", getFilteredAudioList);
+router.get(
+  "/audiolist/filter/:limit/:sortBy/:order/:page",
+  getFilterByDate
+  // getFilteredAudioList
+);
 
 /**
  * @route Get

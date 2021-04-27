@@ -4,7 +4,6 @@ import notFoundImage from "../images/No_image_available.svg";
 import WaveSpectogram from "./WaveSpectogram";
 
 export default function MediaPlayer(props) {
-  // console.log("SElected Spectogram mediaplayer MEdia player", props.audioCall);
   const audioCallSpectogram = props?.audioCall;
   return (
     <>
@@ -37,7 +36,12 @@ export default function MediaPlayer(props) {
               <h4>File Details:</h4>
               <p>Name:{props?.selectedAudio.fileName}</p>
               <p>Duration:{props?.selectedAudio.duration}</p>
-              <p>Record Date: {props?.selectedAudio.recordDate}</p>
+              <p>
+                Record Date:{" "}
+                {new Date(
+                  props?.selectedAudio.recordDate._seconds * 1000
+                ).toLocaleDateString("en-US")}
+              </p>
             </div>
           ) : (
             <p></p>
