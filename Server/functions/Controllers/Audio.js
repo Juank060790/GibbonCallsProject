@@ -70,39 +70,6 @@ exports.createSingleAudio = (req, res) => {
 };
 
 // Get List of Raw Audios for the table in the dashboard, edit filters.
-// exports.getFilteredAudioList = (req, res) => {
-//   let query = {
-//     limit: req.params.limit,
-//     sortBy: req.params.sortBy || "recordDate",
-//     order: req.params.order || "asc",
-//     startDoc: req.params.startDoc || "00000001",
-//   };
-
-//   startDoc = query.startDoc;
-//   sortBy = "recordDate";
-//   order = "asc";
-//   limit = parseInt(query.limit) || 10;
-
-//   console.log(`query`, startDoc);
-//   db.collection("rawData")
-//     .orderBy(sortBy, order)
-//     .startAt(startDoc)
-//     .limit(limit)
-//     .get()
-//     .then((data) => {
-//       if (data) {
-//         let filteredaudioList = [];
-//         data.forEach((doc) => {
-//           console.log(`doc`, doc.data());
-//           filteredaudioList.push(doc.data());
-//         });
-//         return res.json(filteredaudioList);
-//       } else {
-//         return res.status(404).json({ error: "Audio list not found" });
-//       }
-//     })
-//     .catch((err) => console.error(err));
-// };
 
 exports.getFilterByDate = (req, res) => {
   let query = {
@@ -112,7 +79,6 @@ exports.getFilterByDate = (req, res) => {
     page: req.params.page || 0,
   };
 
-  console.log(`query`, query);
   db.collection("rawData")
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)
@@ -122,7 +88,6 @@ exports.getFilterByDate = (req, res) => {
       if (data) {
         let filteredaudioList = [];
         data.forEach((doc) => {
-          console.log(`doc`, doc.data());
           filteredaudioList.push(doc.data());
         });
         return res.json(filteredaudioList);

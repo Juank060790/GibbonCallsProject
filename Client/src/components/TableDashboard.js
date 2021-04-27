@@ -19,7 +19,6 @@ export default function TableDashboard() {
 
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
-  const lastPage = useSelector((state) => state.audio.lastPage);
   const loading = useSelector((state) => state.audio.loading);
   const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -31,10 +30,9 @@ export default function TableDashboard() {
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
-  console.log(`lastPage`, lastPage, "loading", loading);
   useEffect(() => {
     dispatch(audioActions.audiosRequest(5, "recordDate", "desc", page));
-  }, [page]);
+  }, [dispatch, page]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -42,7 +40,6 @@ export default function TableDashboard() {
   const showSpectrogram = (spectogram) => {
     if (spectogram) {
       setSpectogramImage(spectogram);
-      // console.log("NOTFOUND IMAGE", spectogramImage);
     }
   };
 
@@ -66,8 +63,9 @@ export default function TableDashboard() {
   useEffect(() => {}, [audioIdOnComment, audios, formData]);
 
   // To load the audios from storage (to be fixed)
-  const query = (e) => {
+  const loadAudios = (e) => {
     e.preventDefault();
+    dispatch(audioActions.audiosRequest(1, "recordDate", "desc", page));
   };
 
   // Pagination (to be fixed add counter in the model schema)
@@ -87,7 +85,6 @@ export default function TableDashboard() {
       setFirstPage(true);
     }
   };
-  console.log(`page`, page);
 
   // Get an individual calls  inside of a RawAudio (To be fixed)
   // This function returns the state with single calls of a Raw Audio into a state([]).
@@ -109,7 +106,7 @@ export default function TableDashboard() {
   return (
     <>
       <div className="reloadBtnContainer">
-        <button className="reloadButton" onClick={query}></button>{" "}
+        <button className="reloadButton" onClick={loadAudios}></button>{" "}
       </div>
 
       <Table responsive>
@@ -217,7 +214,7 @@ export default function TableDashboard() {
                         {" "}
                         <div className="commentBox textareacomments">
                           <Form
-                            id="commentForm"
+                            className="commentForm"
                             // onSubmit={handleSubmit}
                             key={audio.audioId}
                           >

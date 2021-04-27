@@ -9,14 +9,14 @@ const PaginationItem = ({
   handleClickOnNext,
   firstPage,
 }) => {
-  console.log(`firstPage`, firstPage);
   const lastPage = useSelector((state) => state.audio.lastPage);
+  const audiosPerPage = useSelector((state) => state.audio.audio.length);
 
   return (
     <div className="footerPagination">
       <div className="footerPaginationContainer ">
         <div className="marginNone marginButtonPagination ">
-          <p>Rows per page:</p>
+          <p>Rows per page:{audiosPerPage}</p>
         </div>
         <div className="marginNone marginButtonPagination">
           <p>Total of documents</p>

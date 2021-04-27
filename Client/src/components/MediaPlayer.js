@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 import notFoundImage from "../images/No_image_available.svg";
-import WaveSpectogram from "./WaveSpectogram";
+import WaveSpectogram from "./waveSpectogram";
 
 export default function MediaPlayer(props) {
   const audioCallSpectogram = props?.audioCall;
