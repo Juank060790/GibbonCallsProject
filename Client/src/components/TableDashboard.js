@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Form, Table } from "react-bootstrap";
+import { Button, Col, Dropdown, Table } from "react-bootstrap";
+import RangeSlider from "react-bootstrap-range-slider";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
 import PaginationItem from "./Pagination";
+import Form from "react-bootstrap/Form";
 
 export default function TableDashboard() {
   // UseSelector brings the state from the reducers.
@@ -26,13 +28,15 @@ export default function TableDashboard() {
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [page, setPage] = useState(0);
+  const [docsPerPage, setDocsPerPage] = useState(0);
+  const [orderBy, setOrderBy] = useState("fileName");
   const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(5, "recordDate", "desc", page));
-  }, [dispatch, page]);
+    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, "desc", page));
+  }, [dispatch, page, docsPerPage, orderBy]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -65,7 +69,7 @@ export default function TableDashboard() {
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
     e.preventDefault();
-    dispatch(audioActions.audiosRequest(1, "recordDate", "desc", page));
+    dispatch(audioActions.audiosRequest(docsPerPage, "audioId", "asc", page));
   };
 
   // Pagination (to be fixed add counter in the model schema)
@@ -105,8 +109,63 @@ export default function TableDashboard() {
 
   return (
     <>
-      <div className="reloadBtnContainer">
-        <button className="reloadButton" onClick={loadAudios}></button>{" "}
+      <div className="d-flex">
+        <div className="reloadBtnContainer">
+          <button className="reloadButton" onClick={loadAudios}></button>{" "}
+        </div>
+      </div>
+      <div className="filterMenu">
+        {" "}
+        <Dropdown className="d-flex">
+          {" "}
+          <div className="m-2">Filter </div>{" "}
+          <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <FontAwesomeIcon
+              className="savebutton "
+              icon={["fas", "filter"]}
+              color="white"
+              size="lg"
+            ></FontAwesomeIcon>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item
+              onClick={(e) => setOrderBy("audioId")}
+              href="#/action-1"
+            >
+              Audio Id
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => setOrderBy("recordDate")}
+              href="#/action-2"
+            >
+              Record Date
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => setOrderBy("fileName")}
+              href="#/action-3"
+            >
+              File Name
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <div>
+          <Form>
+            <Form.Group className="d-flex">
+              <RangeSlider
+                value={docsPerPage}
+                onChange={(e) => setDocsPerPage(e.target.value)}
+                variant="dark"
+                size="sm"
+                min={1}
+                max={20}
+                className="reloadButton"
+              />{" "}
+              <Col xs="3">
+                <Form.Control value={docsPerPage} />
+              </Col>{" "}
+            </Form.Group>
+          </Form>
+        </div>
       </div>
 
       <Table responsive>

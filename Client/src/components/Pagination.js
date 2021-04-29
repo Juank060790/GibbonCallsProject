@@ -18,8 +18,8 @@ const PaginationItem = ({
         <div className="marginNone marginButtonPagination ">
           <p>Rows per page:{audiosPerPage}</p>
         </div>
-        <div className="marginNone marginButtonPagination">
-          <p>Total of documents</p>
+        <div className="marginNone ">
+          <p>Page</p>
         </div>
         <div className=" d-flex marginButtonPagination">
           {!firstPage ? (
