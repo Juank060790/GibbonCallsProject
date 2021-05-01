@@ -3,6 +3,40 @@ const config = require("../Utils/config");
 const firebase = require("firebase");
 const { v4: uuidv4 } = require("uuid");
 
+// GOOGLE STORAGE
+
+// /**
+//  * TODO(developer): Uncomment the following lines before running the sample.
+//  */
+// // The ID of your GCS bucket
+// const bucketName = "coderschool-project-gibbon.appspot.com";
+
+// // The ID of your GCS file
+// const fileName = "19700101_194149.WAV";
+// const { Storage } = require("@google-cloud/storage");
+
+// // Imports the Google Cloud client library
+
+// // Creates a client
+// const storage = new Storage();
+
+// async function generateSignedUrl() {
+//   // These options will allow temporary read access to the file
+//   const options = {
+//     version: "v4", // defaults to 'v2' if missing.
+//     action: "read",
+//     expires: Date.now() + 1000 * 60 * 60, // one hour
+//   };
+
+//   // Get a v2 signed URL for the file
+//   const [url] = await storage
+//     .bucket(bucketName)
+//     .file(fileName)
+//     .getSignedUrl(options);
+
+//   console.log(`The signed url for ${fileName} is ${url}.`);
+// }
+
 // Get SINGLE call from Raw Audio.
 exports.getCallsSingleAudio = (req, res) => {
   let singleCall = {};
@@ -11,6 +45,8 @@ exports.getCallsSingleAudio = (req, res) => {
     .then((doc) => {
       if (doc.exists) {
         singleCall = doc.data();
+        // generateSignedUrl();
+        // console.log(`singleCall`, singleCall);
         return res.json(singleCall);
       } else {
         return res.status(404).json({ error: "Call not found" });

@@ -161,7 +161,7 @@ export default function TableDashboard() {
                 className="reloadButton"
               />{" "}
               <Col xs="3">
-                <Form.Control value={docsPerPage} />
+                <Form.Control value={docsPerPage} readOnly="readonly" />
               </Col>{" "}
             </Form.Group>
           </Form>

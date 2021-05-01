@@ -13,6 +13,7 @@
     "bootstrap": "^4.6.0",
     "colormap": "^2.3.2",
     "dotenv": "^8.2.0",
+    "firebase": "^8.4.2",
     "moment": "^2.29.1",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
