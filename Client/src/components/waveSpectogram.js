@@ -76,7 +76,8 @@ export default function Waveform() {
     deferInit: SpectogramPluginInit,
   });
 
-  const url = `gs://coderschool-project-gibbon.appspot.com/19700101_194149.WAV`;
+  const url = `gs://coderschool-project-gibbon.appspot.com`;
+  console.log(`url`, url);
 
   useEffect(() => {
     setPlay(false);
