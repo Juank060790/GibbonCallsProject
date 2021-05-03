@@ -68,7 +68,7 @@ export default function Waveform() {
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    fftSamples: 512,
+    fftSamples: 1024,
     container: "#wavespectrogram",
     labels: true,
     colorMap: colors,
@@ -76,8 +76,8 @@ export default function Waveform() {
     deferInit: SpectogramPluginInit,
   });
 
-  const url = `gs://coderschool-project-gibbon.appspot.com`;
-  console.log(`url`, url);
+  const url = `https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/19700101_194149.WAV?alt=media`;
+  // console.log(`url`, url);
 
   useEffect(() => {
     setPlay(false);
@@ -207,7 +207,7 @@ export default function Waveform() {
   useEffect(() => {
     // Zoom
     Waveform.current.zoom(Number(zoomValue));
-  }, [zoomValue]);
+  }, [zoomValue, Waveform]);
 
   // Switch
   const ShowSpectogram = () => {
