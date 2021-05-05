@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Modal, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
@@ -8,17 +8,12 @@ export default function ModalCall({
   handleClose,
   showModal,
   spectogramImage,
+  spectogramAudio,
   showSpectrogram,
 }) {
   const calls = useSelector((state) => state.call.call);
-  const [audioCall, setAudioCall] = useState();
 
   useEffect(() => {}, []);
-
-  // This sets the state of each individual call onCLick
-  const showPlayCallAudio = (spectogramAudio) => {
-    setAudioCall(spectogramAudio);
-  };
 
   return (
     <Modal
@@ -31,9 +26,8 @@ export default function ModalCall({
       <Modal.Body>
         {" "}
         <MediaPlayer
-          selectedAudio={selectedAudio}
+          spectogramAudio={spectogramAudio}
           spectogramImage={spectogramImage}
-          audioCall={audioCall}
         />
         <Table responsive>
           <thead className="text-center tableHeader">
@@ -55,7 +49,9 @@ export default function ModalCall({
                   <td className="tableSingleKey">{call.timeStart}</td>
                   <td className="tableSingleKey">{call.timeEnd}</td>
                   <td
-                    onClick={() => showSpectrogram(call.spectogram)}
+                    onClick={() =>
+                      showSpectrogram(call.spectogram, call.spectogramAudio)
+                    }
                     className="tableSingleKey"
                   >
                     <img
@@ -65,12 +61,7 @@ export default function ModalCall({
                       height="100px"
                     />
                   </td>
-                  <td
-                    className="tableSingleKey"
-                    onClick={() => showPlayCallAudio(call.spectogramAudio)}
-                  >
-                    Action
-                  </td>
+                  <td className="tableSingleKey">Action</td>
                   <td className="tableSingleKey">{call.label}</td>
                   <td className="tableSingleKey commentKey">
                     <form>

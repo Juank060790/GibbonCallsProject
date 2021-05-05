@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Dropdown, Table } from "react-bootstrap";
+import { Button, Dropdown, Table } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
@@ -28,22 +28,26 @@ export default function TableDashboard() {
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [page, setPage] = useState(0);
-  const [docsPerPage, setDocsPerPage] = useState(0);
+  const [docsPerPage, setDocsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("fileName");
+  const [order, setOrder] = useState("desc");
   const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, "desc", page));
-  }, [dispatch, page, docsPerPage, orderBy]);
+    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
+  }, [dispatch, page, docsPerPage, orderBy, order]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
   const [spectogramImage, setSpectogramImage] = useState("");
-  const showSpectrogram = (spectogram) => {
+  const [spectogramAudio, setSpectogramAudio] = useState("");
+
+  const showSpectrogram = (spectogram, spectogramAudio) => {
     if (spectogram) {
       setSpectogramImage(spectogram);
+      setSpectogramAudio(spectogramAudio);
     }
   };
 
@@ -58,13 +62,13 @@ export default function TableDashboard() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     const { comment } = formData;
     const audioId = audioIdOnComment;
     dispatch(audioActions.addCommentRawAudio(comment, audioId));
   };
 
-  useEffect(() => {}, [audioIdOnComment, audios, formData]);
+  useEffect(() => {}, [audios]);
 
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
@@ -107,84 +111,135 @@ export default function TableDashboard() {
   };
   // ------- To do (Filters, add/delete comment in Main table) ----------.
 
+  const sortOrder = () => {
+    if (order === "asc") {
+      setOrder("desc");
+    } else {
+      setOrder("asc");
+    }
+  };
+
   return (
     <>
       <div className="d-flex">
         <div className="reloadBtnContainer">
-          <button className="reloadButton" onClick={loadAudios}></button>{" "}
+          <div className="reloadButton" onClick={loadAudios}></div>{" "}
         </div>
       </div>
-      <div className="filterMenu">
-        {" "}
-        <Dropdown className="d-flex">
-          {" "}
-          <div className="m-2">Filter </div>{" "}
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <FontAwesomeIcon
-              className="savebutton "
-              icon={["fas", "filter"]}
-              color="white"
-              size="lg"
-            ></FontAwesomeIcon>
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={(e) => setOrderBy("audioId")}
-              href="#/action-1"
-            >
-              Audio Id
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={(e) => setOrderBy("recordDate")}
-              href="#/action-2"
-            >
-              Record Date
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={(e) => setOrderBy("fileName")}
-              href="#/action-3"
-            >
-              File Name
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+
+      <div className="filterMenu ">
         <div>
           <Form>
-            <Form.Group className="d-flex">
-              <RangeSlider
+            <Form.Group className="formFilter">
+              <div>
+                Audios Per page
+                <RangeSlider
+                  value={docsPerPage}
+                  onChange={(e) => setDocsPerPage(e.target.value)}
+                  variant="dark"
+                  size="sm"
+                  min={1}
+                  max={20}
+                  className="reloadButton"
+                />{" "}
+              </div>
+              <div
+                className="boxRangerSlider"
                 value={docsPerPage}
-                onChange={(e) => setDocsPerPage(e.target.value)}
-                variant="dark"
-                size="sm"
-                min={1}
-                max={20}
-                className="reloadButton"
-              />{" "}
-              <Col xs="3">
-                <Form.Control value={docsPerPage} readOnly="readonly" />
-              </Col>{" "}
+                readOnly="readonly"
+              >
+                <div className="boxRangerSliderInner">{docsPerPage}</div>
+              </div>
             </Form.Group>
           </Form>
         </div>
       </div>
 
-      <Table responsive>
+      <Table className="fullTable" responsive>
         <thead className="text-center tableHeader">
           <tr>
-            <th>Id N&deg;</th>
-            <th>File Name</th>
-            <th>Record Date</th>
-            <th>Duration</th>
-            <th>Gibbon Calls</th>
-            <th>Action</th>
-            <th>Comments</th>
+            <th className="lightweight tableSingleKey">
+              Id N&deg;{" "}
+              <FontAwesomeIcon
+                className="btnSortOrder"
+                icon={["fas", "sort-amount-up"]}
+                size="1x"
+                color="green"
+                onClick={sortOrder}
+              ></FontAwesomeIcon>{" "}
+            </th>
+            <th className="lightweight tableSingleKey">
+              File Name{" "}
+              <FontAwesomeIcon
+                className="btnSortOrder"
+                icon={["fas", "sort-amount-up"]}
+                size="1x"
+                color="green"
+                onClick={sortOrder}
+              ></FontAwesomeIcon>{" "}
+            </th>
+            <th className="lightweight tableSingleKey">
+              Record Date{" "}
+              <FontAwesomeIcon
+                className="btnSortOrder"
+                icon={["fas", "sort-amount-up"]}
+                size="1x"
+                color="green"
+                onClick={sortOrder}
+              ></FontAwesomeIcon>{" "}
+            </th>
+            <th className="lightweight tableSingleKey">Duration</th>
+            <th className="lightweight tableSingleKey">Gibbon Calls</th>
+            <th className="lightweight tableSingleKey">Action</th>
+            <th className="lightweight tableSingleKey">Comments </th>
+            <th className="lightweight m-2">
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="dropdownBtn"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  <FontAwesomeIcon
+                    icon={["fas", "filter"]}
+                    // size="sm"
+                  ></FontAwesomeIcon>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={(e) => setOrderBy("audioId")}
+                    href="#/action-1"
+                  >
+                    Audio Id
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={(e) => setOrderBy("recordDate")}
+                    href="#/action-2"
+                  >
+                    Record Date
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={(e) => setOrderBy("fileName")}
+                    href="#/action-3"
+                  >
+                    File Name
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </th>
           </tr>
         </thead>
         <>
           {audios.length ? (
-            <tbody>
-              {audios.map((audio) => (
-                <tr className="text-center tableKey" key={audio.audioId}>
+            <tbody className="lightweight">
+              {audios.map((audio, index) => (
+                <tr
+                  key={audio.audioId}
+                  className={`${
+                    index % 2 === 0
+                      ? "cardBlack text-center  tableInner tableKey "
+                      : "cardWhite text-center tableInner tableKey"
+                  }`}
+                >
                   <td
                     onClick={() =>
                       toAudioId(audio?.audioId, audio.gibbonCallList)
@@ -230,12 +285,14 @@ export default function TableDashboard() {
                   <td className="tableSingleKeyBtn commentKey">
                     <div className="buttonscomments">
                       <Button
+                        className="commentBtns"
                         disabled={audio.comments ? true : false}
                         type="submit"
                         form="commentForm"
                         onClick={handleSubmit}
                         variant="outline-success"
                         size="sm"
+                        id="myBtn"
                       >
                         {" "}
                         <FontAwesomeIcon
@@ -247,14 +304,14 @@ export default function TableDashboard() {
                       <Button
                         disabled={audio.comments ? false : true}
                         onClick={() => deleteCommentAudio(audio?.audioId)}
-                        variant="outline-danger"
+                        variant="success"
                         size="sm"
                       >
                         <FontAwesomeIcon
                           className="m-2"
                           icon={["fas", "times"]}
                           size="1x"
-                          color="red"
+                          color="white"
                         ></FontAwesomeIcon>{" "}
                       </Button>{" "}
                     </div>
@@ -272,11 +329,7 @@ export default function TableDashboard() {
                       <td className="tableSingleKey commentKey">
                         {" "}
                         <div className="commentBox textareacomments">
-                          <Form
-                            className="commentForm"
-                            // onSubmit={handleSubmit}
-                            key={audio.audioId}
-                          >
+                          <Form className="commentForm" key={audio.audioId}>
                             <div className="addCommentBox commentBoxInput ">
                               <Form.Group
                                 style={{ backgroundColor: "#d7ebd6" }}
@@ -299,6 +352,7 @@ export default function TableDashboard() {
                       </td>
                     </>
                   )}
+                  <td className="lastCell tableSingleKey"></td>
                 </tr>
               ))}
             </tbody>
@@ -324,6 +378,7 @@ export default function TableDashboard() {
         callsperAudio={callsperAudio}
         handleClose={handleClose}
         spectogramImage={spectogramImage}
+        spectogramAudio={spectogramAudio}
         showSpectrogram={showSpectrogram}
       />
     </>

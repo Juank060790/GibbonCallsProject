@@ -4,7 +4,7 @@ import notFoundImage from "../images/No_image_available.svg";
 import WaveSpectogram from "./waveSpectogram";
 
 export default function MediaPlayer(props) {
-  const audioCallSpectogram = props?.audioCall;
+  const SpectogramAudio = props?.spectogramAudio;
   return (
     <>
       <Container className="MediaPlayerContainer">
@@ -28,7 +28,7 @@ export default function MediaPlayer(props) {
           )}
         </div>
       </Container>{" "}
-      <WaveSpectogram audioCallSpectogram={audioCallSpectogram} />
+      <WaveSpectogram SpectogramAudio={SpectogramAudio} />
       <div className="containerInfoAudio">
         <div>
           {props.selectedAudio ? (

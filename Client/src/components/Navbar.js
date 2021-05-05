@@ -20,7 +20,7 @@ export default function Navbar() {
             </Button>
           </Nav.Item>
           <Nav.Item>
-            <h1 className="heavyweight">
+            <h1 className="heavyLight">
               Gibbon
               <br /> Calls
             </h1>{" "}
@@ -30,6 +30,10 @@ export default function Navbar() {
           <img src={logo} alt="FF" width="auto" height="auto" />
         </Nav.Item>
       </Nav>
+      <div className="bodySearch">
+        {" "}
+        <input className="search__input" type="text" placeholder="Search" />
+      </div>
     </Container>
   );
 }
