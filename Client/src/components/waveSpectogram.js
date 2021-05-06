@@ -9,8 +9,9 @@ import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
+import audio from "../19700101_013658.wav";
 
-export default function Waveform() {
+export default function Waveform(SpectogramAudio) {
   // const calls = useSelector((state) => state.call);
   const [Play, setPlay] = useState(false);
   const [SpectogramPluginInit, setSpectogramPluginInit] = useState(true);
@@ -26,7 +27,7 @@ export default function Waveform() {
 
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
-    barWidth: 0.9,
+    barWidth: 1,
     cursorWidth: 1,
     backend: "WebAudio",
     height: 128,
@@ -42,15 +43,15 @@ export default function Waveform() {
         container: "#wave-minimap",
         waveColor: "#777",
         progressColor: "#222",
-        height: 100,
+        height: 30,
       }),
       TimelinePlugin.create({
         container: "#wave-timeline",
       }),
       CursorPlugin.create({
-        showCursor: false,
+        showCursor: true,
         showTime: true,
-        opacity: 1,
+        opacity: 0.5,
         customShowTimeStyle: {
           "background-color": "#000",
           color: "#fff",
@@ -68,20 +69,20 @@ export default function Waveform() {
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    fftSamples: 1024,
+    fftSamples: 512,
     container: "#wavespectrogram",
     labels: true,
     colorMap: colors,
-    pixelRatio: 2,
+    pixelRatio: 1,
     deferInit: SpectogramPluginInit,
   });
 
-  const url = `https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/19700101_194149.WAV?alt=media`;
+  const url = audio;
+  // Object.values(SpectogramAudio);
   // console.log(`url`, url);
 
   useEffect(() => {
     setPlay(false);
-
     const options = WaveformOptions(waveformRef.current);
     Waveform.current = WaveSurfer.create(options);
     Waveform.current.load(url);
@@ -257,8 +258,8 @@ export default function Waveform() {
           <WaveformContianer>
             <Wave ref={waveformTimeLineRef} id="wave-minimap" />
             <Wave ref={waveformRef} id="waveform" />
-            <Wave ref={waveformTimeLineRef} id="wave-timeline" />
             <Wave ref={waveformSpectogramRef} id="wavespectrogram" />
+            <Wave ref={waveformTimeLineRef} id="wave-timeline" />
             <audio src={url} />
           </WaveformContianer>
         </div>

@@ -8,15 +8,14 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import firebase from "firebase/app";
-// import firebase from "./Firebase/firebase";
+// import firebase from "firebase/app";
 
 library.add(fas);
 
 function App() {
-  useEffect(() => {
-    console.log("FIREBASE", firebase);
-  }, []);
+  // useEffect(() => {
+  //   console.log("FIREBASE", firebase);
+  // }, []);
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

@@ -22,16 +22,19 @@ exports.getSingleAudio = (req, res) => {
     });
 };
 
-// Delete single audio from firestore
+// Delete Raw Audio
 exports.deleteSingleAudio = (req, res) => {
+  console.log(`req.body`, req.params);
   db.collection("rawData")
     .doc(`${req.params.audioId}`)
-    .delete()
-    .then(() => {
-      return res.status(200).json("Audio successfully deleted!");
+    .update({
+      isDeleted: true,
     })
-    .catch((error) => {
-      console.error("Error removing document: ", error);
+    .then(() => {
+      return res.status(201).json("Audio deleted successfully ");
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.code });
     });
 };
 
@@ -80,6 +83,7 @@ exports.getFilterByDate = (req, res) => {
   };
 
   db.collection("rawData")
+    .where("isDeleted", "==", false)
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)
     .offset(query.page * query.limit)

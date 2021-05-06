@@ -15,4 +15,8 @@ router.use("/audio", audioApi);
 const callsApi = require("./callsApi");
 router.use("/calls", callsApi);
 
+// Fake Test
+const fakeDataApi = require("./fakeDataApi");
+router.use("/fake", fakeDataApi);
+
 module.exports = router;

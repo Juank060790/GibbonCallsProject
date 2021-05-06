@@ -42,7 +42,7 @@ router.post("/createaudio", FBAuth, createSingleAudio);
  * @description Delete single audio file
  * @access  private
  */
-router.delete("/deletesingleaudio/:audioId", FBAuth, deleteSingleAudio);
+router.put("/audiolist/deleteaudio/:audioId", FBAuth, deleteSingleAudio);
 
 /**
  * @route PUT
