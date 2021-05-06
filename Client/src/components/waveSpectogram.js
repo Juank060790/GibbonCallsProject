@@ -49,9 +49,9 @@ export default function Waveform(SpectogramAudio) {
         container: "#wave-timeline",
       }),
       CursorPlugin.create({
-        showCursor: false,
+        showCursor: true,
         showTime: true,
-        opacity: 2,
+        opacity: 0.5,
         customShowTimeStyle: {
           "background-color": "#000",
           color: "#fff",

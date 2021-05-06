@@ -90,6 +90,9 @@ body {
 
 /* TABLE */
 
+.btndeleteAudio:hover{
+  cursor: pointer;
+}
 
 .btnSortOrder{
   cursor: pointer;
@@ -105,6 +108,10 @@ body {
 .commentFilter{
   display: flex;
   justify-content: flex-end;
+}
+
+.commentKey{
+  max-width: 500px;
 }
 
 .cardWhite {
@@ -186,10 +193,28 @@ body {
   display: flex;
 }
 
-.savebutton :hover {
-  background-color: #686464;
-  border-radius: 5px;
+.commentBtns:hover {
+  border-radius: 30px;
+  opacity: 1;
 }
+
+.commentBtnsSave{
+  width: 40px;
+  background-color: #97d893 !important;
+}
+
+.commentBtnsDelete{
+  width: 40px;
+  background-color: #b68787 !important;
+}
+
+.commentBtns:disabled{
+opacity: .3 !important;
+}
+.commentBtns:enabled{
+opacity: .9 !important;
+}
+
 .dropdownBtn{
 height: 40px;
 }
@@ -197,6 +222,7 @@ height: 40px;
 .reloadBtnContainer {
   margin-left: 2%;
 }
+
 .reloadButton {
   padding: 2rem;
   background: url("./images/icons8-cloud-refresh-64.png");
@@ -223,7 +249,7 @@ height: 40px;
 }
 
 .tableKey:hover {
-  background-color: #6FCF97;
+  background-color: #6fcf978e;
 }
 
 .submitcommentbtn {
@@ -407,7 +433,6 @@ button:focus{
 .slidecontainer {
   width: 20%; /* Width of the outside container */
 }
-
 
 
 

@@ -11,14 +11,14 @@ function getRandomInt(min, max) {
 
 exports.createSingleFakeAudio = (req, res) => {
   const createAudio = {
-    audioId: faker.name.findName(),
+    audioId: faker.phone.phoneNumber(),
     audioLink: faker.image.imageUrl(),
     comments: faker.lorem.text(),
     duration: faker.datatype.number(),
     fileName: faker.datatype.uuid(),
     gibbonCalls: getRandomInt(0, 10),
     recordDate: faker.datatype.datetime(),
-    isDeleted: faker.datatype.boolean,
+    isDeleted: faker.datatype.boolean(),
   };
   console.log(`createAudio`, createAudio);
   db.doc(`/rawData/${createAudio.audioId}`)

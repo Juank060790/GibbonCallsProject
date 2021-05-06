@@ -29,11 +29,17 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [page, setPage] = useState(0);
   const [docsPerPage, setDocsPerPage] = useState(10);
-  const [orderBy, setOrderBy] = useState("fileName");
-  const [order, setOrder] = useState("desc");
+  const [orderBy, setOrderBy] = useState("recordDate");
+  const [order, setOrder] = useState("asc");
   const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
+  const [tableData, setTableData] = useState([]);
+  console.log(`tableData`, tableData);
+
+  useEffect(() => {
+    setTableData(audios);
+  }, [audios]);
 
   useEffect(() => {
     dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
@@ -51,10 +57,9 @@ export default function TableDashboard() {
     }
   };
 
-  //Add Raw Audio Comment functions
+  //Add/Delete RawAudio Comment
 
   const deleteCommentAudio = (audioId) => {
-    // console.log("DELETERAW AUDIO COMMENT", audioId);
     dispatch(audioActions.deleteCommentAudio(audioId));
   };
 
@@ -67,8 +72,6 @@ export default function TableDashboard() {
     const audioId = audioIdOnComment;
     dispatch(audioActions.addCommentRawAudio(comment, audioId));
   };
-
-  useEffect(() => {}, [audios]);
 
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
@@ -119,6 +122,20 @@ export default function TableDashboard() {
     }
   };
 
+  // Delete Audio from table
+
+  const deleteAudio = (audioId) => {
+    console.log(`audioId`, audioId);
+    dispatch(audioActions.deleteAudio(audioId));
+  };
+
+  // Filter Array of Audios IsDeleted or not
+
+  // var filterAudios = audios.filter(function (audio) {
+  //   return !audio.isDeleted;
+  // });
+
+  // console.log(`filterAudios`, filterAudios);
   return (
     <>
       <div className="d-flex">
@@ -158,16 +175,7 @@ export default function TableDashboard() {
       <Table className="fullTable" responsive>
         <thead className="text-center tableHeader">
           <tr>
-            <th className="lightweight tableSingleKey">
-              Id N&deg;{" "}
-              <FontAwesomeIcon
-                className="btnSortOrder"
-                icon={["fas", "sort-amount-up"]}
-                size="1x"
-                color="green"
-                onClick={sortOrder}
-              ></FontAwesomeIcon>{" "}
-            </th>
+            <th className="lightweight tableSingleKey">N&deg; </th>
             <th className="lightweight tableSingleKey">
               File Name{" "}
               <FontAwesomeIcon
@@ -229,9 +237,9 @@ export default function TableDashboard() {
           </tr>
         </thead>
         <>
-          {audios.length ? (
+          {tableData.length ? (
             <tbody className="lightweight">
-              {audios.map((audio, index) => (
+              {tableData.map((audio, index) => (
                 <tr
                   key={audio.audioId}
                   className={`${
@@ -246,7 +254,7 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.audioId}
+                    {index + 1}
                   </td>
                   <td
                     onClick={() =>
@@ -285,30 +293,29 @@ export default function TableDashboard() {
                   <td className="tableSingleKeyBtn commentKey">
                     <div className="buttonscomments">
                       <Button
-                        className="commentBtns"
+                        className="commentBtns commentBtnsSave"
                         disabled={audio.comments ? true : false}
                         type="submit"
                         form="commentForm"
                         onClick={handleSubmit}
-                        variant="outline-success"
-                        size="sm"
-                        id="myBtn"
+                        // variant="outline-success"
                       >
                         {" "}
                         <FontAwesomeIcon
-                          className="savebutton m-2"
+                          className="savebutton "
                           icon={["fas", "check"]}
+                          size="1x"
                           color="#04c45c"
                         ></FontAwesomeIcon>
                       </Button>{" "}
                       <Button
+                        className="commentBtns commentBtnsDelete"
                         disabled={audio.comments ? false : true}
                         onClick={() => deleteCommentAudio(audio?.audioId)}
-                        variant="success"
-                        size="sm"
+                        // variant="success"
                       >
                         <FontAwesomeIcon
-                          className="m-2"
+                          className="savebutton"
                           icon={["fas", "times"]}
                           size="1x"
                           color="white"
@@ -352,7 +359,16 @@ export default function TableDashboard() {
                       </td>
                     </>
                   )}
-                  <td className="lastCell tableSingleKey"></td>
+                  <td className="lastCell tableSingleKey">
+                    {" "}
+                    <FontAwesomeIcon
+                      className="btndeleteAudio"
+                      icon={["fas", "times"]}
+                      // size="1x"
+                      color="#EA5B53"
+                      onClick={() => deleteAudio(audio?.audioId)}
+                    ></FontAwesomeIcon>{" "}
+                  </td>
                 </tr>
               ))}
             </tbody>
