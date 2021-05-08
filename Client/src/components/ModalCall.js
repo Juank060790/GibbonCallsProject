@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Modal, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
+import logoFF from "../images/logo-reduced.png";
 
 export default function ModalCall({
   selectedAudio,
@@ -13,6 +14,7 @@ export default function ModalCall({
 }) {
   const calls = useSelector((state) => state.call.call);
 
+  console.log(`calls`, calls);
   useEffect(() => {}, []);
 
   return (
@@ -42,36 +44,45 @@ export default function ModalCall({
             </tr>
           </thead>
           <>
-            <tbody>
-              {calls?.map((call, index) => (
-                <tr className="text-center tableKey" key={index}>
-                  <td className="tableSingleKey">{call.callId}</td>
-                  <td className="tableSingleKey">{call.timeStart}</td>
-                  <td className="tableSingleKey">{call.timeEnd}</td>
-                  <td
-                    onClick={() =>
-                      showSpectrogram(call.spectogram, call.spectogramAudio)
-                    }
-                    className="tableSingleKey"
-                  >
-                    <img
-                      src={call.spectogram}
-                      alt="spectogram of a single call"
-                      width="150px"
-                      height="100px"
-                    />
-                  </td>
-                  <td className="tableSingleKey">Action</td>
-                  <td className="tableSingleKey">{call.label}</td>
-                  <td className="tableSingleKey commentKey">
-                    <form>
-                      <textarea className="textareacomments"></textarea>
-                      <input className="submitcommentbtn " type="submit" />
-                    </form>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            {calls.length ? (
+              <tbody>
+                {calls?.map((call, index) => (
+                  <tr className="text-center tableKey" key={index}>
+                    <td className="tableSingleKey">{call.callId}</td>
+                    <td className="tableSingleKey">{call.timeStart}</td>
+                    <td className="tableSingleKey">{call.timeEnd}</td>
+                    <td
+                      onClick={() =>
+                        showSpectrogram(call.spectogram, call.spectogramAudio)
+                      }
+                      className="tableSingleKey"
+                    >
+                      <img
+                        src={call.spectogram}
+                        alt="spectogram of a single call"
+                        width="150px"
+                        height="100px"
+                      />
+                    </td>
+                    <td className="tableSingleKey">Action</td>
+                    <td className="tableSingleKey">{call.label}</td>
+                    <td className="tableSingleKey commentKey">
+                      <form>
+                        <textarea className="textareacomments"></textarea>
+                        <input className="submitcommentbtn " type="submit" />
+                      </form>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <>
+                <div className="text-center notfoundpage">
+                  <h1>No calls Found</h1>
+                  <img src={logoFF} alt="logoFF" />
+                </div>
+              </>
+            )}
           </>
         </Table>
       </Modal.Body>

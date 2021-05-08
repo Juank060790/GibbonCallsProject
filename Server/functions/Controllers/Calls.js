@@ -46,7 +46,7 @@ exports.getCallsSingleAudio = (req, res) => {
       if (doc.exists) {
         singleCall = doc.data();
         // generateSignedUrl();
-        // console.log(`singleCall`, singleCall);
+        console.log(`singleCall`, singleCall);
         return res.json(singleCall);
       } else {
         return res.status(404).json({ error: "Call not found" });

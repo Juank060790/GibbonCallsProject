@@ -76,9 +76,9 @@ exports.createSingleAudio = (req, res) => {
 
 exports.getFilterByDate = (req, res) => {
   let query = {
-    limit: parseInt(req.params.limit),
-    sortBy: req.params.sortBy,
-    order: req.params.order || "asc",
+    limit: parseInt(req.params.limit) || 10,
+    sortBy: req.params.sortBy || "recordDate",
+    order: req.params.order || "desc",
     page: req.params.page || 0,
   };
 
