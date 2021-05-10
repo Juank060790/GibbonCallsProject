@@ -16,7 +16,6 @@ export default function TableDashboard() {
     setCallsperAudio([]);
     setSpectogramImage("");
   };
-
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
@@ -36,7 +35,6 @@ export default function TableDashboard() {
   const [spectogramImage, setSpectogramImage] = useState("");
   const [spectogramAudio, setSpectogramAudio] = useState("");
 
-  console.log(`calls`, calls);
   useEffect(() => {
     dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
   }, [dispatch, page, docsPerPage, orderBy, order]);
@@ -98,7 +96,6 @@ export default function TableDashboard() {
     gibbonCallsList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
       setCallsperAudio(calls);
-      console.log(`call`, call);
     });
     handleShow();
   };
@@ -107,7 +104,6 @@ export default function TableDashboard() {
   const toAudioId = (audioId, gibbonCallsList) => {
     dispatch(audioActions.getSingleAudio(audioId));
     getCalls(gibbonCallsList);
-    console.log(`gibbonCallsList`, gibbonCallsList);
   };
 
   // ------- To do (Filters, add/delete comment in Main table) ----------.
@@ -122,10 +118,7 @@ export default function TableDashboard() {
   // Delete Audio from table
 
   const deleteAudio = (audioId) => {
-    console.log(`audioId`, audioId);
     dispatch(audioActions.deleteAudio(audioId));
-    // audioActions.audiosRequest(docsPerPage, "recordDate", "desc", page);
-    // dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
   };
 
   //  Table

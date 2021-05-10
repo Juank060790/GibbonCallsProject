@@ -270,7 +270,9 @@ height: 40px;
 }
 
 /* MODAL */
-
+.idNumberModal{
+  width: 200px;
+}
 
 .modal-dialog {
   width: 100%;

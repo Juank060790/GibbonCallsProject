@@ -5,6 +5,8 @@ const {
   getCallsSingleAudio,
   deleteSingleCall,
   createSingleCall,
+  addCommentSingleCall,
+  deleteCommentCall,
 } = require("../Controllers/Calls");
 
 // CALLS
@@ -29,5 +31,19 @@ router.delete("/deletecall//:callId", FBAuth, deleteSingleCall);
  * @access  private
  */
 router.post("/createcall", FBAuth, createSingleCall);
+
+/**
+ * @route PUT
+ * @description Add comment to SingleCall
+ * @access  private
+ */
+router.put("/addcomment/:callId", FBAuth, addCommentSingleCall);
+
+/**
+ * @route PUT
+ * @description Update comment to empty string
+ * @access  private
+ */
+router.put("/deletecomment/:callId", FBAuth, deleteCommentCall);
 
 module.exports = router;

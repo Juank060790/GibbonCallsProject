@@ -95,7 +95,7 @@ const deleteAudio = (audioId) => async (dispatch) => {
       type: types.DELETE_RAW_AUDIO_SUCCESS,
       payload: res.data,
     });
-    // audioActions.audiosRequest(10, "recordDate", "desc", 0);
+    console.log(`res`, res);
     dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
   } catch (error) {
     dispatch({ type: types.DELETE_RAW_AUDIO_FAILURE, payload: error });

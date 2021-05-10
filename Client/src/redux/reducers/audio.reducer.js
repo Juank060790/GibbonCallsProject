@@ -1,10 +1,10 @@
 import * as types from "../constants/audio.constants";
 
 const initialState = {
-  audio: [],
   loading: false,
   selectedAudio: null,
   lastPage: false,
+  audio: [],
 };
 
 const audioReducer = (state = initialState, action) => {
