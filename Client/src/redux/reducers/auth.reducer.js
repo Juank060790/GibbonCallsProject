@@ -8,7 +8,7 @@ const initialState = {
   logoutError: false,
   isAuthenticated: false,
   loading: false,
-  token: localStorage.getItem("accessToken"),
+  // token: localStorage.getItem("accessToken"),
 };
 
 const authReducer = (state = initialState, action) => {
@@ -24,11 +24,8 @@ const authReducer = (state = initialState, action) => {
       return { ...state, isLoggingIn: true, loginError: false };
 
     case types.LOGIN_SUCCESS:
-      localStorage.setItem("accessToken", payload.token);
       return {
         ...state,
-        accessToken: payload.token,
-        loading: false,
         isAuthenticated: true,
         isLoggingIn: false,
         user: action.user,
@@ -60,13 +57,35 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         isAuthenticated: true,
       };
-    case types.LOGOUT:
+    case types.LOGOUT_REQUEST:
       return {
         ...state,
-        accessToken: null,
+        isLoggingOut: true,
+        logoutError: false,
+      };
+    case types.LOGOUT_SUCCESS:
+      return {
+        ...state,
+        isLoggingOut: false,
         isAuthenticated: false,
-        user: null,
-        loading: false,
+        user: {},
+      };
+    case types.LOGOUT_FAILURE:
+      return {
+        ...state,
+        isLoggingOut: false,
+        logoutError: true,
+      };
+    case types.VERIFY_REQUEST:
+      return {
+        ...state,
+        isVerifying: true,
+        verifyingError: false,
+      };
+    case types.VERIFY_SUCCESS:
+      return {
+        ...state,
+        isVerifying: false,
       };
     default:
       return state;

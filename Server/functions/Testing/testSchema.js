@@ -61,7 +61,7 @@ function pickRandomProperty(label) {
 }
 
 exports.createSingleFakeAudio = async (req, res) => {
-  const audioNum = 20;
+  const audioNum = 5;
   const callIdFake = faker.datatype.uuid();
   for (let i = 0; i < audioNum; i++) {
     const createAudio = {

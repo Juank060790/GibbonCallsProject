@@ -1,14 +1,14 @@
 import React from "react";
 import { Button, Container, Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { authActions } from "../redux/actions";
+import { logoutUser } from "../redux/actions";
 import logo from "../images/logo-reduced.png";
 
 export default function Navbar() {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(authActions.logout());
+    dispatch(logoutUser());
   };
   return (
     <Container fluid>

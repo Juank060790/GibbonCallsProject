@@ -8,7 +8,7 @@ function Dashboard() {
   return (
     <div>
       <Navbar />
-      <TableDashboard />
+      {/* <TableDashboard /> */}
     </div>
   );
 }
