@@ -15,7 +15,6 @@ const audiosRequest = (
     const res = await api.get(
       `audio/audiolist/filter/${limit}/${sortBy}/${order}/${page}`
     );
-
     if (res.data.length > 0) {
       // Dispatch the data to the reducer auido.reducer if success.
       dispatch({
@@ -63,7 +62,6 @@ const addCommentRawAudio = (comment, audioId) => async (dispatch) => {
       comment,
       audioId,
     });
-
     dispatch({
       type: types.CREATE_COMMENT_RAW_AUDIO_SUCCESS,
       payload: res.data.data,
@@ -78,11 +76,11 @@ const deleteCommentAudio = (audioId) => async (dispatch) => {
   dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
   try {
     const res = await api.put(`audio/audiolist/deletecomment/${audioId}`);
-
     dispatch({
       type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
       payload: res.data,
     });
+
     dispatch(alertActions.setAlert("Comment has been DELETED!", "success"));
   } catch (error) {
     dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
@@ -90,17 +88,17 @@ const deleteCommentAudio = (audioId) => async (dispatch) => {
 };
 
 const deleteAudio = (audioId) => async (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  dispatch({ type: types.DELETE_RAW_AUDIO_REQUEST, payload: null });
   try {
     const res = await api.put(`audio/audiolist/deleteaudio/${audioId}`);
-
     dispatch({
-      type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
+      type: types.DELETE_RAW_AUDIO_SUCCESS,
       payload: res.data,
     });
+    console.log(`res`, res);
     dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
   } catch (error) {
-    dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
+    dispatch({ type: types.DELETE_RAW_AUDIO_FAILURE, payload: error });
   }
 };
 

@@ -28,7 +28,7 @@ export default function Waveform(SpectogramAudio) {
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
     barWidth: 1,
-    cursorWidth: 1,
+    cursorWidth: 2,
     backend: "WebAudio",
     height: 128,
     progressColor: "#2D5BFF",
@@ -38,6 +38,7 @@ export default function Waveform(SpectogramAudio) {
     normalize: true,
     partialRender: true,
     plugins: [
+      SpectogramPlugin,
       Regions.create(),
       Minimap.create({
         container: "#wave-minimap",
@@ -59,7 +60,6 @@ export default function Waveform(SpectogramAudio) {
           "font-size": "10px",
         },
       }),
-      SpectogramPlugin,
     ],
   });
   let colors = colorMap({
@@ -70,6 +70,9 @@ export default function Waveform(SpectogramAudio) {
 
   let SpectogramPlugin = SpectrogramPlugin.create({
     fftSamples: 512,
+    width: "100px",
+    windowFunc: "bartlett",
+    height: "100%",
     container: "#wavespectrogram",
     labels: true,
     colorMap: colors,

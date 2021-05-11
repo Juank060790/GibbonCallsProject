@@ -76,9 +76,9 @@ exports.createSingleAudio = (req, res) => {
 
 exports.getFilterByDate = (req, res) => {
   let query = {
-    limit: parseInt(req.params.limit),
-    sortBy: req.params.sortBy,
-    order: req.params.order || "asc",
+    limit: parseInt(req.params.limit) || 10,
+    sortBy: req.params.sortBy || "recordDate",
+    order: req.params.order || "desc",
     page: req.params.page || 0,
   };
 
@@ -101,6 +101,41 @@ exports.getFilterByDate = (req, res) => {
     })
     .catch((err) => console.error(err));
 };
+
+// OnSnapshot
+
+// exports.getFilterByDate = (req, res) => {
+//   let query = {
+//     limit: parseInt(req.params.limit) || 10,
+//     sortBy: req.params.sortBy || "recordDate",
+//     order: req.params.order || "desc",
+//     page: req.params.page || 0,
+//   };
+
+//   const queryDatabase = db
+//     .collection("rawData")
+//     .where("isDeleted", "==", false)
+//     .orderBy(query.sortBy, query.order)
+//     .limit(query.limit)
+//     .offset(query.page * query.limit);
+
+//   queryDatabase.onSnapshot((querySnapshot) => {
+//     console.log(`Received query snapshot of size ${querySnapshot.size}`);
+//     if (querySnapshot) {
+//       let filteredaudioList = [];
+//       querySnapshot.forEach((doc) => {
+//         filteredaudioList.push(doc.data());
+//       });
+//       console.log(`filteredaudioList`, filteredaudioList);
+//       return res.json(filteredaudioList);
+//     } else {
+//       return res.status(404).json({ error: "Audio list not found" });
+//     }
+//   });
+// };
+// (err) => {
+//   console.log(`Encountered error: ${err}`);
+// };
 
 // Add comment to Raw Audio.
 exports.addCommentRawAudio = (req, res) => {

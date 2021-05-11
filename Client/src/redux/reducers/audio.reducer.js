@@ -1,10 +1,10 @@
 import * as types from "../constants/audio.constants";
 
 const initialState = {
-  audio: [],
   loading: false,
   selectedAudio: null,
   lastPage: false,
+  audio: [],
 };
 
 const audioReducer = (state = initialState, action) => {
@@ -40,10 +40,13 @@ const audioReducer = (state = initialState, action) => {
     case types.DELETE_RAW_AUDIO_FAILURE:
     case types.GET_SINGLE_AUDIO_REQUEST_FAILURE:
       return { ...state, loading: false };
+
     case types.CLEAR_SELECTED_AUDIO:
       return { ...state, selectedAudio: undefined };
+
     case types.AUDIO_REQUEST_NOMORE_DATA:
       return { ...state, lastPage: true, loading: false };
+
     default:
       return state;
   }

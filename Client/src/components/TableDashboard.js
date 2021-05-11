@@ -9,8 +9,6 @@ import PaginationItem from "./Pagination";
 import Form from "react-bootstrap/Form";
 
 export default function TableDashboard() {
-  // UseSelector brings the state from the reducers.
-  // Dispatch send data to redux actions and reducers.
   const handleClose = () => {
     setShow(false);
     dispatch(callActions.clearCallsReducer());
@@ -18,7 +16,6 @@ export default function TableDashboard() {
     setCallsperAudio([]);
     setSpectogramImage("");
   };
-
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
@@ -30,16 +27,13 @@ export default function TableDashboard() {
   const [page, setPage] = useState(0);
   const [docsPerPage, setDocsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("recordDate");
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState("desc");
   const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
-  const [tableData, setTableData] = useState([]);
-  console.log(`tableData`, tableData);
-
-  useEffect(() => {
-    setTableData(audios);
-  }, [audios]);
+  // const [tableData, setTableData] = useState([]);
+  const [spectogramImage, setSpectogramImage] = useState("");
+  const [spectogramAudio, setSpectogramAudio] = useState("");
 
   useEffect(() => {
     dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
@@ -47,8 +41,6 @@ export default function TableDashboard() {
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
-  const [spectogramImage, setSpectogramImage] = useState("");
-  const [spectogramAudio, setSpectogramAudio] = useState("");
 
   const showSpectrogram = (spectogram, spectogramAudio) => {
     if (spectogram) {
@@ -76,13 +68,14 @@ export default function TableDashboard() {
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
     e.preventDefault();
-    dispatch(audioActions.audiosRequest(docsPerPage, "audioId", "asc", page));
+    dispatch(
+      audioActions.audiosRequest(docsPerPage, "recordDate", "desc", page)
+    );
   };
 
-  // Pagination (to be fixed add counter in the model schema)
+  // Pagination
   const handleClickOnNext = async () => {
     await setPage(page + 1);
-
     if (page > 0) {
       setFirstPage(false);
     }
@@ -99,8 +92,8 @@ export default function TableDashboard() {
 
   // Get an individual calls  inside of a RawAudio (To be fixed)
   // This function returns the state with single calls of a Raw Audio into a state([]).
-  const getCalls = (gibbonCallList) => {
-    gibbonCallList?.forEach((call) => {
+  const getCalls = (gibbonCallsList) => {
+    gibbonCallsList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
       setCallsperAudio(calls);
     });
@@ -108,12 +101,12 @@ export default function TableDashboard() {
   };
 
   // Get individual Rawaudio with a Modal.
-  const toAudioId = (audioId, gibbonCallList) => {
+  const toAudioId = (audioId, gibbonCallsList) => {
     dispatch(audioActions.getSingleAudio(audioId));
-    getCalls(gibbonCallList);
+    getCalls(gibbonCallsList);
   };
-  // ------- To do (Filters, add/delete comment in Main table) ----------.
 
+  // ------- To do (Filters, add/delete comment in Main table) ----------.
   const sortOrder = () => {
     if (order === "asc") {
       setOrder("desc");
@@ -125,17 +118,11 @@ export default function TableDashboard() {
   // Delete Audio from table
 
   const deleteAudio = (audioId) => {
-    console.log(`audioId`, audioId);
     dispatch(audioActions.deleteAudio(audioId));
   };
 
-  // Filter Array of Audios IsDeleted or not
+  //  Table
 
-  // var filterAudios = audios.filter(function (audio) {
-  //   return !audio.isDeleted;
-  // });
-
-  // console.log(`filterAudios`, filterAudios);
   return (
     <>
       <div className="d-flex">
@@ -156,7 +143,7 @@ export default function TableDashboard() {
                   variant="dark"
                   size="sm"
                   min={1}
-                  max={20}
+                  max={25}
                   className="reloadButton"
                 />{" "}
               </div>
@@ -207,18 +194,15 @@ export default function TableDashboard() {
                   variant="success"
                   id="dropdown-basic"
                 >
-                  <FontAwesomeIcon
-                    icon={["fas", "filter"]}
-                    // size="sm"
-                  ></FontAwesomeIcon>
+                  <FontAwesomeIcon icon={["fas", "filter"]}></FontAwesomeIcon>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item
+                  {/* <Dropdown.Item
                     onClick={(e) => setOrderBy("audioId")}
                     href="#/action-1"
                   >
                     Audio Id
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                   <Dropdown.Item
                     onClick={(e) => setOrderBy("recordDate")}
                     href="#/action-2"
@@ -237,9 +221,9 @@ export default function TableDashboard() {
           </tr>
         </thead>
         <>
-          {tableData.length ? (
+          {audios.length ? (
             <tbody className="lightweight">
-              {tableData.map((audio, index) => (
+              {audios.map((audio, index) => (
                 <tr
                   key={audio.audioId}
                   className={`${
@@ -250,7 +234,7 @@ export default function TableDashboard() {
                 >
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                      toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -258,7 +242,7 @@ export default function TableDashboard() {
                   </td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                      toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -266,7 +250,7 @@ export default function TableDashboard() {
                   </td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                      toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -276,7 +260,7 @@ export default function TableDashboard() {
                   </td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                      toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -284,7 +268,7 @@ export default function TableDashboard() {
                   </td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallList)
+                      toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -293,7 +277,7 @@ export default function TableDashboard() {
                   <td className="tableSingleKeyBtn commentKey">
                     <div className="buttonscomments">
                       <Button
-                        className="commentBtns commentBtnsSave"
+                        className="savebutton commentBtns commentBtnsSave"
                         disabled={audio.comments ? true : false}
                         type="submit"
                         form="commentForm"
@@ -304,12 +288,11 @@ export default function TableDashboard() {
                         <FontAwesomeIcon
                           className="savebutton "
                           icon={["fas", "check"]}
-                          size="1x"
                           color="#04c45c"
                         ></FontAwesomeIcon>
                       </Button>{" "}
                       <Button
-                        className="commentBtns commentBtnsDelete"
+                        className="savebutton commentBtns commentBtnsDelete"
                         disabled={audio.comments ? false : true}
                         onClick={() => deleteCommentAudio(audio?.audioId)}
                         // variant="success"
@@ -317,7 +300,6 @@ export default function TableDashboard() {
                         <FontAwesomeIcon
                           className="savebutton"
                           icon={["fas", "times"]}
-                          size="1x"
                           color="white"
                         ></FontAwesomeIcon>{" "}
                       </Button>{" "}
@@ -365,7 +347,7 @@ export default function TableDashboard() {
                       className="btndeleteAudio"
                       icon={["fas", "times"]}
                       // size="1x"
-                      color="#EA5B53"
+                      color="#b94242"
                       onClick={() => deleteAudio(audio?.audioId)}
                     ></FontAwesomeIcon>{" "}
                   </td>
