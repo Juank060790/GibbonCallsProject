@@ -5,17 +5,33 @@ import LoginPage from "../containers/LoginPage";
 import Dashboard from "../containers/Dashboard";
 import NotFoundPage from "./NotFoundPage";
 import AlertMsg from "../layouts/Alerts";
+import { connect } from "react-redux";
 
-const Routes = () => {
+function Routes(props) {
+  const { isAuthenticated, isVerifying } = props;
   return (
     <>
       <AlertMsg />
       <Switch>
         <Route exact path="/" component={LoginPage} />
-        <PrivateRoute exact path="/dashboard" component={Dashboard} />
+        <PrivateRoute
+          exact
+          path="/dashboard"
+          component={Dashboard}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
         <Route component={NotFoundPage} />
       </Switch>
     </>
   );
-};
-export default Routes;
+}
+
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    isVerifying: state.auth.isVerifying,
+  };
+}
+
+export default connect(mapStateToProps)(Routes);

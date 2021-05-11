@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
+import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { loginUser } from "../../redux/actions/auth.actions";
 import { Form, Button, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../redux/actions/auth.actions";
 import "../../App.css";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
+  console.log(`props`, props);
+  const isAuthenticated = props.isAuthenticated;
+  const loading = props.loading;
+
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const loading = useSelector((state) => state.auth.loading);
   // eslint-disable-next-line
   const [errors, setErrors] = useState({
     email: "",
@@ -27,7 +31,7 @@ const LoginPage = () => {
     e.preventDefault();
     // Validate data if needed
     const { email, password } = formData;
-    dispatch(authActions.loginRequest(email, password));
+    dispatch(loginUser(email, password));
   };
 
   if (isAuthenticated) return <Redirect to="/dashboard" />;
@@ -105,4 +109,12 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+function mapStateToProps(state) {
+  return {
+    isLoggingIn: state.auth.isLoggingIn,
+    loginError: state.auth.loginError,
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+}
+
+export default connect(mapStateToProps)(LoginPage);

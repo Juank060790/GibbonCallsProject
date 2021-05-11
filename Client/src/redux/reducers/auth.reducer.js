@@ -1,6 +1,11 @@
 import * as types from "../constants/auth.constants";
+
 const initialState = {
   user: {},
+  isLoggingIn: false,
+  isLoggingOut: false,
+  loginError: false,
+  logoutError: false,
   isAuthenticated: false,
   loading: false,
   token: localStorage.getItem("accessToken"),
@@ -16,16 +21,17 @@ const authReducer = (state = initialState, action) => {
     case types.LOGIN_REQUEST:
     case types.REGISTER_REQUEST:
       // case types.UPDATE_PROFILE_REQUEST:
-      return { ...state, loading: false };
+      return { ...state, isLoggingIn: true, loginError: false };
 
     case types.LOGIN_SUCCESS:
       localStorage.setItem("accessToken", payload.token);
       return {
         ...state,
-        user: { ...payload.user },
         accessToken: payload.token,
         loading: false,
         isAuthenticated: true,
+        isLoggingIn: false,
+        user: action.user,
       };
 
     case types.GET_CURRENT_USER_SUCCESS:
@@ -39,7 +45,12 @@ const authReducer = (state = initialState, action) => {
     case types.LOGIN_FAILURE:
     case types.REGISTER_FAILURE:
     case types.GET_CURRENT_USER_FAILURE:
-      return { ...state, loading: false };
+      return {
+        ...state,
+        isLoggingIn: false,
+        isAuthenticated: false,
+        loginError: true,
+      };
 
     case types.REGISTER_SUCCESS:
       return {
