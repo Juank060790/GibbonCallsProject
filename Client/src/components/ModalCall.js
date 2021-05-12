@@ -18,12 +18,12 @@ export default function ModalCall({
   const [callIdOnComment, setCallIdOnComment] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
   const dispatch = useDispatch();
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const { comment } = formData;
     const callId = callIdOnComment;
-    console.log(`comment, callId`, comment, callId);
     dispatch(callActions.addCommentSingleCall(comment, callId));
   };
 
@@ -43,7 +43,9 @@ export default function ModalCall({
       size={"xl"}
       dialogClassName="modal-100w"
     >
-      <Modal.Header closeButton></Modal.Header>
+      <Modal.Header closeButton>
+        <h6>{selectedAudio?.fileName}</h6>
+      </Modal.Header>
       <Modal.Body>
         {" "}
         <MediaPlayer
@@ -63,7 +65,7 @@ export default function ModalCall({
             </tr>
           </thead>
           <>
-            {calls.length ? (
+            {calls ? (
               <tbody>
                 {calls?.map((call, index) => (
                   <tr className="text-center tableKey" key={index}>

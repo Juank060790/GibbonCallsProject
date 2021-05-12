@@ -92,10 +92,11 @@ export default function TableDashboard() {
 
   // Get an individual calls  inside of a RawAudio (To be fixed)
   // This function returns the state with single calls of a Raw Audio into a state([]).
+
   const getCalls = (gibbonCallsList) => {
     gibbonCallsList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
-      setCallsperAudio(calls);
+      setCallsperAudio(call);
     });
     handleShow();
   };
@@ -255,8 +256,8 @@ export default function TableDashboard() {
                     className="tableSingleKey"
                   >
                     {new Date(
-                      audio.recordDate._seconds * 1000
-                    ).toLocaleDateString("en-US")}
+                      audio.recordDate.seconds * 1000
+                    ).toLocaleDateString()}
                   </td>
                   <td
                     onClick={() =>

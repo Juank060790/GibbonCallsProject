@@ -31,7 +31,7 @@ exports.deleteSingleAudio = (req, res) => {
       isDeleted: true,
     })
     .then(() => {
-      return res.status(201).json("Audio deleted successfully ");
+      return res.status(201).json();
     })
     .catch((err) => {
       return res.status(500).json({ error: err.code });

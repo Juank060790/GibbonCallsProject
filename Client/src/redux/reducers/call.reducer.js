@@ -12,15 +12,20 @@ const callReducer = (state = initialState, action) => {
   switch (type) {
     case types.GET_SINGLE_CALL_REQUEST:
       return { ...state, loading: true };
+    case types.DELETE_COMMENT_CALL_REQUEST:
+      return { ...state, loading: true };
 
     // This case will return all the state including the single call.
-    case types.GET_SINGLE_CALL_REQUEST_SUCCESS:
+    case types.GET_SINGLE_CALL_SUCCESS:
       return {
         ...state,
         call: [...state.call, payload],
         loading: false,
       };
-    case types.GET_SINGLE_CALL_REQUEST_FAILURE:
+    case types.DELETE_COMMENT_CALL_SUCCESS:
+      return { ...state, loading: false };
+    case types.GET_SINGLE_CALL_FAILURE:
+    case types.DELETE_COMMENT_CALL_FAILURE:
       return { ...state, loading: false };
     case types.CLEAR_CALLS:
       return { ...state, call: [] };

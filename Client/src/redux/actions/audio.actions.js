@@ -1,55 +1,136 @@
 import * as types from "../constants/audio.constants";
-import api from "../api";
 import { alertActions } from "./alert.actions";
+import { db } from "../../Firebase/firebase";
 
-// Get a list of Raw Audios
-const audiosRequest =
-  (
-    // recieve the request with these specific values (limit, sortBy, order, startDoc).
-    limit,
-    sortBy,
-    order,
-    page
-  ) =>
-  async (dispatch) => {
-    dispatch({ type: types.AUDIO_REQUEST, payload: null });
-    try {
-      const res = await api.get(
-        `audio/audiolist/filter/${limit}/${sortBy}/${order}/${page}`
-      );
+export const audiosRequest = (limit, sortBy, order, page) => (dispatch) => {
+  dispatch({ type: types.AUDIO_REQUEST, payload: null });
+  let query = {
+    limit: parseInt(limit) || 10,
+    sortBy: sortBy || "recordDate",
+    order: order || "desc",
+    page: page || 0,
+  };
 
-      if (res.data.length > 0) {
-        // Dispatch the data to the reducer auido.reducer if success.
+  let filteredaudioList = [];
+  const observer = db
+    .collection("rawData")
+    .where("isDeleted", "==", false)
+    .orderBy(query.sortBy, query.order)
+    .limit(query.limit)
+    .onSnapshot((querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          filteredaudioList = [];
+          querySnapshot.forEach((doc) => {
+            filteredaudioList.push(doc.data());
+          });
+        }
+        if (change.type === "modified") {
+          filteredaudioList = [];
+          querySnapshot.forEach((doc) => {
+            filteredaudioList.push(doc.data());
+          });
+        }
+        if (change.type === "removed") {
+          filteredaudioList = [];
+          querySnapshot.forEach((doc) => {
+            filteredaudioList.push(doc.data());
+          });
+        }
+      });
+      dispatch({
+        type: types.AUDIO_REQUEST_SUCCESS,
+        payload: filteredaudioList,
+      });
+    });
+};
+
+const getSingleAudio = (audioId) => (dispatch) => {
+  let singleAudio = {};
+  dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST, payload: null });
+
+  db.doc(`rawData/${audioId}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        singleAudio = doc.data();
         dispatch({
-          type: types.AUDIO_REQUEST_SUCCESS,
-          payload: res.data,
+          type: types.GET_SINGLE_AUDIO_REQUEST_SUCCESS,
+          payload: singleAudio,
         });
       } else {
         dispatch({
-          type: types.AUDIO_REQUEST_NOMORE_DATA,
-          payload: "No more data",
+          type: types.GET_SINGLE_AUDIO_REQUEST_FAILURE,
+          payload: "Audio not found",
         });
       }
-    } catch (error) {
-      dispatch({ type: types.AUDIO_REQUEST_FAILURE, payload: error });
-    }
-  };
-
-// GEt Single RawAudio
-
-const getSingleAudio = (audioId) => async (dispatch) => {
-  // recieve the request.
-  dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST, payload: null });
-  try {
-    const res = await api.get(`/audio/audiolist/${audioId}`);
-    // Dispatch the data to audio.reducer.
-    dispatch({
-      type: types.GET_SINGLE_AUDIO_REQUEST_SUCCESS,
-      payload: res.data,
     });
-  } catch (error) {
-    dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST_FAILURE, payload: error });
-  }
+};
+
+// Create new comment to audio.
+const addCommentRawAudio = (comment, audioId) => (dispatch) => {
+  dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  db.collection("rawData")
+    .doc(`${audioId}`)
+    .update({
+      comments: comment,
+    })
+    .then(() => {
+      dispatch({
+        type: types.CREATE_COMMENT_RAW_AUDIO_SUCCESS,
+        payload: "Comment created ",
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.CREATE_COMMENT_RAW_AUDIO_FAILURE,
+        payload: "Comment not created ",
+      });
+    });
+};
+
+const deleteCommentAudio = (audioId) => (dispatch) => {
+  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+
+  db.collection("rawData")
+    .doc(`${audioId}`)
+    .update({
+      comments: "",
+    })
+    .then(() => {
+      dispatch({
+        type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
+      });
+      dispatch(alertActions.setAlert("Comment has been DELETED!", "success"));
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE,
+        payload: `Error removing comment from document:${audioId} `,
+      });
+    });
+};
+
+const deleteAudio = (audioId) => (dispatch) => {
+  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  db.collection("rawData")
+    .doc(`${audioId}`)
+    .update({
+      isDeleted: true,
+    })
+    .then(() => {
+      dispatch({
+        type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
+        payload: "Audio deleted successfully ",
+      });
+      dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE,
+        payload: `Error removing document:${audioId}`,
+      });
+    });
 };
 
 // Helps to clear audio reducer when close modal.
@@ -57,54 +138,7 @@ const clearSelectedAudioReducer = () => (dispatch) => {
   dispatch({ type: types.CLEAR_SELECTED_AUDIO, payload: null });
 };
 
-// Create new comment to audio.
-const addCommentRawAudio = (comment, audioId) => async (dispatch) => {
-  dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
-  try {
-    const res = await api.put(`audio/audiolist/addcomment/${audioId}`, {
-      comment,
-      audioId,
-    });
-
-    dispatch({
-      type: types.CREATE_COMMENT_RAW_AUDIO_SUCCESS,
-      payload: res.data.data,
-    });
-    dispatch(alertActions.setAlert("New comment has been Added!", "success"));
-  } catch (error) {
-    dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
-  }
-};
-
-const deleteCommentAudio = (audioId) => async (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
-  try {
-    const res = await api.put(`audio/audiolist/deletecomment/${audioId}`);
-
-    dispatch({
-      type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
-      payload: res.data,
-    });
-    dispatch(alertActions.setAlert("Comment has been DELETED!", "success"));
-  } catch (error) {
-    dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
-  }
-};
-
-const deleteAudio = (audioId) => async (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
-  try {
-    const res = await api.put(`audio/audiolist/deleteaudio/${audioId}`);
-
-    dispatch({
-      type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
-      payload: res.data,
-    });
-    dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
-  } catch (error) {
-    dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE, payload: error });
-  }
-};
+//  ------------------- OLD CODE ------------------//
 
 export const audioActions = {
   audiosRequest,

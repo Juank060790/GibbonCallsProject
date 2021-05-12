@@ -27,7 +27,6 @@ const LoginPage = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate data if needed
     const { email, password } = formData;
     console.log(`email`, email, formData);
     dispatch(loginUser(email, password));
