@@ -31,7 +31,6 @@ export default function TableDashboard() {
   const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
-  // const [tableData, setTableData] = useState([]);
   const [spectogramImage, setSpectogramImage] = useState("");
   const [spectogramAudio, setSpectogramAudio] = useState("");
 
@@ -96,7 +95,7 @@ export default function TableDashboard() {
   const getCalls = (gibbonCallsList) => {
     gibbonCallsList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
-      setCallsperAudio(call);
+      setCallsperAudio(calls);
     });
     handleShow();
   };

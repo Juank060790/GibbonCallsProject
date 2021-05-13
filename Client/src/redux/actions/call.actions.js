@@ -1,42 +1,17 @@
 import * as types from "../constants/call.constants";
-import api from "../api";
 import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
-// import { alertActions } from "./alert.actions";
-
-// const getSingleCall = (callId) => (dispatch) => {
-//   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
-//   let singleCall = {};
-//   db.collection("calls")
-//     .doc(callId)
-//     .onSnapshot((docSnapshot) => {
-//       console.log("singleCallsize", docSnapshot);
-//       singleCall = {};
-//       if (docSnapshot.exists) {
-//         singleCall = docSnapshot.data();
-//         console.log(`singleCall`, singleCall);
-//         dispatch({
-//           type: types.GET_SINGLE_CALL_SUCCESS,
-//           payload: singleCall,
-//         });
-//       } else {
-//         console.log(`NO cAAAAAALLLS`);
-//       }
-//     });
-// };
 
 const getSingleCall = (callId) => (dispatch) => {
-  let singleCall = {};
   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
-
   db.doc(`calls/${callId}`).onSnapshot((doc) => {
+    let singleCall = [];
     if (doc.exists) {
       singleCall = doc.data();
       dispatch({
         type: types.GET_SINGLE_CALL_SUCCESS,
         payload: singleCall,
       });
-      console.log(`singleCall`, singleCall);
     } else {
       dispatch({
         type: types.GET_SINGLE_CALL_FAILURE,
@@ -56,7 +31,7 @@ const addCommentSingleCall = (comment, callId) => async (dispatch) => {
   db.collection("calls")
     .doc(`${callId}`)
     .update({
-      comment: comment,
+      comment: comment || "",
     })
     .then(() => {
       dispatch({
@@ -91,6 +66,36 @@ const deleteCommentCall = (callId) => async (dispatch) => {
         payload: `Error removing comment from document:${callId} `,
       });
     });
+};
+
+const deleteCall = (callId) => (dispatch) => {
+  dispatch({ type: types.DELETE_CALL_REQUEST, payload: null });
+  db.collection("calls")
+    .doc(`${callId}`)
+    .update({
+      isDeleted: true,
+    })
+    .then(() => {
+      dispatch({
+        type: types.DELETE_CALL_SUCCESS,
+        payload: "Audio deleted successfully ",
+      });
+      dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.DELETE_CALL_FAILURE,
+        payload: `Error removing document:${callId}`,
+      });
+    });
+};
+
+export const callActions = {
+  getSingleCall,
+  clearCallsReducer,
+  addCommentSingleCall,
+  deleteCommentCall,
+  deleteCall,
 };
 
 // ------------ Old CODE --------------//
@@ -150,10 +155,3 @@ const deleteCommentCall = (callId) => async (dispatch) => {
 //     dispatch({ type: types.DELETE_COMMENT_CALL_FAILURE, payload: error });
 //   }
 // };
-
-export const callActions = {
-  getSingleCall,
-  clearCallsReducer,
-  addCommentSingleCall,
-  deleteCommentCall,
-};

@@ -14,7 +14,7 @@ library.add(fas);
 
 function App() {
   useEffect(() => {
-    console.log("FIREBASE", myFirebase);
+    // console.log("FIREBASE", myFirebase);
   }, []);
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

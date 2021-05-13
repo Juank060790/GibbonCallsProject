@@ -70,21 +70,21 @@ exports.createSingleCall = (req, res) => {
 };
 
 // Add comment to Call
-exports.addCommentSingleCall = (req, res) => {
-  let comment = req.body.comment;
-  let callId = req.body.callId;
-  db.collection("calls")
-    .doc(`${callId}`)
-    .update({
-      comment: comment,
-    })
-    .then(() => {
-      return res.status(201).json("Comment was created successfully ");
-    })
-    .catch((err) => {
-      return res.status(500).json({ error: err.code });
-    });
-};
+// exports.addCommentSingleCall = (req, res) => {
+//   let comment = req.body.comment;
+//   let callId = req.body.callId;
+//   db.collection("calls")
+//     .doc(`${callId}`)
+//     .update({
+//       comment: comment,
+//     })
+//     .then(() => {
+//       return res.status(201).json("Comment was created successfully ");
+//     })
+//     .catch((err) => {
+//       return res.status(500).json({ error: err.code });
+//     });
+// };
 
 // Delete Comment from single call from firestore
 exports.deleteCommentCall = (req, res) => {

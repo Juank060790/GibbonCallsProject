@@ -101,7 +101,6 @@ const deleteCommentAudio = (audioId) => (dispatch) => {
       dispatch({
         type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
       });
-      dispatch(alertActions.setAlert("Comment has been DELETED!", "success"));
     })
     .catch((error) => {
       dispatch({
@@ -112,7 +111,7 @@ const deleteCommentAudio = (audioId) => (dispatch) => {
 };
 
 const deleteAudio = (audioId) => (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  dispatch({ type: types.DELETE_RAW_AUDIO_REQUEST, payload: null });
   db.collection("rawData")
     .doc(`${audioId}`)
     .update({
@@ -120,14 +119,13 @@ const deleteAudio = (audioId) => (dispatch) => {
     })
     .then(() => {
       dispatch({
-        type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
+        type: types.DELETE_RAW_AUDIO_SUCCESS,
         payload: "Audio deleted successfully ",
       });
-      dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
     })
     .catch((err) => {
       dispatch({
-        type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE,
+        type: types.DELETE_RAW_AUDIO_FAILURE,
         payload: `Error removing document:${audioId}`,
       });
     });
