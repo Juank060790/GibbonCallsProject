@@ -36,7 +36,7 @@ const callReducer = (state = initialState, action) => {
     case types.DELETE_CALL_SUCCESS:
       return {
         ...state,
-        // call: [...state.call],
+        call: [...state.call],
         payload,
         loading: false,
       };
