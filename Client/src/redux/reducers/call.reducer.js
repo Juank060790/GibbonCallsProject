@@ -17,7 +17,9 @@ const callReducer = (state = initialState, action) => {
     case types.GET_SINGLE_CALL_SUCCESS:
       return {
         ...state,
-        call: [...state.call, payload],
+        call: state.call.findIndex((el) => el.id === payload.id)
+          ? [...state.call, payload]
+          : state.call.map((el) => (el.id === payload.id ? payload : el)),
         loading: false,
       };
     case types.GET_SINGLE_CALL_FAILURE:
@@ -34,7 +36,7 @@ const callReducer = (state = initialState, action) => {
     case types.DELETE_CALL_SUCCESS:
       return {
         ...state,
-        call: [...state.call],
+        // call: [...state.call],
         payload,
         loading: false,
       };
