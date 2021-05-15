@@ -80,7 +80,6 @@ const deleteCall = (callId) => (dispatch) => {
         type: types.DELETE_CALL_SUCCESS,
         payload: "Audio deleted successfully ",
       });
-      dispatch(alertActions.setAlert("Audio has been DELETED!", "success"));
     })
     .catch((err) => {
       dispatch({

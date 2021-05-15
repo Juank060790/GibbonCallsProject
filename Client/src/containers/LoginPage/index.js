@@ -1,10 +1,9 @@
-import React, { useState, Component } from "react";
+import React, { useState } from "react";
 import { loginUser } from "../../redux/actions/auth.actions";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Form, Button, Col } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
-import { authActions } from "../../redux/actions/auth.actions";
+import { useDispatch } from "react-redux";
 import "../../App.css";
 
 const LoginPage = (props) => {
@@ -13,6 +12,8 @@ const LoginPage = (props) => {
     email: "admin@admin.com",
     password: "123456",
   });
+
+  // eslint-disable-next-line
   const [errors, setErrors] = useState({
     email: "",
     password: "",

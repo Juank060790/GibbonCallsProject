@@ -17,13 +17,13 @@ export default function ModalCall({
   const calls = useSelector((state) => state.call.call);
   const [callIdOnComment, setCallIdOnComment] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
-  const [arrayCalls, setArrayCalls] = useState();
+  const [arrayCalls, setArrayCalls] = useState([]);
   const dispatch = useDispatch();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
 
   useEffect(() => {
     setArrayCalls(calls);
-  }, [calls]);
+  }, [arrayCalls, calls]);
   console.log(`arrayCalls`, arrayCalls);
 
   const handleSubmit = (e) => {
@@ -94,12 +94,12 @@ export default function ModalCall({
             </tr>
           </thead>
           <>
-            {calls ? (
-              <tbody>
-                {calls.map((call, index) => (
-                  <>
-                    {call.isDeleted === false ? (
-                      <tr className="text-center tableKey" key={index}>
+            {arrayCalls ? (
+              <>
+                {arrayCalls?.map((call, index) => (
+                  <tbody key={index}>
+                    {call?.isDeleted === false ? (
+                      <tr className="text-center tableKey" key={call.callId}>
                         <td className="tableSingleKey">{call.callId}</td>
                         <td className="tableSingleKey">{call.timeStart}</td>
                         <td className="tableSingleKey">{call.timeEnd}</td>
@@ -127,7 +127,6 @@ export default function ModalCall({
                               type="submit"
                               form="commentForm"
                               onClick={handleSubmit}
-                              // variant="outline-success"
                             >
                               {" "}
                               <FontAwesomeIcon
@@ -208,18 +207,16 @@ export default function ModalCall({
                         </tr>
                       </>
                     )}
-                  </>
+                  </tbody>
                 ))}
-              </tbody>
+              </>
             ) : (
               <>
                 <thead className="text-center notfoundpage ">
-                  <tr>
-                    <th>
-                      <h1>No calls Found</h1>
-                      <img src={logoFF} alt="logoFF" />
-                    </th>
-                  </tr>
+                  <th>
+                    <h1>No calls Found</h1>
+                    <img src={logoFF} alt="logoFF" />
+                  </th>
                 </thead>
               </>
             )}

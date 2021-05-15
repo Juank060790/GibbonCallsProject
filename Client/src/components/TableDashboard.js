@@ -19,7 +19,6 @@ export default function TableDashboard() {
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
   const loading = useSelector((state) => state.audio.loading);
-  const calls = useSelector((state) => state.call);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
@@ -95,7 +94,6 @@ export default function TableDashboard() {
   const getCalls = (gibbonCallsList) => {
     gibbonCallsList?.forEach((call) => {
       dispatch(callActions.getSingleCall(call));
-      setCallsperAudio(calls);
     });
     handleShow();
   };

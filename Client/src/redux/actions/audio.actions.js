@@ -1,5 +1,4 @@
 import * as types from "../constants/audio.constants";
-import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
 
 export const audiosRequest = (limit, sortBy, order, page) => (dispatch) => {
@@ -12,8 +11,7 @@ export const audiosRequest = (limit, sortBy, order, page) => (dispatch) => {
   };
 
   let filteredaudioList = [];
-  const observer = db
-    .collection("rawData")
+  db.collection("rawData")
     .where("isDeleted", "==", false)
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)

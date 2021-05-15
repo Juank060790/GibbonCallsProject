@@ -1,6 +1,4 @@
 import * as types from "../constants/auth.constants";
-import api from "../api";
-import { alertActions } from "./alert.actions";
 import { myFirebase } from "../../Firebase/firebase";
 
 // Firebase Auth

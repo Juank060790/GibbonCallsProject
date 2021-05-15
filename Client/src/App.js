@@ -1,14 +1,12 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
-import { authActions } from "./redux/actions/auth.actions";
 import { ClipLoader } from "react-spinners";
 import Routes from "./Routes";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import { myFirebase } from "./Firebase/firebase";
 
 library.add(fas);
 
