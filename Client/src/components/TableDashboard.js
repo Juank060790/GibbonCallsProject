@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Dropdown, Table } from "react-bootstrap";
+import { Badge, Button, Dropdown, Table } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
@@ -18,13 +18,16 @@ export default function TableDashboard() {
   };
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
+  console.log(`audios`, audios);
+  const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
   const loading = useSelector((state) => state.audio.loading);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [callsperAudio, setCallsperAudio] = useState([]);
-  const [page, setPage] = useState(0);
-  const [docsPerPage, setDocsPerPage] = useState(10);
+  const [lastDoc, setLastDoc] = useState(null);
+  const [firstDoc, setFirstDoc] = useState();
+  const [docsPerPage, setDocsPerPage] = useState(3);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
   const [firstPage, setFirstPage] = useState(true);
@@ -34,8 +37,8 @@ export default function TableDashboard() {
   const [spectogramAudio, setSpectogramAudio] = useState("");
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, page));
-  }, [dispatch, page, docsPerPage, orderBy, order]);
+    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, lastDoc));
+  }, [dispatch, docsPerPage, orderBy, order, lastDoc]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -67,28 +70,22 @@ export default function TableDashboard() {
   const loadAudios = (e) => {
     e.preventDefault();
     dispatch(
-      audioActions.audiosRequest(docsPerPage, "recordDate", "desc", page)
+      audioActions.audiosRequest(docsPerPage, "recordDate", "asc", lastDoc)
     );
   };
 
   // Pagination
-  const handleClickOnNext = async () => {
-    await setPage(page + 1);
-    if (page > 0) {
-      setFirstPage(false);
-    }
+  const handleClickOnNext = () => {
+    setFirstDoc(audios[0]);
+    setLastDoc(lastDocumentRedux);
   };
 
   const handleClickOnPrev = () => {
-    if (page >= 1 && !loading) {
-      setPage(page - 1);
-    }
-    if (page === 0) {
-      setFirstPage(true);
-    }
+    console.log(`firstDoc`, firstDoc);
+    setLastDoc(firstDoc);
   };
 
-  // Get an individual calls  inside of a RawAudio (To be fixed)
+  // Get an individual calls  inside of a RawAudio
   // This function returns the state with single calls of a Raw Audio into a state([]).
 
   const getCalls = (gibbonCallsList) => {
@@ -108,8 +105,10 @@ export default function TableDashboard() {
   const sortOrder = () => {
     if (order === "asc") {
       setOrder("desc");
+      setLastDoc(lastDocumentRedux);
     } else {
       setOrder("asc");
+      setLastDoc(lastDocumentRedux);
     }
   };
 
@@ -119,7 +118,20 @@ export default function TableDashboard() {
     dispatch(audioActions.deleteAudio(audioId));
   };
 
-  //  Table
+  // Filter
+
+  const clearFilterItem = (value) => () => {
+    console.log(`value`, value);
+    if ("docsPerPage") {
+      setDocsPerPage(5);
+    }
+    if ("orderBy") {
+      setOrderBy("recordDate");
+    }
+    if ("order") {
+      setOrder("asc");
+    }
+  };
 
   return (
     <>
@@ -130,6 +142,38 @@ export default function TableDashboard() {
       </div>
 
       <div className="filterMenu ">
+        <div className="filterBadges ">
+          <Badge className="singleBadgeNumber" variant="success">
+            {" "}
+            <FontAwesomeIcon
+              onClick={clearFilterItem("docsPerPage")}
+              className="savebutton"
+              icon={["fas", "times"]}
+              color="white"
+            ></FontAwesomeIcon>{" "}
+            {docsPerPage}
+          </Badge>{" "}
+          <Badge className="singleBadge" variant="warning">
+            {" "}
+            <FontAwesomeIcon
+              onClick={clearFilterItem("orderBy")}
+              className="savebutton"
+              icon={["fas", "times"]}
+              color="white"
+            ></FontAwesomeIcon>{" "}
+            {orderBy}
+          </Badge>{" "}
+          <Badge className="singleBadge" variant="info">
+            {" "}
+            <FontAwesomeIcon
+              onClick={clearFilterItem("order")}
+              className="savebutton"
+              icon={["fas", "times"]}
+              color="white"
+            ></FontAwesomeIcon>{" "}
+            {order}
+          </Badge>{" "}
+        </div>
         <div>
           <Form>
             <Form.Group className="formFilter">
@@ -219,7 +263,7 @@ export default function TableDashboard() {
           </tr>
         </thead>
         <>
-          {audios.length ? (
+          {audios?.length ? (
             <tbody className="lightweight">
               {audios.map((audio, index) => (
                 <tr

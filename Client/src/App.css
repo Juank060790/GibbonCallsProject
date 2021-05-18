@@ -136,6 +136,36 @@ body {
   
 }
 
+
+/* .filterBadges{
+margin: auto;
+} */
+
+.singleBadge{
+  margin: 5px;
+  height: 20px;
+  width: 100px;
+  
+}
+
+.singleBadge:hover{
+cursor: pointer;
+opacity: .5;
+}
+
+.singleBadgeNumber{
+  margin: 1rem;
+  height: 20px;
+  width: 50px;
+  
+}
+
+.singleBadgeNumber:hover{
+cursor: pointer;
+opacity: .5;
+}
+
+
 .textareacomments {
   border: none;
   border-radius: 6px;
@@ -407,18 +437,11 @@ button:active{
 button:focus{
   outline: none;
 }
-/* 
-.containerInfoAudio{
-  margin-top: 10%;
-} */
-
-
-
-
 
 /* slider */
 
 .formFilter{
+  margin: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

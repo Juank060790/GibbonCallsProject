@@ -10,7 +10,8 @@ const PaginationItem = ({
   firstPage,
 }) => {
   const lastPage = useSelector((state) => state.audio.lastPage);
-  const audiosPerPage = useSelector((state) => state.audio.audio.length);
+
+  const audiosPerPage = useSelector((state) => state.audio.audio?.length);
 
   return (
     <div className="footerPagination">
@@ -20,38 +21,32 @@ const PaginationItem = ({
         </div>
         <div className="marginNone "></div>
         <div className=" d-flex marginButtonPagination">
-          {!firstPage ? (
-            <div className="previousNextbtn">
-              <FontAwesomeIcon
-                className="  paginationButton "
-                icon={["fas", "chevron-left"]}
-                onClick={() => handleClickOnPrev()}
-              ></FontAwesomeIcon>
-            </div>
-          ) : (
-            <div className="previousNextbtnDisabled">
-              <FontAwesomeIcon
-                className="  paginationButton "
-                icon={["fas", "chevron-left"]}
-              ></FontAwesomeIcon>
-            </div>
-          )}
-          {!lastPage ? (
-            <div className="previousNextbtn">
-              <FontAwesomeIcon
-                icon={["fas", "chevron-right"]}
-                className="paginationButton "
-                onClick={() => handleClickOnNext()}
-              ></FontAwesomeIcon>
-            </div>
-          ) : (
-            <div className="previousNextbtnDisabled">
-              <FontAwesomeIcon
-                icon={["fas", "chevron-right"]}
-                className="paginationButton "
-              ></FontAwesomeIcon>
-            </div>
-          )}
+          <div className="previousNextbtn">
+            <FontAwesomeIcon
+              className="  paginationButton "
+              icon={["fas", "chevron-left"]}
+              onClick={() => handleClickOnPrev()}
+            ></FontAwesomeIcon>
+          </div>
+          <div className="previousNextbtnDisabled">
+            <FontAwesomeIcon
+              className="  paginationButton "
+              icon={["fas", "chevron-left"]}
+            ></FontAwesomeIcon>
+          </div>
+          <div className="previousNextbtn">
+            <FontAwesomeIcon
+              icon={["fas", "chevron-right"]}
+              className="paginationButton "
+              onClick={() => handleClickOnNext()}
+            ></FontAwesomeIcon>
+          </div>
+          <div className="previousNextbtnDisabled">
+            <FontAwesomeIcon
+              icon={["fas", "chevron-right"]}
+              className="paginationButton "
+            ></FontAwesomeIcon>
+          </div>
         </div>
       </div>
     </div>

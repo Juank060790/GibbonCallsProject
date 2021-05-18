@@ -5,12 +5,14 @@ const initialState = {
   selectedAudio: null,
   lastPage: false,
   audio: [],
+  lastDocument: null,
 };
 
 const audioReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case types.AUDIO_REQUEST:
+    case types.AUDIO_SEARCH_REQUEST:
     case types.GET_SINGLE_AUDIO_REQUEST:
     case types.DELETE_COMMENT_RAW_AUDIO_REQUEST:
     case types.DELETE_RAW_AUDIO_REQUEST:
@@ -19,10 +21,15 @@ const audioReducer = (state = initialState, action) => {
     case types.AUDIO_REQUEST_SUCCESS:
       return {
         ...state,
-        audio: payload,
+        audio: payload.filteredaudioList,
+        latestDoc: payload.latestDoc,
         loading: false,
         lastPage: false,
       };
+
+    case types.AUDIO_SEARCH_SUCCESS:
+      console.log(`payload`, payload);
+      return { ...state, audio: payload };
 
     case types.DELETE_COMMENT_RAW_AUDIO_SUCCESS:
     case types.DELETE_RAW_AUDIO_SUCCESS:
@@ -38,6 +45,7 @@ const audioReducer = (state = initialState, action) => {
     case types.AUDIO_REQUEST_FAILURE:
     case types.DELETE_COMMENT_RAW_AUDIO_FAILURE:
     case types.DELETE_RAW_AUDIO_FAILURE:
+    case types.AUDIO_SEARCH_FAILURE:
     case types.GET_SINGLE_AUDIO_REQUEST_FAILURE:
       return { ...state, loading: false };
 

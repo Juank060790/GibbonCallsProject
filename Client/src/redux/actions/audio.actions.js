@@ -1,46 +1,62 @@
 import * as types from "../constants/audio.constants";
 import { db } from "../../Firebase/firebase";
 
-export const audiosRequest = (limit, sortBy, order, page) => (dispatch) => {
+const audiosRequest = (limit, sortBy, order, lastDoc) => (dispatch) => {
   dispatch({ type: types.AUDIO_REQUEST, payload: null });
   let query = {
-    limit: parseInt(limit) || 10,
+    limit: parseInt(limit) || 5,
     sortBy: sortBy || "recordDate",
     order: order || "desc",
-    page: page || 0,
+    paginationDoc: lastDoc || null,
   };
 
-  let filteredaudioList = [];
-  db.collection("rawData")
+  console.log(`query`, query);
+  const refIsDeleted = db
+    .collection("rawData")
     .where("isDeleted", "==", false)
-    .orderBy(query.sortBy, query.order)
-    .limit(query.limit)
-    .onSnapshot((querySnapshot) => {
-      querySnapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          filteredaudioList = [];
-          querySnapshot.forEach((doc) => {
-            filteredaudioList.push(doc.data());
-          });
-        }
-        if (change.type === "modified") {
-          filteredaudioList = [];
-          querySnapshot.forEach((doc) => {
-            filteredaudioList.push(doc.data());
-          });
-        }
-        if (change.type === "removed") {
-          filteredaudioList = [];
-          querySnapshot.forEach((doc) => {
-            filteredaudioList.push(doc.data());
-          });
-        }
+    .orderBy(query.sortBy, query.order);
+
+  if (query.paginationDoc === null) {
+    console.log("if 0");
+    refIsDeleted.limit(query.limit).onSnapshot((querySnapshot) => {
+      let filteredaudioList = [];
+      let latestDoc = [];
+      querySnapshot.docChanges().forEach(() => {
+        filteredaudioList = [];
+        querySnapshot.forEach((doc) => {
+          filteredaudioList.push(doc.data());
+        });
       });
+      latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+      console.log(`querySnapshot`, latestDoc);
       dispatch({
         type: types.AUDIO_REQUEST_SUCCESS,
-        payload: filteredaudioList,
+        payload: { filteredaudioList, latestDoc },
       });
     });
+  } else {
+    console.log("else");
+
+    refIsDeleted
+      .limit(query.limit)
+      .startAt(query.paginationDoc)
+      .onSnapshot((querySnapshot) => {
+        let filteredaudioList = [];
+        let latestDoc = [];
+        querySnapshot.docChanges().forEach(() => {
+          filteredaudioList = [];
+          querySnapshot.forEach((doc) => {
+            filteredaudioList.push(doc.data());
+          });
+        });
+        latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+        console.log(`querySnapshot`, latestDoc);
+        dispatch({
+          type: types.AUDIO_REQUEST_SUCCESS,
+          payload: { filteredaudioList, latestDoc },
+        });
+      });
+  }
 };
 
 const getSingleAudio = (audioId) => (dispatch) => {
@@ -134,7 +150,36 @@ const clearSelectedAudioReducer = () => (dispatch) => {
   dispatch({ type: types.CLEAR_SELECTED_AUDIO, payload: null });
 };
 
-//  ------------------- OLD CODE ------------------//
+const searchDocuments = (searchQuery) => (dispatch) => {
+  dispatch({ type: types.AUDIO_SEARCH_REQUEST });
+
+  let query = {
+    limit: 5,
+    sortBy: "recordDate",
+    order: "desc",
+    searchDoc: searchQuery,
+  };
+
+  console.log(`query`, query);
+
+  let searchList = [];
+  db.collection("rawData")
+    .where("fileName", "==", query.searchDoc)
+    .orderBy(query.sortBy, query.order)
+    .limit(query.limit)
+    .onSnapshot((querySnapshot) => {
+      querySnapshot.docChanges().forEach(() => {
+        querySnapshot.forEach((doc) => {
+          searchList.push(doc.data());
+        });
+      });
+      console.log(`searchList`, searchList);
+      dispatch({
+        type: types.AUDIO_SEARCH_SUCCESS,
+        payload: searchList,
+      });
+    });
+};
 
 export const audioActions = {
   audiosRequest,
@@ -143,4 +188,5 @@ export const audioActions = {
   addCommentRawAudio,
   deleteCommentAudio,
   deleteAudio,
+  searchDocuments,
 };

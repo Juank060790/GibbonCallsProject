@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Nav } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../redux/actions";
+import { logoutUser, audioActions } from "../redux/actions";
 import logo from "../images/logo-reduced.png";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  console.log(`searchQuery`, searchQuery);
+
+  useEffect(() => {
+    dispatch(audioActions.searchDocuments(searchQuery));
+  }, [dispatch, searchQuery]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
   };
+
+  const searchFunction = (e) => {
+    if (e.charCode === 13) {
+      setSearchQuery(e.target.value);
+
+      console.log("enter");
+    } else {
+    }
+  };
+
   return (
     <Container fluid>
       <Nav className="NavBar m-2">
@@ -32,7 +48,12 @@ export default function Navbar() {
       </Nav>
       <div className="bodySearch">
         {" "}
-        <input className="search__input" type="text" placeholder="Search" />
+        <input
+          className="search__input"
+          type="text"
+          onKeyPress={(e) => searchFunction(e)}
+          placeholder="Search"
+        />
       </div>
     </Container>
   );

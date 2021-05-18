@@ -61,11 +61,11 @@ function pickRandomProperty(label) {
 }
 
 exports.createSingleFakeAudio = async (req, res) => {
-  const audioNum = 5;
+  const audioNum = 11;
   const callIdFake = faker.datatype.uuid();
   for (let i = 0; i < audioNum; i++) {
     const createAudio = {
-      audioId: faker.datatype.uuid(),
+      audioId: i + faker.datatype.uuid(),
       audioLink: faker.image.imageUrl(),
       comments: faker.lorem.text(),
       duration: getRandomDuration(1, 59),

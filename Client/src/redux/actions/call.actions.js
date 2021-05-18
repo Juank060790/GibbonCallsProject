@@ -1,5 +1,4 @@
 import * as types from "../constants/call.constants";
-import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
 
 const getSingleCall = (callId) => (dispatch) => {

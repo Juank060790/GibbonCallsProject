@@ -24,7 +24,6 @@ export default function ModalCall({
   useEffect(() => {
     setArrayCalls(calls);
   }, [arrayCalls, calls]);
-  console.log(`arrayCalls`, arrayCalls);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,7 +97,7 @@ export default function ModalCall({
               <>
                 {arrayCalls?.map((call, index) => (
                   <tbody key={index}>
-                    {call?.isDeleted === false ? (
+                    {call?.isCorrect === true ? (
                       <tr className="text-center tableKey" key={call.callId}>
                         <td className="tableSingleKey">{call.callId}</td>
                         <td className="tableSingleKey">{call.timeStart}</td>
