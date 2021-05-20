@@ -21,20 +21,14 @@ const LoginPage = (props) => {
   const isAuthenticated = props.isAuthenticated;
   const loading = props.loading;
 
-  console.log(`props`, props);
-
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    console.log(`email`, email, formData);
-    dispatch(loginUser(email, password));
-  };
 
-  const testclick = () => {
-    console.log(`object`);
+    dispatch(loginUser(email, password));
   };
 
   if (isAuthenticated) {
@@ -104,11 +98,7 @@ const LoginPage = (props) => {
                   Loading...
                 </Button>
               ) : (
-                <button
-                  className="btn-block btn-login"
-                  onClick={testclick}
-                  type="submit"
-                >
+                <button className="btn-block btn-login" type="submit">
                   Login now
                 </button>
               )}

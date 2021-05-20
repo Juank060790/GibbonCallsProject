@@ -7,7 +7,6 @@ import logo from "../images/logo-reduced.png";
 export default function Navbar() {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
-  console.log(`searchQuery`, searchQuery);
 
   useEffect(() => {
     dispatch(audioActions.searchDocuments(searchQuery));
@@ -20,8 +19,6 @@ export default function Navbar() {
   const searchFunction = (e) => {
     if (e.charCode === 13) {
       setSearchQuery(e.target.value);
-
-      console.log("enter");
     } else {
     }
   };

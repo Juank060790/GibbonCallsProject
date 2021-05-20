@@ -1,0 +1,33 @@
+[debug] [2021-05-19T15:49:00.894Z] ----------------------------------------------------------------------
+[debug] [2021-05-19T15:49:00.896Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve
+[debug] [2021-05-19T15:49:00.896Z] CLI Version:   9.6.0
+[debug] [2021-05-19T15:49:00.896Z] Platform:      darwin
+[debug] [2021-05-19T15:49:00.896Z] Node Version:  v14.16.0
+[debug] [2021-05-19T15:49:00.897Z] Time:          Wed May 19 2021 22:49:00 GMT+0700 (Indochina Time)
+[debug] [2021-05-19T15:49:00.897Z] ----------------------------------------------------------------------
+[debug] [2021-05-19T15:49:00.897Z] 
+[debug] [2021-05-19T15:49:00.904Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-05-19T15:49:00.905Z] > authorizing via signed-in user
+[debug] [2021-05-19T15:49:00.905Z] [iam] checking project coderschool-project-gibbon for permissions ["firebase.projects.get"]
+[debug] [2021-05-19T15:49:00.907Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-05-19T15:49:00.907Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-05-19T15:49:01.101Z] <<< HTTP RESPONSE 200 {"date":"Wed, 19 May 2021 15:49:01 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-05-19T15:49:01.108Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/coderschool-project-gibbon:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2021-05-19T15:49:02.130Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 19 May 2021 15:49:02 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=822","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-05-19T15:49:02.132Z] > refreshing access token with scopes: []
+[debug] [2021-05-19T15:49:02.132Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-05-19T15:49:02.265Z] <<< HTTP RESPONSE 200 {"date":"Wed, 19 May 2021 15:49:02 GMT","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-05-19T15:49:02.273Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon [none]
+[debug] [2021-05-19T15:49:02.748Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon 200
+[debug] [2021-05-19T15:49:02.748Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon {"projectId":"coderschool-project-gibbon","projectNumber":"591790114188","displayName":"coderschool project gibbon","name":"projects/coderschool-project-gibbon","resources":{"hostingSite":"coderschool-project-gibbon","realtimeDatabaseInstance":"coderschool-project-gibbon-default-rtdb","storageBucket":"coderschool-project-gibbon.appspot.com","locationId":"asia-northeast1"},"state":"ACTIVE"}
+[info] 
+[info] === Serving from '/Users/Juanca/Documents/FreelanceStuff/Web Develop/AppGibbonCalls/GibbonCallsProject/Client'...
+[info] 
+[debug] [2021-05-19T15:49:02.749Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon/webApps/-/config [none]
+[debug] [2021-05-19T15:49:04.065Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon/webApps/-/config 200
+[debug] [2021-05-19T15:49:04.065Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/coderschool-project-gibbon/webApps/-/config {"projectId":"coderschool-project-gibbon","appId":"1:591790114188:web:288819c209bcabe9efc2a9","databaseURL":"https://coderschool-project-gibbon-default-rtdb.firebaseio.com","storageBucket":"coderschool-project-gibbon.appspot.com","locationId":"asia-northeast1","apiKey":"AIzaSyC8TEMZYOeF1gFAbVDwiqqE0h8GfSL4kCk","authDomain":"coderschool-project-gibbon.firebaseapp.com","messagingSenderId":"591790114188","measurementId":"G-6X65GQ4HSG"}
+[info] i  hosting: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] ✔  hosting: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}

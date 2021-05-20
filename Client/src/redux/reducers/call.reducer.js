@@ -10,8 +10,6 @@ const initialState = {
 const callReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case types.CLEAR_CALLS:
-      return { ...state, call: [] };
     case types.GET_SINGLE_CALL_REQUEST:
       return { ...state, call: [], loading: true };
     case types.GET_SINGLE_CALL_SUCCESS:
@@ -25,11 +23,13 @@ const callReducer = (state = initialState, action) => {
     case types.GET_SINGLE_CALL_FAILURE:
       return { ...state, loading: false };
 
+    case types.UPDATE_IS_CORRECT_CALL_REQUEST:
     case types.DELETE_COMMENT_CALL_REQUEST:
       return { ...state, loading: true };
     case types.DELETE_COMMENT_CALL_SUCCESS:
       return { ...state, payload };
     case types.DELETE_COMMENT_CALL_FAILURE:
+    case types.UPDATE_IS_CORRECT_CALL_SUCCESS:
       return { ...state, loading: false };
 
     case types.CREATE_COMMENT_SINGLE_CALL_SUCCESS:
@@ -40,6 +40,11 @@ const callReducer = (state = initialState, action) => {
         payload,
         loading: false,
       };
+
+    case types.UPDATE_IS_CORRECT_CALL_FAILURE:
+      return { ...state, loading: false };
+    case types.CLEAR_CALLS:
+      return { ...state, call: [] };
 
     default:
       return state;

@@ -3,9 +3,9 @@ import * as types from "../constants/audio.constants";
 const initialState = {
   loading: false,
   selectedAudio: null,
-  lastPage: false,
   audio: [],
   lastDocument: null,
+  firstDocument: null,
 };
 
 const audioReducer = (state = initialState, action) => {
@@ -23,12 +23,11 @@ const audioReducer = (state = initialState, action) => {
         ...state,
         audio: payload.filteredaudioList,
         latestDoc: payload.latestDoc,
+        firstDocument: payload.firstDocument,
         loading: false,
-        lastPage: false,
       };
 
     case types.AUDIO_SEARCH_SUCCESS:
-      console.log(`payload`, payload);
       return { ...state, audio: payload };
 
     case types.DELETE_COMMENT_RAW_AUDIO_SUCCESS:

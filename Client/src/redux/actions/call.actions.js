@@ -88,12 +88,34 @@ const deleteCall = (callId) => (dispatch) => {
     });
 };
 
+const updateIsCallCorrect = (callId) => (dispatch) => {
+  dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
+  db.collection("calls")
+    .doc(`${callId}`)
+    .update({
+      isCorrect: false,
+    })
+    .then(() => {
+      dispatch({
+        type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
+        payload: "Call update it successfully ",
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: types.UPDATE_IS_CORRECT_CALL_FAILURE,
+        payload: `Error updating call:${callId}`,
+      });
+    });
+};
+
 export const callActions = {
   getSingleCall,
   clearCallsReducer,
   addCommentSingleCall,
   deleteCommentCall,
   deleteCall,
+  updateIsCallCorrect,
 };
 
 // ------------ Old CODE --------------//

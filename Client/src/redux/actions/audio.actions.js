@@ -1,48 +1,70 @@
 import * as types from "../constants/audio.constants";
 import { db } from "../../Firebase/firebase";
 
-const audiosRequest = (limit, sortBy, order, lastDoc) => (dispatch) => {
-  dispatch({ type: types.AUDIO_REQUEST, payload: null });
-  let query = {
-    limit: parseInt(limit) || 5,
-    sortBy: sortBy || "recordDate",
-    order: order || "desc",
-    paginationDoc: lastDoc || null,
-  };
+const audiosRequest =
+  (limit, sortBy, order, lastDoc, firstDoc) => (dispatch) => {
+    dispatch({ type: types.AUDIO_REQUEST, payload: null });
+    let query = {
+      limit: parseInt(limit) || 5,
+      sortBy: sortBy || "recordDate",
+      order: order || "desc",
+      lastDocument: lastDoc || null,
+      firstDocument: firstDoc || null,
+    };
+    const refIsDeleted = db
+      .collection("rawData")
+      .where("isDeleted", "==", false)
+      .orderBy(query.sortBy, query.order);
 
-  console.log(`query`, query);
-  const refIsDeleted = db
-    .collection("rawData")
-    .where("isDeleted", "==", false)
-    .orderBy(query.sortBy, query.order);
-
-  if (query.paginationDoc === null) {
-    console.log("if 0");
-    refIsDeleted.limit(query.limit).onSnapshot((querySnapshot) => {
-      let filteredaudioList = [];
-      let latestDoc = [];
-      querySnapshot.docChanges().forEach(() => {
-        filteredaudioList = [];
-        querySnapshot.forEach((doc) => {
-          filteredaudioList.push(doc.data());
+    if (query.lastDocument) {
+      refIsDeleted
+        .limit(query.limit)
+        .startAt(query.lastDocument)
+        .onSnapshot((querySnapshot) => {
+          let filteredaudioList = [];
+          let latestDoc = [];
+          let firstDocument = [];
+          querySnapshot.docChanges().forEach(() => {
+            filteredaudioList = [];
+            querySnapshot.forEach((doc) => {
+              filteredaudioList.push(doc.data());
+            });
+          });
+          latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+          firstDocument = querySnapshot.docs[0];
+          dispatch({
+            type: types.AUDIO_REQUEST_SUCCESS,
+            payload: { filteredaudioList, latestDoc, firstDocument },
+          });
         });
-      });
-      latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-      console.log(`querySnapshot`, latestDoc);
-      dispatch({
-        type: types.AUDIO_REQUEST_SUCCESS,
-        payload: { filteredaudioList, latestDoc },
-      });
-    });
-  } else {
-    console.log("else");
-
-    refIsDeleted
-      .limit(query.limit)
-      .startAt(query.paginationDoc)
-      .onSnapshot((querySnapshot) => {
+    }
+    if (query.firstDocument) {
+      refIsDeleted
+        .limit(query.limit)
+        .endAt(query.firstDocument)
+        .onSnapshot((querySnapshot) => {
+          let filteredaudioList = [];
+          let latestDoc = [];
+          let firstDocument = [];
+          querySnapshot.docChanges().forEach(() => {
+            filteredaudioList = [];
+            querySnapshot.forEach((doc) => {
+              filteredaudioList.push(doc.data());
+            });
+          });
+          latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+          firstDocument = querySnapshot.docs[0];
+          dispatch({
+            type: types.AUDIO_REQUEST_SUCCESS,
+            payload: { filteredaudioList, latestDoc, firstDocument },
+          });
+        });
+    }
+    if (query.firstDocument === null && query.lastDocument === null) {
+      refIsDeleted.limit(query.limit).onSnapshot((querySnapshot) => {
         let filteredaudioList = [];
         let latestDoc = [];
+        let firstDocument = [];
         querySnapshot.docChanges().forEach(() => {
           filteredaudioList = [];
           querySnapshot.forEach((doc) => {
@@ -50,14 +72,14 @@ const audiosRequest = (limit, sortBy, order, lastDoc) => (dispatch) => {
           });
         });
         latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-        console.log(`querySnapshot`, latestDoc);
+        firstDocument = querySnapshot.docs[0];
         dispatch({
           type: types.AUDIO_REQUEST_SUCCESS,
-          payload: { filteredaudioList, latestDoc },
+          payload: { filteredaudioList, latestDoc, firstDocument },
         });
       });
-  }
-};
+    }
+  };
 
 const getSingleAudio = (audioId) => (dispatch) => {
   let singleAudio = {};
@@ -159,8 +181,6 @@ const searchDocuments = (searchQuery) => (dispatch) => {
     order: "desc",
     searchDoc: searchQuery,
   };
-
-  console.log(`query`, query);
 
   let searchList = [];
   db.collection("rawData")

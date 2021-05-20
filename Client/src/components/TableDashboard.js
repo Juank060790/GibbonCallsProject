@@ -18,8 +18,8 @@ export default function TableDashboard() {
   };
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
-  console.log(`audios`, audios);
   const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
+  const firstDocumentRedux = useSelector((state) => state.audio.firstDocument);
   const loading = useSelector((state) => state.audio.loading);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const dispatch = useDispatch();
@@ -27,18 +27,20 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
   const [firstDoc, setFirstDoc] = useState();
-  const [docsPerPage, setDocsPerPage] = useState(3);
+  const [docsPerPage, setDocsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
-  const [firstPage, setFirstPage] = useState(true);
+  // const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
   const [spectogramImage, setSpectogramImage] = useState("");
   const [spectogramAudio, setSpectogramAudio] = useState("");
 
   useEffect(() => {
-    dispatch(audioActions.audiosRequest(docsPerPage, orderBy, order, lastDoc));
-  }, [dispatch, docsPerPage, orderBy, order, lastDoc]);
+    dispatch(
+      audioActions.audiosRequest(docsPerPage, orderBy, order, lastDoc, firstDoc)
+    );
+  }, [dispatch, docsPerPage, orderBy, order, lastDoc, firstDoc]);
 
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -76,20 +78,23 @@ export default function TableDashboard() {
 
   // Pagination
   const handleClickOnNext = () => {
-    setFirstDoc(audios[0]);
+    setFirstDoc(null);
     setLastDoc(lastDocumentRedux);
   };
 
   const handleClickOnPrev = () => {
-    console.log(`firstDoc`, firstDoc);
-    setLastDoc(firstDoc);
+    setLastDoc(null);
+    setFirstDoc(firstDocumentRedux);
+    console.log(`firstDoc`, firstDocumentRedux);
   };
 
   // Get an individual calls  inside of a RawAudio
   // This function returns the state with single calls of a Raw Audio into a state([]).
 
   const getCalls = (gibbonCallsList) => {
+    console.log(`gibbonCallsList`, gibbonCallsList);
     gibbonCallsList?.forEach((call) => {
+      console.log(`call`, call);
       dispatch(callActions.getSingleCall(call));
     });
     handleShow();
@@ -316,7 +321,7 @@ export default function TableDashboard() {
                   >
                     {audio.gibbonCalls}
                   </td>
-                  <td className="tableSingleKeyBtn commentKey">
+                  <td className="">
                     <div className="buttonscomments">
                       <Button
                         className="savebutton commentBtns commentBtnsSave"
@@ -406,7 +411,7 @@ export default function TableDashboard() {
         </>
       </Table>
       <PaginationItem
-        firstPage={firstPage}
+        // firstPage={firstPage}
         audios={audios}
         loading={loading}
         handleClickOnNext={handleClickOnNext}

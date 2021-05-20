@@ -14,9 +14,6 @@ export const Wave = styled.div`
 `;
 
 export const PlayButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 60px;
   height: 60px;
   background: #d7ebd6;
@@ -24,11 +21,7 @@ export const PlayButton = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
-  padding-bottom: 3px;
-  &:hover {
-    background: #ddd;
-  }
 `;
 export const wavespectrogram = styled.div`
-  width: 100%;
+  width: 100vw;
 `;

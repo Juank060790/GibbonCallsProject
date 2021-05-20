@@ -10,6 +10,8 @@ import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import audio from "../19700101_013658.wav";
+import { useSelector } from "react-redux";
+import { Container } from "react-bootstrap";
 
 export default function Waveform(SpectogramAudio) {
   // const calls = useSelector((state) => state.call);
@@ -19,7 +21,8 @@ export default function Waveform(SpectogramAudio) {
   const Waveform = useRef(null);
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
-  const [zoomValue, setZoomValue] = React.useState(20);
+  const [zoomValue, setZoomValue] = React.useState(30);
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
 
   // Get Start time and End time from each call(TO DO!)
 
@@ -28,7 +31,8 @@ export default function Waveform(SpectogramAudio) {
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
     barWidth: 1,
-    cursorWidth: 2,
+    barHeight: 1,
+    cursorWidth: 1,
     backend: "WebAudio",
     height: 128,
     progressColor: "#2D5BFF",
@@ -44,7 +48,7 @@ export default function Waveform(SpectogramAudio) {
         container: "#wave-minimap",
         waveColor: "#777",
         progressColor: "#222",
-        height: 30,
+        height: 50,
       }),
       TimelinePlugin.create({
         container: "#wave-timeline",
@@ -63,16 +67,18 @@ export default function Waveform(SpectogramAudio) {
     ],
   });
   let colors = colorMap({
-    colorMap: "jet",
-    nshades: 512,
+    colormap: "greens",
+    nshades: 256,
     format: "float",
   });
 
+  console.log(`colors`, colors.colormap);
+
   let SpectogramPlugin = SpectrogramPlugin.create({
     fftSamples: 512,
-    width: "100px",
-    windowFunc: "bartlett",
-    height: "100%",
+    width: "50px",
+    // windowFunc: "triangular",
+    height: "100px",
     container: "#wavespectrogram",
     labels: true,
     colorMap: colors,
@@ -104,7 +110,6 @@ export default function Waveform(SpectogramAudio) {
           };
         })
       );
-      console.log("SAVE ", localStorage.regions);
     }
 
     /**
@@ -226,16 +231,40 @@ export default function Waveform(SpectogramAudio) {
     <div>
       {" "}
       <div>
-        <div className="d-flex flex-column ">
-          Show Spectogram
-          <label className="switch">
-            <input
-              id="SpectogramPluginInit"
-              type="checkbox"
-              onChange={ShowSpectogram}
-            />
-            <span className="sliderSwitch round"></span>
-          </label>
+        <Container fluid>
+          <div className="containerInfoAudio">
+            <div>
+              {selectedAudio ? (
+                <div className="FileDetails">
+                  <h4>File Details:</h4>
+                  <p>Name:{selectedAudio.fileName}</p>
+                  <p>Duration:{selectedAudio.duration}</p>
+                  <p>
+                    Record Date:{" "}
+                    {new Date(
+                      selectedAudio.recordDate.seconds * 1000
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+              ) : (
+                <p></p>
+              )}
+            </div>
+            <div></div>
+          </div>
+        </Container>
+        <div className="d-flex controlsContainer ">
+          <div className="d-flex flex-column">
+            Show Spectogram
+            <label className="switch">
+              <input
+                id="SpectogramPluginInit"
+                type="checkbox"
+                onChange={ShowSpectogram}
+              />
+              <span className="sliderSwitch round"></span>
+            </label>
+          </div>
           <div className="d-flex flex-column">
             <div>Zoom</div>
             <div className="slidecontainer ">
@@ -245,16 +274,16 @@ export default function Waveform(SpectogramAudio) {
                 onChange={(e) => setZoomValue(e.target.value)}
                 variant="success"
                 size="sm"
-                min={10}
-                max={200}
+                min={30}
+                max={1000}
               />
             </div>
           </div>
-        </div>
-        <div className="d-flex justify-content-center">
-          <PlayButton onClick={handlePlayPause}>
-            {!Play ? "Play" : "Pause"}
-          </PlayButton>
+          <div>
+            <PlayButton onClick={handlePlayPause}>
+              {!Play ? "Play" : "Pause"}
+            </PlayButton>
+          </div>
         </div>
 
         <div className="spectogramandwave">

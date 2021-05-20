@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Modal, Table, Button, Dropdown } from "react-bootstrap";
+import { Modal, Table, Button, Dropdown, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
 import logoFF from "../images/logo-reduced.png";
@@ -36,6 +36,8 @@ export default function ModalCall({
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const deleteCommentSingleCall = (callId) => {
+    console.log(`isa deletecomment`, callId);
+
     dispatch(callActions.deleteCommentCall(callId));
   };
 
@@ -43,13 +45,13 @@ export default function ModalCall({
     dispatch(callActions.deleteCall(callId));
   };
 
+  const isCallCorrect = (callId) => {
+    console.log(`isa correctcall`, callId);
+    dispatch(callActions.updateIsCallCorrect(callId));
+  };
+
   return (
-    <Modal
-      show={showModal}
-      onHide={handleClose}
-      size={"xl"}
-      dialogClassName="modal-100w"
-    >
+    <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
         <h6>{selectedAudio?.fileName}</h6>
       </Modal.Header>
@@ -67,7 +69,7 @@ export default function ModalCall({
               <th>Time End</th>
               <th>Spectogram</th>
               <th>Action</th>
-              <th>Tags</th>
+              <th>Gender</th>
               <th>Comments</th>
               <th className="text-center">
                 <Dropdown>
@@ -118,22 +120,69 @@ export default function ModalCall({
                             height="100px"
                           />
                         </td>
-                        <td className="tableSingleKeyBtn commentKey">
+                        <td className="tableSingleKey commentKey">
                           <div className="buttonscomments">
-                            <Button
-                              className="savebutton commentBtns commentBtnsSave"
-                              disabled={call.comment ? true : false}
-                              type="submit"
-                              form="commentForm"
-                              onClick={handleSubmit}
-                            >
+                            {call?.isCorrect === false ? (
+                              <Button
+                                className="savebutton commentBtns commentBtnsSave"
+                                onClick={() => isCallCorrect(call?.callId)}
+                              >
+                                {" "}
+                                <FontAwesomeIcon
+                                  className="savebutton "
+                                  icon={["fas", "check"]}
+                                  color="#04c45c"
+                                ></FontAwesomeIcon>
+                              </Button>
+                            ) : (
+                              <Button
+                                className="savebutton commentBtns commentBtnsDelete"
+                                onClick={() => isCallCorrect(call?.callId)}
+                              >
+                                <FontAwesomeIcon
+                                  className="savebutton"
+                                  icon={["fas", "times"]}
+                                  color="white"
+                                ></FontAwesomeIcon>{" "}
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                        {call.label === "Female" ? (
+                          <td className="tableSingleKey ">
+                            {" "}
+                            <Badge className="labelTag femaleTag">
                               {" "}
+                              {call.label}{" "}
                               <FontAwesomeIcon
-                                className="savebutton "
-                                icon={["fas", "check"]}
-                                color="#04c45c"
+                                className="savebutton"
+                                icon={["fas", "venus"]}
+                                color="white"
                               ></FontAwesomeIcon>
-                            </Button>{" "}
+                            </Badge>
+                          </td>
+                        ) : (
+                          <td className="tableSingleKey">
+                            {" "}
+                            <Badge className="labelTag maleTag">
+                              {" "}
+                              {call.label}{" "}
+                              <FontAwesomeIcon
+                                className="savebutton"
+                                icon={["fas", "mars"]}
+                                color="white"
+                              ></FontAwesomeIcon>
+                            </Badge>
+                          </td>
+                        )}
+
+                        {call.comment ? (
+                          <td className="tableSingleKey commentKey">
+                            <div className="commentBox textareacomments">
+                              <div className="commentSubBox ">
+                                <p className="text-center">{call.comment}</p>
+                              </div>
+                            </div>
                             <Button
                               className="savebutton commentBtns commentBtnsDelete"
                               disabled={call.comment ? false : true}
@@ -148,17 +197,6 @@ export default function ModalCall({
                                 color="white"
                               ></FontAwesomeIcon>{" "}
                             </Button>{" "}
-                          </div>
-                        </td>
-                        <td className="tableSingleKey">{call.label}</td>
-
-                        {call.comment ? (
-                          <td className="tableSingleKey commentKey">
-                            <div className="commentBox textareacomments">
-                              <div className="commentSubBox ">
-                                <p className="text-center">{call.comment}</p>
-                              </div>
-                            </div>
                           </td>
                         ) : (
                           <>
@@ -184,6 +222,22 @@ export default function ModalCall({
                                     </Form.Group>{" "}
                                   </div>
                                 </Form>
+                              </div>
+                              <div className="buttonscomments">
+                                <Button
+                                  className="savebutton commentBtns commentBtnsSave"
+                                  disabled={call.comment ? true : false}
+                                  type="submit"
+                                  form="commentForm"
+                                  onClick={handleSubmit}
+                                >
+                                  {" "}
+                                  <FontAwesomeIcon
+                                    className="savebutton "
+                                    icon={["fas", "check"]}
+                                    color="#04c45c"
+                                  ></FontAwesomeIcon>
+                                </Button>{" "}
                               </div>
                             </td>
                           </>
