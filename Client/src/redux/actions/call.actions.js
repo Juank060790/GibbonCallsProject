@@ -1,5 +1,6 @@
 import * as types from "../constants/call.constants";
 import { db } from "../../Firebase/firebase";
+import firebase from "firebase/app";
 
 const getSingleCall = (callId) => (dispatch) => {
   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
@@ -109,6 +110,35 @@ const updateIsCallCorrect = (callId) => (dispatch) => {
     });
 };
 
+const saveRegionCall = (singleCall, audioId) => (dispatch) => {
+  let singleCallId = singleCall.callId;
+  dispatch({ type: types.SAVE_REGION_CALL_REQUEST, payload: null });
+  db.collection(`calls`)
+    .doc(singleCallId)
+    .set(singleCall)
+    .then(() => {
+      db.collection("rawData")
+        .doc(audioId)
+        .update(
+          "gibbonCallsList",
+          firebase.firestore.FieldValue.arrayUnion(singleCallId)
+        );
+
+      console.log(`addCall`, singleCall);
+      dispatch({
+        type: types.SAVE_REGION_CALL_SUCCESS,
+        payload: "Region call has been saved ",
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: types.SAVE_REGION_CALL_FAILURE,
+        payload: `Error creating call:${audioId}`,
+      });
+    });
+  console.log(`The region was created successfully`);
+};
+
 export const callActions = {
   getSingleCall,
   clearCallsReducer,
@@ -116,6 +146,7 @@ export const callActions = {
   deleteCommentCall,
   deleteCall,
   updateIsCallCorrect,
+  saveRegionCall,
 };
 
 // ------------ Old CODE --------------//

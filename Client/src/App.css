@@ -265,6 +265,16 @@ margin: auto;
   color: #686464;
   vertical-align: middle !important;
 }
+.tableSaveRegionHeader {
+  background-color: #1a686e6c;
+  color: #686464;
+  vertical-align: middle !important;
+}
+
+.tableNewCall{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
 
 .tableSingleKey {
   vertical-align: middle !important;
@@ -605,3 +615,4 @@ input:checked + .sliderSwitch:before {
   border-radius: 0;
   background-position: 100% center;
 }
+

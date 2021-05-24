@@ -21,6 +21,8 @@ export default function ModalCall({
   const dispatch = useDispatch();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
 
+  // eslint-disable-next-line
+  const callsTEst = useSelector((state) => state.call);
   useEffect(() => {
     setArrayCalls(calls);
   }, [arrayCalls, calls]);
@@ -36,8 +38,6 @@ export default function ModalCall({
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const deleteCommentSingleCall = (callId) => {
-    console.log(`isa deletecomment`, callId);
-
     dispatch(callActions.deleteCommentCall(callId));
   };
 
@@ -46,7 +46,6 @@ export default function ModalCall({
   };
 
   const isCallCorrect = (callId) => {
-    console.log(`isa correctcall`, callId);
     dispatch(callActions.updateIsCallCorrect(callId));
   };
 
@@ -61,6 +60,10 @@ export default function ModalCall({
           spectogramAudio={spectogramAudio}
           spectogramImage={spectogramImage}
         />
+        <div>
+          {" "}
+          <h4>Calls Saved in the database</h4>
+        </div>
         <Table responsive>
           <thead className="text-center tableHeader">
             <tr>

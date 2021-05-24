@@ -193,7 +193,6 @@ const searchDocuments = (searchQuery) => (dispatch) => {
           searchList.push(doc.data());
         });
       });
-      console.log(`searchList`, searchList);
       dispatch({
         type: types.AUDIO_SEARCH_SUCCESS,
         payload: searchList,

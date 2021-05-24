@@ -94,7 +94,7 @@ export default function TableDashboard() {
   const getCalls = (gibbonCallsList) => {
     console.log(`gibbonCallsList`, gibbonCallsList);
     gibbonCallsList?.forEach((call) => {
-      console.log(`call`, call);
+      // console.log(`call`, call);
       dispatch(callActions.getSingleCall(call));
     });
     handleShow();
@@ -425,6 +425,7 @@ export default function TableDashboard() {
         spectogramImage={spectogramImage}
         spectogramAudio={spectogramAudio}
         showSpectrogram={showSpectrogram}
+        getCalls={getCalls}
       />
     </>
   );
