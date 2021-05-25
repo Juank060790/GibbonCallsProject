@@ -26,12 +26,8 @@ export default function TableNewCalls(regionsArray) {
           </thead>
           <>
             {arrayForRegions?.map((call, index) => (
-              <tbody>
-                <tr
-                  index={index}
-                  key={call.audioId}
-                  className="text-center tableKey"
-                >
+              <tbody key={index}>
+                <tr className="text-center tableKey">
                   <td className="tableSingleKey">
                     {call.singleRegion?.callId}
                   </td>

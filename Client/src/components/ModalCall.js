@@ -100,7 +100,7 @@ export default function ModalCall({
           <>
             {arrayCalls ? (
               <>
-                {arrayCalls?.map((call, index) => (
+                {arrayCalls.map((call, index) => (
                   <tbody key={index}>
                     {call?.isCorrect === true ? (
                       <tr className="text-center tableKey" key={call.callId}>

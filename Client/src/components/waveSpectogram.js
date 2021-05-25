@@ -28,16 +28,22 @@ export default function Waveform(SpectogramAudio) {
   const [zoomValue, setZoomValue] = React.useState(30);
   const [regionsArray, setRegionsArray] = useState();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  const CallsList = useSelector((state) => state.audio.callsList);
+  console.log(`CallsList`, CallsList);
 
-  // console.log(`selectedAudio`, selectedAudio?.audioId);
-  // Get Start time and End time from each call(TO DO!)
+  useEffect(() => {
+    // getCalls();
+    console.log("useEffectWAvesurf", CallsList);
+  }, [CallsList]);
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
+    console.log(`CallsList`, regionsArray);
     if (regionsArray) {
       regionsArray?.forEach((region) => {
-        // console.log(`callRegion SIngle`, region.singleRegion);
         let singleCall = region.singleRegion;
         dispatch(callActions.saveRegionCall(singleCall, audioId));
+        dispatch(callActions.getSingleCall(singleCall.callId));
+        setRegionsArray([]);
       });
     } else {
       console.log("Nothing to send");
@@ -154,6 +160,8 @@ export default function Waveform(SpectogramAudio) {
           timeStart: region.start,
           timeEnd: region.end,
           isCorrect: true,
+          isDeleted: false,
+          SpectogramAudio: "",
           // attributes: region.attributes,
           // data: region.data,
         };
@@ -360,7 +368,11 @@ export default function Waveform(SpectogramAudio) {
         <div>
           <button
             onClick={() =>
-              saveRegionsDataBase(regionsArray, selectedAudio?.audioId)
+              saveRegionsDataBase(
+                regionsArray,
+                selectedAudio?.audioId,
+                CallsList
+              )
             }
             className="btnSave draw-border"
           >

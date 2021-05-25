@@ -123,11 +123,9 @@ const saveRegionCall = (singleCall, audioId) => (dispatch) => {
           "gibbonCallsList",
           firebase.firestore.FieldValue.arrayUnion(singleCallId)
         );
-
-      console.log(`addCall`, singleCall);
       dispatch({
         type: types.SAVE_REGION_CALL_SUCCESS,
-        payload: "Region call has been saved ",
+        payload: null,
       });
     })
     .catch(() => {

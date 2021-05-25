@@ -6,6 +6,7 @@ const initialState = {
   audio: [],
   lastDocument: null,
   firstDocument: null,
+  callsList: [],
 };
 
 const audioReducer = (state = initialState, action) => {
@@ -39,6 +40,7 @@ const audioReducer = (state = initialState, action) => {
         ...state,
         selectedAudio: payload,
         loading: false,
+        callsList: payload.gibbonCallsList,
       };
 
     case types.AUDIO_REQUEST_FAILURE:
@@ -49,7 +51,7 @@ const audioReducer = (state = initialState, action) => {
       return { ...state, loading: false };
 
     case types.CLEAR_SELECTED_AUDIO:
-      return { ...state, selectedAudio: undefined };
+      return { ...state, selectedAudio: undefined, callsList: [] };
 
     case types.AUDIO_REQUEST_NOMORE_DATA:
       return { ...state, lastPage: true, loading: false };

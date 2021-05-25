@@ -19,7 +19,7 @@ const audiosRequest =
     if (query.lastDocument) {
       refIsDeleted
         .limit(query.limit)
-        .startAt(query.lastDocument)
+        .startAfter(query.lastDocument)
         .onSnapshot((querySnapshot) => {
           let filteredaudioList = [];
           let latestDoc = [];
