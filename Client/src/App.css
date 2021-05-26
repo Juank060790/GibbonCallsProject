@@ -273,7 +273,7 @@ margin: auto;
 
 .tableNewCall{
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
 .tableSingleKey {
@@ -358,6 +358,12 @@ margin: auto;
 
 .spectogramandwave{
   margin-bottom: 3rem;
+}
+
+
+.wavespectrogram{
+  width: 100% !important;
+  /* height: 50% !important; */
 }
 
 .FileDetails {

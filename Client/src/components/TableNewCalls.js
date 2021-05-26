@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Table } from "react-bootstrap";
+import { Dropdown, Table } from "react-bootstrap";
 
 export default function TableNewCalls(regionsArray) {
   const arrayForRegions = regionsArray?.regionsArray;
@@ -47,8 +47,22 @@ export default function TableNewCalls(regionsArray) {
 
                   <td className="tableSingleKey commentKey">Save</td>
                   <td className="tableSingleKey ">
-                    {" "}
-                    {call.singleRegion?.label}
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        className="dropdownBtn"
+                        variant="success"
+                        id="dropdown-basic"
+                      >
+                        <FontAwesomeIcon
+                          icon={["fas", "venus-mars"]}
+                        ></FontAwesomeIcon>
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item href="#/action-2">Female</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Male</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    {/* {call.singleRegion?.label}{" "} */}
                   </td>
 
                   <td className="lastCell tableSingleKey">

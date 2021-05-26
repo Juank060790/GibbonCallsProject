@@ -100,10 +100,12 @@ export default function Waveform(SpectogramAudio) {
     fftSamples: 512,
     width: "50px",
     // windowFunc: "triangular",
-    height: "100px",
+    height: "300px",
     container: "#wavespectrogram",
     labels: true,
+    responsive: true,
     colorMap: colors,
+    noverlap: false,
     pixelRatio: 1,
     deferInit: SpectogramPluginInit,
   });
@@ -360,7 +362,11 @@ export default function Waveform(SpectogramAudio) {
           <WaveformContianer>
             <Wave ref={waveformTimeLineRef} id="wave-minimap" />
             <Wave ref={waveformRef} id="waveform" />
-            <Wave ref={waveformSpectogramRef} id="wavespectrogram" />
+            <Wave
+              className="wavespectrogram"
+              ref={waveformSpectogramRef}
+              id="wavespectrogram"
+            />
             <Wave ref={waveformTimeLineRef} id="wave-timeline" />
             <audio src={url} />
           </WaveformContianer>
