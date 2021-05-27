@@ -17,7 +17,7 @@ const callReducer = (state = initialState, action) => {
       return { ...state, loading: false };
     case types.GET_SINGLE_CALL_SUCCESS:
       const callArray = state.call;
-      console.log(`state`, callArray);
+      // console.log(`state`, callArray);
       const isCallInTheArray = (el) => el.callId === payload.callId;
       const findIndexOfCall = callArray.findIndex(isCallInTheArray);
 

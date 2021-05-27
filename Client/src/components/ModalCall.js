@@ -67,6 +67,7 @@ export default function ModalCall({
         <Table responsive>
           <thead className="text-center tableHeader">
             <tr>
+              <th>Num</th>
               <th className="idNumberModal">Id N&deg;</th>
               <th>Time Start</th>
               <th>Time End</th>
@@ -103,26 +104,40 @@ export default function ModalCall({
                 {arrayCalls.map((call, index) => (
                   <tbody key={index}>
                     {call?.isCorrect === true ? (
-                      <tr className="text-center tableKey" key={call.callId}>
+                      <tr
+                        style={{ backgroundColor: call?.color }}
+                        className="text-center tableKey"
+                        key={call.callId}
+                      >
+                        <td className="tableSingleKey">{index + 1}</td>
                         <td className="tableSingleKey">{call.callId}</td>
-                        <td className="tableSingleKey">{call.timeStart}</td>
-                        <td className="tableSingleKey">{call.timeEnd}</td>
-                        <td
-                          onClick={() =>
-                            showSpectrogram(
-                              call.spectogram,
-                              call.spectogramAudio
-                            )
-                          }
-                          className="tableSingleKey"
-                        >
-                          <img
-                            src={call.spectogram}
-                            alt="spectogram of a single call"
-                            width="150px"
-                            height="100px"
-                          />
+                        <td className="tableSingleKey">
+                          {call.start.toFixed(4)}
                         </td>
+                        <td className="tableSingleKey">
+                          {call.end.toFixed(4)}
+                        </td>
+                        {call.spectogram ? (
+                          <td
+                            onClick={() => showSpectrogram(call.spectogram)}
+                            className="tableSingleKey"
+                          >
+                            <img
+                              src={call.spectogram}
+                              alt="spectogram of a single call"
+                              width="150px"
+                              height="100px"
+                            />
+                          </td>
+                        ) : (
+                          <td
+                            onClick={() => showSpectrogram(call.spectogram)}
+                            className="tableSingleKey"
+                          >
+                            <p>No picture added</p>
+                          </td>
+                        )}
+
                         <td className="tableSingleKey commentKey">
                           <div className="buttonscomments">
                             {call?.isCorrect === false ? (

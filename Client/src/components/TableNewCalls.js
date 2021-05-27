@@ -1,22 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Table } from "react-bootstrap";
 
 export default function TableNewCalls(regionsArray) {
   const arrayForRegions = regionsArray?.regionsArray;
+  const [arrayNewRegions, setArrayNewRegions] = useState();
+
+  useEffect(() => {
+    console.log(`arrayNewRegions`, arrayNewRegions);
+  }, [arrayNewRegions]);
+  // // Delete call from the new list //
+
+  const deleteCall = (index) => {
+    arrayNewRegions.splice(index, 1);
+    setArrayNewRegions(arrayNewRegions);
+  };
 
   return (
     <div className="tableNewCall">
-      {" "}
       <h4>Create a new Call</h4>
       {arrayForRegions ? (
         <Table responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
-              <th className="idNumberModal">Id N&deg;</th>
+              <th className="idNumberModal">N&deg;</th>
               <th>Time Start</th>
               <th>Time End</th>
-              <th>Spectogram</th>
+              {/* <th>Spectogram</th> */}
               <th>Action</th>
               <th>Gender</th>
               <th>Delete</th>
@@ -28,24 +38,24 @@ export default function TableNewCalls(regionsArray) {
             {arrayForRegions?.map((call, index) => (
               <tbody key={index}>
                 <tr className="text-center tableKey">
+                  <td className="tableSingleKey">{index}</td>
                   <td className="tableSingleKey">
-                    {call.singleRegion?.callId}
+                    {call.singleRegion.start.toFixed(3)}
                   </td>
                   <td className="tableSingleKey">
-                    {call.singleRegion.timeStart}
+                    {call.singleRegion.end.toFixed(3)}
                   </td>
-                  <td className="tableSingleKey">
-                    {call.singleRegion.timeEnd}
-                  </td>
-                  <td className="tableSingleKey">
+                  {/* <td className="tableSingleKey">
                     <img
                       width="100px"
                       src={call.singleRegion?.spectogram}
                       alt="spectogramfrom region"
                     />
-                  </td>
+                  </td> */}
 
-                  <td className="tableSingleKey commentKey">Save</td>
+                  <td className="tableSingleKey commentKey">
+                    (To be added){call.singleRegion.callId}
+                  </td>
                   <td className="tableSingleKey ">
                     <Dropdown>
                       <Dropdown.Toggle
@@ -62,7 +72,6 @@ export default function TableNewCalls(regionsArray) {
                         <Dropdown.Item href="#/action-3">Male</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
-                    {/* {call.singleRegion?.label}{" "} */}
                   </td>
 
                   <td className="lastCell tableSingleKey">
@@ -72,7 +81,7 @@ export default function TableNewCalls(regionsArray) {
                       icon={["fas", "times"]}
                       // size="1x"
                       color="#b94242"
-                      //   onClick={() => deleteCall(call?.callId)}
+                      onClick={() => deleteCall(index)}
                     ></FontAwesomeIcon>{" "}
                   </td>
                 </tr>

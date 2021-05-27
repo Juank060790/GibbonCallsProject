@@ -9,7 +9,7 @@ import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
-import audio from "../19700101_013658.wav";
+// import audio from "../19700101_013658.wav";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "react-bootstrap";
 import { callActions } from "../redux/actions";
@@ -17,48 +17,35 @@ import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
 
 export default function Waveform(SpectogramAudio) {
+  console.log(`SpectogramAudio`, SpectogramAudio);
   // const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
   const [Play, setPlay] = useState(false);
   const [SpectogramPluginInit, setSpectogramPluginInit] = useState(true);
   const waveformRef = useRef(null);
-  const Waveform = useRef(null);
+  var Waveform = useRef(null);
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
   const [zoomValue, setZoomValue] = React.useState(30);
   const [regionsArray, setRegionsArray] = useState();
+  // console.log(`regionsArray`, regionsArray);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  console.log(`selectedAudio`, selectedAudio);
   const CallsList = useSelector((state) => state.audio.callsList);
-  console.log(`CallsList`, CallsList);
-
-  useEffect(() => {
-    // getCalls();
-    console.log("useEffectWAvesurf", CallsList);
-  }, [CallsList]);
-
-  const saveRegionsDataBase = (regionsArray, audioId) => {
-    console.log(`CallsList`, regionsArray);
-    if (regionsArray) {
-      regionsArray?.forEach((region) => {
-        let singleCall = region.singleRegion;
-        dispatch(callActions.saveRegionCall(singleCall, audioId));
-        dispatch(callActions.getSingleCall(singleCall.callId));
-        setRegionsArray([]);
-      });
-    } else {
-      console.log("Nothing to send");
-    }
-  };
+  const regionListRedux = useSelector((state) => state.call.call);
+  // console.log(`Load Call List in regions Step 1`, regionListRedux);
 
   // Spectogram and sound waves options
 
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
-    barWidth: 1,
-    barHeight: 1,
     cursorWidth: 1,
     backend: "WebAudio",
-    height: 128,
+    height: 200,
+    barWidth: 0.8,
+    barRadius: 0.3,
+    minPxPerSec: 30,
+    scrollParent: true,
     progressColor: "#2D5BFF",
     responsive: true,
     waveColor: "#d7ebd6",
@@ -67,12 +54,15 @@ export default function Waveform(SpectogramAudio) {
     partialRender: true,
     plugins: [
       SpectogramPlugin,
-      Regions.create(),
+      Regions.create({
+        resize: false,
+      }),
       Minimap.create({
+        backgroundColor: "white",
         waveColor: "#ddd",
         progressColor: "#999",
         cursorColor: "#999",
-        height: 60,
+        height: 30,
       }),
       TimelinePlugin.create({
         container: "#wave-timeline",
@@ -80,10 +70,10 @@ export default function Waveform(SpectogramAudio) {
       CursorPlugin.create({
         showCursor: true,
         showTime: true,
-        opacity: 0.5,
+        opacity: 1,
         customShowTimeStyle: {
           "background-color": "#000",
-          color: "#fff",
+          color: "red",
           padding: "2px",
           "font-size": "10px",
         },
@@ -97,7 +87,7 @@ export default function Waveform(SpectogramAudio) {
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    fftSamples: 512,
+    fftSamples: 1024,
     width: "50px",
     // windowFunc: "triangular",
     height: "300px",
@@ -106,145 +96,121 @@ export default function Waveform(SpectogramAudio) {
     responsive: true,
     colorMap: colors,
     noverlap: false,
-    pixelRatio: 1,
+    pixelRatio: 2,
     deferInit: SpectogramPluginInit,
   });
 
-  const url = audio;
   // Object.values(SpectogramAudio);
   // console.log(`url`, url);
+  function saveCreatedRegions() {
+    let arrayRegion = [];
+    Object.keys(Waveform.current.regions.list).map(function (id) {
+      let region = Waveform.current.regions.list[id];
+      var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+
+      const regionColor = randomColor(0.1);
+
+      let singleRegion = {
+        callId: randLetter + new Date().getTime().toString(),
+        label: "Female",
+        spectogram:
+          "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/gibbon-call-1.png?alt=media&token=baf12507-37c1-4a7d-9437-2e77f479166f",
+        comment: "",
+        start: region.start,
+        end: region.end,
+        isCorrect: true,
+        isDeleted: false,
+        SpectogramAudio: "",
+        color: regionColor,
+        // attributes: region.attributes,
+        // data: region.data,
+      };
+
+      arrayRegion.push({ singleRegion });
+      return { arrayRegion };
+    });
+    // console.log(`arrayRegion`, arrayRegion.length);
+    setRegionsArray(arrayRegion);
+  }
+
+  // Save regions
+
+  const saveRegionsDataBase = (regionsArray, audioId) => {
+    if (regionsArray) {
+      regionsArray?.forEach((region) => {
+        let singleCall = region.singleRegion;
+        dispatch(callActions.saveRegionCall(singleCall, audioId));
+        dispatch(callActions.getSingleCall(singleCall.callId));
+        setRegionsArray([]);
+      });
+    } else {
+      console.log("Nothing to send");
+    }
+  };
+  const url =
+    "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
+  console.log(`url`, url);
 
   useEffect(() => {
     setPlay(false);
     const options = WaveformOptions(waveformRef.current);
     Waveform.current = WaveSurfer.create(options);
     Waveform.current.load(url);
-
-    /* Regions */
-    // console.log(`region`, region);
-
-    // function saveRegions() {
-    //   localStorage.regions = JSON.stringify(
-    //     Object.keys(Waveform.current.regions.list).map(function (id) {
-    //       let region = Waveform.current.regions.list[id];
-    //       setRegionsArray({
-    //         start: region.start,
-    //         end: region.end,
-    //         attributes: region.attributes,
-    //         data: region.data,
-    //       });
-    //       return {
-    //         regionsArray: {
-    //           start: region.start,
-    //           end: region.end,
-    //           attributes: region.attributes,
-    //           data: region.data,
-    //         },
-    //       };
-    //     })
-    //   );
-    // }
-
-    function saveRegionsRedux() {
-      let arrayRegion = [];
-      Object.keys(Waveform.current.regions.list).map(function (id) {
-        let region = Waveform.current.regions.list[id];
-        var randLetter = String.fromCharCode(
-          65 + Math.floor(Math.random() * 26)
-        );
-
-        let singleRegion = {
-          callId: randLetter + new Date().getTime().toString(),
-          label: "Female",
-          spectogram:
-            "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/gibbon-call-5.png?alt=media",
-          comment: "",
-          timeStart: region.start,
-          timeEnd: region.end,
-          isCorrect: true,
-          isDeleted: false,
-          SpectogramAudio: "",
-          // attributes: region.attributes,
-          // data: region.data,
-        };
-
-        arrayRegion.push({ singleRegion });
-        return { arrayRegion };
-      });
-      // console.log(`arrayRegion`, arrayRegion.length);
-      setRegionsArray(arrayRegion);
-    }
-
-    /**
-     * Load regions from localStorage.
-     */
+    loadRegions(regionListRedux);
 
     Waveform.current.on("ready", function () {
       Waveform.current.enableDragSelection({
         color: randomColor(0.1),
       });
-
-      if (regionsArray) {
-        // console.log(`loacalStorage`, regionsArray);
-        // console.log("regions", JSON.parse(regionsArray));
-        loadRegions(JSON.parse(regionsArray));
-      } else {
-      }
     });
 
     function editAnnotation(region) {
-      let form = document.forms.edit;
-      console.log(`regionEDIT`, form);
-
-      form.style.opacity = 1;
-      form.elements.start.value = Math.round(region.start * 10) / 10;
-      form.elements.end.value = Math.round(region.end * 10) / 10;
-      form.elements.note.value = region.data.note || "";
-      form.onsubmit = function (e) {
-        e.preventDefault();
-        region.update({
-          start: form.elements.start.value,
-          end: form.elements.end.value,
-          data: {
-            note: form.elements.note.value,
-          },
-        });
-        form.style.opacity = 0;
-      };
-      form.onreset = function () {
-        form.style.opacity = 0;
-        form.dataset.region = null;
-      };
-      form.dataset.region = region.id;
+      //   let form = region;
+      //   console.log(`regionEDIT`, region.element);
+      //   console.log(`Form`, form);
+      //   form.style.opacity = 0.1;
+      //   // form.element.start.value = Math.round(region.start * 10) / 10;
+      //   // form.element.end.value = Math.round(region.end * 10) / 10;
+      //   form.data.note = "First NOte";
+      //   form.onsubmit = function (e) {
+      //     e.preventDefault();
+      //     region.update({
+      //       start: form.element.start.value,
+      //       end: form.element.end.value,
+      //       data: {
+      //         note: form.element.note.value,
+      //       },
+      //     });
+      //     form.style.opacity = 0;
+      //   };
+      //   form.onreset = function () {
+      //     form.style.opacity = 0;
+      //     form.dataset.region = null;
+      //   };
+      //   form.dataset.region = region.id;
     }
 
     /**
      * Display annotation.
      */
 
-    function showNote(region) {
-      if (!showNote.el) {
-        showNote.el = document.querySelector("#subtitle");
-      }
-      showNote.el.textContent = region.data.note || "–";
-    }
-
-    function loadRegions(regions) {
-      regions.forEach(function (region) {
-        region.color = randomColor(0.1);
-        Waveform.current.addRegion(region);
-      });
-    }
+    // function showNote(region) {
+    //   //   if (!showNote.el) {
+    //   //     showNote.el = document.querySelector("#subtitle");
+    //   //   }
+    //   //   showNote.el.textContent = region.data.note || "–";
+    // }
 
     Waveform.current.on("region-click", function (region, e) {
+      console.log("make region");
       e.stopPropagation();
       // Play on click, loop on shift click
       e.shiftKey ? region.playLoop() : region.play();
     });
     Waveform.current.on("region-click", editAnnotation);
-    Waveform.current.on("region-updated", saveRegionsRedux);
-    Waveform.current.on("region-removed", saveRegionsRedux);
-    Waveform.current.on("region-in", showNote);
+    Waveform.current.on("region-updated", saveCreatedRegions);
+    // Waveform.current.on("region-removed", saveCreatedRegions);
+    // Waveform.current.on("region-in", showNote);
 
     Waveform.current.on("region-play", function (region) {
       region.once("out", function () {
@@ -256,7 +222,20 @@ export default function Waveform(SpectogramAudio) {
     // eslint-disable-next-line
   }, [SpectogramPluginInit, url]);
 
-  // useEffect(() => {}, [selectedAudio, regionsArray]);
+  useEffect(() => {
+    loadRegions(regionListRedux);
+
+    // console.log(`CallsListUSE EFFECT ----->`, CallsList);
+  }, [regionListRedux, CallsList]);
+
+  function loadRegions(regionListRedux) {
+    regionListRedux.forEach(function (region) {
+      // eslint-disable-next-line
+      region.color = region.color;
+
+      Waveform.current.addRegion(region);
+    });
+  }
 
   const handlePlayPause = () => {
     setPlay(!Play);
@@ -346,7 +325,7 @@ export default function Waveform(SpectogramAudio) {
                   variant="success"
                   size="sm"
                   min={20}
-                  max={1000}
+                  max={100}
                 />
               </div>
             </div>
@@ -360,15 +339,15 @@ export default function Waveform(SpectogramAudio) {
 
         <div className="spectogramandwave">
           <WaveformContianer>
-            <Wave ref={waveformTimeLineRef} id="wave-minimap" />
-            <Wave ref={waveformRef} id="waveform" />
             <Wave
-              className="wavespectrogram"
+              className="wavespectrogram m-1"
               ref={waveformSpectogramRef}
               id="wavespectrogram"
             />
+            <Wave ref={waveformTimeLineRef} id="wave-minimap" />
+            <Wave ref={waveformRef} id="waveform" />
             <Wave ref={waveformTimeLineRef} id="wave-timeline" />
-            <audio src={url} />
+            {/* <audio src={url} /> */}
           </WaveformContianer>
         </div>
         <div>

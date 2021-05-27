@@ -46,6 +46,7 @@ export default function TableDashboard() {
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
 
   const showSpectrogram = (spectogram, spectogramAudio) => {
+    console.log(`spectogram`, spectogram);
     if (spectogram) {
       setSpectogramImage(spectogram);
       setSpectogramAudio(spectogramAudio);
@@ -125,18 +126,18 @@ export default function TableDashboard() {
 
   // Filter
 
-  const clearFilterItem = (value) => () => {
-    console.log(`value`, value);
-    if ("docsPerPage") {
-      setDocsPerPage(5);
-    }
-    if ("orderBy") {
-      setOrderBy("recordDate");
-    }
-    if ("order") {
-      setOrder("asc");
-    }
-  };
+  // const clearFilterItem = (value) => () => {
+  //   console.log(`value`, value);
+  //   if ("docsPerPage") {
+  //     setDocsPerPage(5);
+  //   }
+  //   if ("orderBy") {
+  //     setOrderBy("recordDate");
+  //   }
+  //   if ("order") {
+  //     setOrder("asc");
+  //   }
+  // };
 
   return (
     <>
@@ -148,7 +149,7 @@ export default function TableDashboard() {
 
       <div className="filterMenu ">
         <div className="filterBadges ">
-          <Badge className="singleBadgeNumber" variant="success">
+          {/* <Badge className="singleBadgeNumber" variant="success">
             {" "}
             <FontAwesomeIcon
               onClick={clearFilterItem("docsPerPage")}
@@ -177,7 +178,7 @@ export default function TableDashboard() {
               color="white"
             ></FontAwesomeIcon>{" "}
             {order}
-          </Badge>{" "}
+          </Badge>{" "} */}
         </div>
         <div>
           <Form>
@@ -319,7 +320,7 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.gibbonCalls}
+                    {audio.gibbonCallsList?.length}
                   </td>
                   <td className="">
                     <div className="buttonscomments">
