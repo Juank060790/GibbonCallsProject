@@ -12,6 +12,7 @@ const callReducer = (state = initialState, action) => {
   switch (type) {
     case types.SAVE_REGION_CALL_REQUEST:
     case types.GET_SINGLE_CALL_REQUEST:
+      console.log("GETTING CALLS");
       return { ...state, loading: true };
     case types.SAVE_REGION_CALL_SUCCESS:
       return { ...state, loading: false };

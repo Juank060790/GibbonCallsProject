@@ -32,6 +32,7 @@ const audiosRequest =
           });
           latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
           firstDocument = querySnapshot.docs[0];
+
           dispatch({
             type: types.AUDIO_REQUEST_SUCCESS,
             payload: { filteredaudioList, latestDoc, firstDocument },
@@ -40,8 +41,8 @@ const audiosRequest =
     }
     if (query.firstDocument) {
       refIsDeleted
-        .limit(query.limit)
-        .endAt(query.firstDocument)
+        .endBefore(query.firstDocument)
+        .limitToLast(query.limit)
         .onSnapshot((querySnapshot) => {
           let filteredaudioList = [];
           let latestDoc = [];

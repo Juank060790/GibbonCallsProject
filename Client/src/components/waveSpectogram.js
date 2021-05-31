@@ -17,7 +17,7 @@ import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
 
 export default function Waveform(SpectogramAudio) {
-  console.log(`SpectogramAudio`, SpectogramAudio);
+  // console.log(`SpectogramAudio`, SpectogramAudio);
   // const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
   const [Play, setPlay] = useState(false);
@@ -26,14 +26,12 @@ export default function Waveform(SpectogramAudio) {
   var Waveform = useRef(null);
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
-  const [zoomValue, setZoomValue] = React.useState(30);
+  const [zoomValue, setZoomValue] = useState(30);
   const [regionsArray, setRegionsArray] = useState();
   // console.log(`regionsArray`, regionsArray);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  console.log(`selectedAudio`, selectedAudio);
   const CallsList = useSelector((state) => state.audio.callsList);
   const regionListRedux = useSelector((state) => state.call.call);
-  // console.log(`Load Call List in regions Step 1`, regionListRedux);
 
   // Spectogram and sound waves options
 
@@ -42,7 +40,7 @@ export default function Waveform(SpectogramAudio) {
     cursorWidth: 1,
     backend: "WebAudio",
     height: 200,
-    barWidth: 0.8,
+    barWidth: 0.5,
     barRadius: 0.3,
     minPxPerSec: 30,
     scrollParent: true,
@@ -73,15 +71,15 @@ export default function Waveform(SpectogramAudio) {
         opacity: 1,
         customShowTimeStyle: {
           "background-color": "#000",
-          color: "red",
-          padding: "2px",
+          color: "#999",
+          padding: "1px",
           "font-size": "10px",
         },
       }),
     ],
   });
   let colors = colorMap({
-    colormap: "greens",
+    colormap: "cool",
     nshades: 256,
     format: "float",
   });
@@ -102,14 +100,17 @@ export default function Waveform(SpectogramAudio) {
 
   // Object.values(SpectogramAudio);
   // console.log(`url`, url);
-  function saveCreatedRegions() {
+  function saveCreatedRegions(regionListRedux) {
+    console.log("Load Regions without calling them");
     let arrayRegion = [];
     Object.keys(Waveform.current.regions.list).map(function (id) {
       let region = Waveform.current.regions.list[id];
+      // console.log(`region`, region);
+
       var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
 
       const regionColor = randomColor(0.1);
-
+      // console.log("REGION ==> ", region);
       let singleRegion = {
         callId: randLetter + new Date().getTime().toString(),
         label: "Female",
@@ -122,11 +123,13 @@ export default function Waveform(SpectogramAudio) {
         isDeleted: false,
         SpectogramAudio: "",
         color: regionColor,
+
         // attributes: region.attributes,
         // data: region.data,
       };
 
       arrayRegion.push({ singleRegion });
+      // console.log("ARRAY", arrayRegion);
       return { arrayRegion };
     });
     // console.log(`arrayRegion`, arrayRegion.length);
@@ -137,6 +140,7 @@ export default function Waveform(SpectogramAudio) {
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
+      console.log(`regionsArray`, regionsArray);
       regionsArray?.forEach((region) => {
         let singleCall = region.singleRegion;
         dispatch(callActions.saveRegionCall(singleCall, audioId));
@@ -149,14 +153,13 @@ export default function Waveform(SpectogramAudio) {
   };
   const url =
     "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
-  console.log(`url`, url);
 
   useEffect(() => {
     setPlay(false);
     const options = WaveformOptions(waveformRef.current);
     Waveform.current = WaveSurfer.create(options);
     Waveform.current.load(url);
-    loadRegions(regionListRedux);
+    // loadRegions(regionListRedux);
 
     Waveform.current.on("ready", function () {
       Waveform.current.enableDragSelection({
@@ -222,20 +225,23 @@ export default function Waveform(SpectogramAudio) {
     // eslint-disable-next-line
   }, [SpectogramPluginInit, url]);
 
-  useEffect(() => {
-    loadRegions(regionListRedux);
-
-    // console.log(`CallsListUSE EFFECT ----->`, CallsList);
-  }, [regionListRedux, CallsList]);
-
   function loadRegions(regionListRedux) {
+    // var listToLoadRegions = [];
+    console.log(`regionListRedux`, regionListRedux);
     regionListRedux.forEach(function (region) {
       // eslint-disable-next-line
       region.color = region.color;
-
+      console.log("ADDREGION");
       Waveform.current.addRegion(region);
     });
   }
+
+  // useEffect(() => {
+  //   if (regionListRedux) {
+  //     loadRegions(regionListRedux);
+  //     console.log("loadREgion", regionListRedux);
+  //   }
+  // }, [regionListRedux.length, regionListRedux]);
 
   const handlePlayPause = () => {
     setPlay(!Play);
@@ -362,6 +368,12 @@ export default function Waveform(SpectogramAudio) {
             className="btnSave draw-border"
           >
             Save Regions
+          </button>
+          <button
+            onClick={() => loadRegions(regionListRedux)}
+            className="btnSave draw-border"
+          >
+            Load Regions
           </button>
           <div>
             <TableNewCalls regionsArray={regionsArray} />

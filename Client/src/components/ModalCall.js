@@ -73,7 +73,7 @@ export default function ModalCall({
               <th>Time End</th>
               <th>Spectogram</th>
               <th>Action</th>
-              <th>Gender</th>
+              <th>Label</th>
               <th>Comments</th>
               <th className="text-center">
                 <Dropdown>

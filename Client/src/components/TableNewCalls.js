@@ -4,17 +4,18 @@ import { Dropdown, Table } from "react-bootstrap";
 
 export default function TableNewCalls(regionsArray) {
   const arrayForRegions = regionsArray?.regionsArray;
-  const [arrayNewRegions, setArrayNewRegions] = useState();
+  console.log(`arrayForRegions`, arrayForRegions);
+  // const [arrayNewRegions, setArrayNewRegions] = useState();
 
-  useEffect(() => {
-    console.log(`arrayNewRegions`, arrayNewRegions);
-  }, [arrayNewRegions]);
+  // useEffect(() => {
+  //   console.log(`arrayNewRegions`, arrayNewRegions);
+  // }, [arrayNewRegions]);
   // // Delete call from the new list //
 
-  const deleteCall = (index) => {
-    arrayNewRegions.splice(index, 1);
-    setArrayNewRegions(arrayNewRegions);
-  };
+  // const deleteCall = (index) => {
+  //   arrayNewRegions.splice(index, 1);
+  //   setArrayNewRegions(arrayNewRegions);
+  // };
 
   return (
     <div className="tableNewCall">
@@ -28,7 +29,7 @@ export default function TableNewCalls(regionsArray) {
               <th>Time End</th>
               {/* <th>Spectogram</th> */}
               <th>Action</th>
-              <th>Gender</th>
+              <th>Label</th>
               <th>Delete</th>
 
               <th className="text-center"></th>
@@ -38,12 +39,12 @@ export default function TableNewCalls(regionsArray) {
             {arrayForRegions?.map((call, index) => (
               <tbody key={index}>
                 <tr className="text-center tableKey">
-                  <td className="tableSingleKey">{index}</td>
+                  <td className="tableSingleKey">{index + 1}</td>
                   <td className="tableSingleKey">
-                    {call.singleRegion.start.toFixed(3)}
+                    {call.singleRegion.start?.toFixed(3)}
                   </td>
                   <td className="tableSingleKey">
-                    {call.singleRegion.end.toFixed(3)}
+                    {call.singleRegion.end?.toFixed(3)}
                   </td>
                   {/* <td className="tableSingleKey">
                     <img
@@ -81,7 +82,7 @@ export default function TableNewCalls(regionsArray) {
                       icon={["fas", "times"]}
                       // size="1x"
                       color="#b94242"
-                      onClick={() => deleteCall(index)}
+                      // onClick={() => deleteCall(index)}
                     ></FontAwesomeIcon>{" "}
                   </td>
                 </tr>

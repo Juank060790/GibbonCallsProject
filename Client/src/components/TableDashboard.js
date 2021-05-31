@@ -27,7 +27,7 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
   const [firstDoc, setFirstDoc] = useState();
-  const [docsPerPage, setDocsPerPage] = useState(10);
+  const [docsPerPage, setDocsPerPage] = useState(2);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
   // const [firstPage, setFirstPage] = useState(true);
@@ -38,6 +38,7 @@ export default function TableDashboard() {
 
   useEffect(() => {
     dispatch(
+      // Get audios default limit 2, order by record date, order desc, null, null,//
       audioActions.audiosRequest(docsPerPage, orderBy, order, lastDoc, firstDoc)
     );
   }, [dispatch, docsPerPage, orderBy, order, lastDoc, firstDoc]);
@@ -73,7 +74,7 @@ export default function TableDashboard() {
   const loadAudios = (e) => {
     e.preventDefault();
     dispatch(
-      audioActions.audiosRequest(docsPerPage, "recordDate", "asc", lastDoc)
+      audioActions.audiosRequest(docsPerPage, "recordDate", "descs", lastDoc)
     );
   };
 
@@ -86,7 +87,6 @@ export default function TableDashboard() {
   const handleClickOnPrev = () => {
     setLastDoc(null);
     setFirstDoc(firstDocumentRedux);
-    console.log(`firstDoc`, firstDocumentRedux);
   };
 
   // Get an individual calls  inside of a RawAudio
@@ -103,6 +103,8 @@ export default function TableDashboard() {
 
   // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, gibbonCallsList) => {
+    console.log("audio", audioId);
+    console.log("gibbonCallsList", gibbonCallsList);
     dispatch(audioActions.getSingleAudio(audioId));
     getCalls(gibbonCallsList);
   };
@@ -126,18 +128,18 @@ export default function TableDashboard() {
 
   // Filter
 
-  // const clearFilterItem = (value) => () => {
-  //   console.log(`value`, value);
-  //   if ("docsPerPage") {
-  //     setDocsPerPage(5);
-  //   }
-  //   if ("orderBy") {
-  //     setOrderBy("recordDate");
-  //   }
-  //   if ("order") {
-  //     setOrder("asc");
-  //   }
-  // };
+  const clearFilterItem = (value) => () => {
+    console.log(`value`, value);
+    if ("docsPerPage") {
+      setDocsPerPage(5);
+    }
+    if ("orderBy") {
+      setOrderBy("recordDate");
+    }
+    if ("order") {
+      setOrder("asc");
+    }
+  };
 
   return (
     <>
@@ -149,7 +151,7 @@ export default function TableDashboard() {
 
       <div className="filterMenu ">
         <div className="filterBadges ">
-          {/* <Badge className="singleBadgeNumber" variant="success">
+          <Badge className="singleBadgeNumber" variant="success">
             {" "}
             <FontAwesomeIcon
               onClick={clearFilterItem("docsPerPage")}
@@ -178,7 +180,7 @@ export default function TableDashboard() {
               color="white"
             ></FontAwesomeIcon>{" "}
             {order}
-          </Badge>{" "} */}
+          </Badge>{" "}
         </div>
         <div>
           <Form>
