@@ -4,17 +4,6 @@ import "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
-const firebaseConfig = {
-  apiKey: process.env.APIKEY,
-  authDomain: process.env.AUTHDOMAIN,
-  databaseURL: process.env.DATABASEURL,
-  projectId: process.env.PROJECTID,
-  storageBucket: process.env.STORAGEBUCKET,
-  messagingSenderId: process.env.MESSAGINGSENDERID,
-  appId: process.env.APPID,
-  measurementId: process.env.MESUREMENTID,
-};
-
 //   apiKey: process.env.APIKEY,
 //   authDomain: process.env.AUTHDOMAIN,
 //   databaseURL: process.env.DATABASEURL,

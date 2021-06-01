@@ -28,12 +28,12 @@ const PaginationItem = ({
               onClick={() => handleClickOnPrev()}
             ></FontAwesomeIcon>
           </div>
-          <div className="previousNextbtnDisabled">
+          {/* <div className="previousNextbtnDisabled">
             <FontAwesomeIcon
               className="  paginationButton "
               icon={["fas", "chevron-left"]}
             ></FontAwesomeIcon>
-          </div>
+          </div> */}
           <div className="previousNextbtn">
             <FontAwesomeIcon
               icon={["fas", "chevron-right"]}
@@ -41,12 +41,12 @@ const PaginationItem = ({
               onClick={() => handleClickOnNext()}
             ></FontAwesomeIcon>
           </div>
-          <div className="previousNextbtnDisabled">
+          {/* <div className="previousNextbtnDisabled">
             <FontAwesomeIcon
               icon={["fas", "chevron-right"]}
               className="paginationButton "
             ></FontAwesomeIcon>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

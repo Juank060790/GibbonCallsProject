@@ -27,7 +27,7 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
   const [firstDoc, setFirstDoc] = useState();
-  const [docsPerPage, setDocsPerPage] = useState(2);
+  const [docsPerPage, setDocsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
   // const [firstPage, setFirstPage] = useState(true);
@@ -73,8 +73,9 @@ export default function TableDashboard() {
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
     e.preventDefault();
+    setDocsPerPage(10);
     dispatch(
-      audioActions.audiosRequest(docsPerPage, "recordDate", "descs", lastDoc)
+      audioActions.audiosRequest(docsPerPage, "recordDate", "desc", lastDoc)
     );
   };
 
