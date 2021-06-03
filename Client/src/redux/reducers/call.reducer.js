@@ -12,7 +12,6 @@ const callReducer = (state = initialState, action) => {
   switch (type) {
     case types.SAVE_REGION_CALL_REQUEST:
     case types.GET_SINGLE_CALL_REQUEST:
-      console.log("GETTING CALLS");
       return { ...state, loading: true };
     case types.SAVE_REGION_CALL_SUCCESS:
       return { ...state, loading: false };
@@ -24,10 +23,10 @@ const callReducer = (state = initialState, action) => {
 
       if (callArray[findIndexOfCall]?.callId === payload.callId) {
         callArray[findIndexOfCall] = payload;
-        console.log(`Call is equal to payload`, callArray);
+        // console.log(`Call is equal to payload`, callArray);
       } else {
         callArray.push(payload);
-        console.log("Call is not equal", callArray);
+        // console.log("Call is not equal", callArray);
       }
 
       return {

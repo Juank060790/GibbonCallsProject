@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Dropdown, Table } from "react-bootstrap";
+import { Button, Dropdown, Table } from "react-bootstrap";
 // import RangeSlider from "react-bootstrap-range-slider";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
@@ -125,18 +125,18 @@ export default function TableDashboard() {
 
   // Filter
 
-  const clearFilterItem = (value) => () => {
-    console.log(`value`, value);
-    if ("docsPerPage") {
-      setDocsPerPage(5);
-    }
-    if ("orderBy") {
-      setOrderBy("recordDate");
-    }
-    if ("order") {
-      setOrder("asc");
-    }
-  };
+  // const clearFilterItem = (value) => () => {
+  //   console.log(`value`, value);
+  //   if ("docsPerPage") {
+  //     setDocsPerPage(5);
+  //   }
+  //   if ("orderBy") {
+  //     setOrderBy("recordDate");
+  //   }
+  //   if ("order") {
+  //     setOrder("asc");
+  //   }
+  // };
 
   return (
     <>
@@ -148,7 +148,7 @@ export default function TableDashboard() {
 
       <div className="filterMenu ">
         <div className="filterBadges ">
-          <Badge className="singleBadgeNumber" variant="success">
+          {/* <Badge className="singleBadgeNumber" variant="success">
             {" "}
             <FontAwesomeIcon
               onClick={clearFilterItem("docsPerPage")}
@@ -177,7 +177,7 @@ export default function TableDashboard() {
               color="white"
             ></FontAwesomeIcon>{" "}
             {order}
-          </Badge>{" "}
+          </Badge>{" "} */}
         </div>
         <div>
           <Form>

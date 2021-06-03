@@ -180,37 +180,10 @@ export default function Waveform(SpectogramAudio) {
         color: regionColor,
       });
     });
-
-    function editAnnotation(region) {
-      let form = region;
-      console.log(`regionEDIT`, region.element);
-      console.log(`Form`, form);
-      form.style.opacity = 0.1;
-      // form.element.start.value = Math.round(region.start * 10) / 10;
-      // form.element.end.value = Math.round(region.end * 10) / 10;
-      form.data.note = "First NOte";
-      form.onsubmit = function (e) {
-        e.preventDefault();
-        region.update({
-          start: form.element.start.value,
-          end: form.element.end.value,
-          data: {
-            note: form.element.note.value,
-          },
-        });
-        form.style.opacity = 0;
-      };
-      form.onreset = function () {
-        form.style.opacity = 0;
-        form.dataset.region = null;
-      };
-      // form.dataset.region = region.id;
-    }
-    Waveform.current.on("region-click", editAnnotation);
-    Waveform.current.on("region-updated", saveCreatedRegions);
+    Waveform.current.on("region-created", saveCreatedRegions);
     Waveform.current.on("region-dblclick", deleteRegion);
 
-    Waveform.current.on("region-play", function (region) {
+    Waveform.current.on("ready", function (region) {
       region.once("out", function () {
         Waveform.current.play(region.start);
         Waveform.current.pause();
