@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Modal, Table, Button, Dropdown, Badge } from "react-bootstrap";
+import { Modal, Table, Button, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
 import logoFF from "../images/logo-reduced.png";
@@ -75,27 +75,7 @@ export default function ModalCall({
               <th>Action</th>
               <th>Label</th>
               <th>Comments</th>
-              <th className="text-center">
-                <Dropdown>
-                  <Dropdown.Toggle
-                    className="dropdownBtn"
-                    variant="success"
-                    id="dropdown-basic"
-                  >
-                    <FontAwesomeIcon icon={["fas", "filter"]}></FontAwesomeIcon>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {/* <Dropdown.Item
-                    onClick={(e) => setOrderBy("audioId")}
-                    href="#/action-1"
-                  >
-                    Audio Id
-                  </Dropdown.Item> */}
-                    {/* <Dropdown.Item href="#/action-2">Record Date</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">File Name</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </th>
+              <th className="text-center"></th>
             </tr>
           </thead>
           <>
@@ -179,8 +159,8 @@ export default function ModalCall({
                               ></FontAwesomeIcon>
                             </Badge>
                           </td>
-                        ) : (
-                          <td className="tableSingleKey">
+                        ) : call.label === "Male" ? (
+                          <td className="tableSingleKey ">
                             {" "}
                             <Badge className="labelTag maleTag">
                               {" "}
@@ -192,8 +172,22 @@ export default function ModalCall({
                               ></FontAwesomeIcon>
                             </Badge>
                           </td>
+                        ) : call.label === "Other" ? (
+                          <td className="tableSingleKey ">
+                            {" "}
+                            <Badge className="labelTag">
+                              {" "}
+                              {call.label}{" "}
+                              <FontAwesomeIcon
+                                className="savebutton"
+                                icon={["fas", "feather"]}
+                                color="black"
+                              ></FontAwesomeIcon>
+                            </Badge>
+                          </td>
+                        ) : (
+                          <td className="tableSingleKey "> No label</td>
                         )}
-
                         {call.comment ? (
                           <td className="tableSingleKey commentKey">
                             <div className="commentBox textareacomments">

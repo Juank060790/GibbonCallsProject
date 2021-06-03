@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Table } from "react-bootstrap";
 
-export default function TableNewCalls(regionsArray) {
-  const arrayForRegions = regionsArray?.regionsArray;
-  console.log(`arrayForRegions`, arrayForRegions);
-  // const [arrayNewRegions, setArrayNewRegions] = useState();
-
-  // useEffect(() => {
-  //   console.log(`arrayNewRegions`, arrayNewRegions);
-  // }, [arrayNewRegions]);
-  // // Delete call from the new list //
-
-  // const deleteCall = (index) => {
-  //   arrayNewRegions.splice(index, 1);
-  //   setArrayNewRegions(arrayNewRegions);
-  // };
+export default function TableNewCalls({
+  regionsArray,
+  labelNewCall,
+  labelColor,
+}) {
+  const arrayForRegions = regionsArray;
 
   return (
     <div className="tableNewCall">
-      <h4>Create a new Call</h4>
+      <h4>Create or Edit Call</h4>
       {arrayForRegions ? (
         <Table responsive>
           <thead className="text-center tableSaveRegionHeader">
@@ -30,7 +22,7 @@ export default function TableNewCalls(regionsArray) {
               {/* <th>Spectogram</th> */}
               <th>Action</th>
               <th>Label</th>
-              <th>Delete</th>
+              <th>(To be checked)</th>
 
               <th className="text-center"></th>
             </tr>
@@ -38,7 +30,10 @@ export default function TableNewCalls(regionsArray) {
           <>
             {arrayForRegions?.map((call, index) => (
               <tbody key={index}>
-                <tr className="text-center tableKey">
+                <tr
+                  style={{ backgroundColor: call.singleRegion.color }}
+                  className="text-center tableKey"
+                >
                   <td className="tableSingleKey">{index + 1}</td>
                   <td className="tableSingleKey">
                     {call.singleRegion.start?.toFixed(3)}
@@ -55,36 +50,40 @@ export default function TableNewCalls(regionsArray) {
                   </td> */}
 
                   <td className="tableSingleKey commentKey">
-                    (To be added){call.singleRegion.callId}
+                    (ID){call.singleRegion.callId}
                   </td>
-                  <td className="tableSingleKey ">
-                    <Dropdown>
+                  <td
+                    style={{ backgroundColor: labelColor }}
+                    className="tableSingleKey"
+                  >
+                    <Dropdown
+                      className="dropdownUp"
+                      drop="left"
+                      id="dropdown-button-drop-left"
+                    >
                       <Dropdown.Toggle
                         className="dropdownBtn"
                         variant="success"
-                        id="dropdown-basic"
                       >
                         <FontAwesomeIcon
                           icon={["fas", "venus-mars"]}
                         ></FontAwesomeIcon>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-2">Female</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Male</Dropdown.Item>
+                        <Dropdown.Item onSelect={() => labelNewCall("Female")}>
+                          Female
+                        </Dropdown.Item>
+                        <Dropdown.Item onSelect={() => labelNewCall("Male")}>
+                          Male
+                        </Dropdown.Item>
+                        <Dropdown.Item onSelect={() => labelNewCall("Other")}>
+                          Other
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </td>
 
-                  <td className="lastCell tableSingleKey">
-                    {" "}
-                    <FontAwesomeIcon
-                      className="btndeleteAudio"
-                      icon={["fas", "times"]}
-                      // size="1x"
-                      color="#b94242"
-                      // onClick={() => deleteCall(index)}
-                    ></FontAwesomeIcon>{" "}
-                  </td>
+                  <td className="lastCell tableSingleKey">Not sure yet </td>
                 </tr>
               </tbody>
             ))}

@@ -1,24 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
-import { WaveformContianer, Wave, PlayButton } from "./Waveform.styled";
+import { WaveformContianer, Wave } from "./Waveform.styled";
 import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js";
 import Regions from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
-import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
+// import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
-// import audio from "../19700101_013658.wav";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Waveform(SpectogramAudio) {
-  // console.log(`SpectogramAudio`, SpectogramAudio);
-  // const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
   const [Play, setPlay] = useState(false);
   const [SpectogramPluginInit, setSpectogramPluginInit] = useState(true);
@@ -28,10 +26,12 @@ export default function Waveform(SpectogramAudio) {
   const waveformSpectogramRef = useRef(null);
   const [zoomValue, setZoomValue] = useState(30);
   const [regionsArray, setRegionsArray] = useState();
-  // console.log(`regionsArray`, regionsArray);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const CallsList = useSelector((state) => state.audio.callsList);
   const regionListRedux = useSelector((state) => state.call.call);
+  const [labelColor, setLabelColor] = useState("");
+  const [labelForNewCall, setLableForNewCall] = useState("");
+  const regionColor = randomColor(0.1);
 
   // Spectogram and sound waves options
 
@@ -51,30 +51,29 @@ export default function Waveform(SpectogramAudio) {
     normalize: true,
     partialRender: true,
     plugins: [
-      SpectogramPlugin,
-      Regions.create({
-        resize: false,
-      }),
-      Minimap.create({
-        backgroundColor: "white",
-        waveColor: "#ddd",
-        progressColor: "#999",
-        cursorColor: "#999",
-        height: 30,
-      }),
-      TimelinePlugin.create({
-        container: "#wave-timeline",
-      }),
       CursorPlugin.create({
-        showCursor: true,
         showTime: true,
         opacity: 1,
         customShowTimeStyle: {
           "background-color": "#000",
           color: "#999",
-          padding: "1px",
+          padding: "2px",
           "font-size": "10px",
         },
+      }),
+      SpectogramPlugin,
+      Regions.create({
+        resize: false,
+      }),
+      // Minimap.create({
+      //   backgroundColor: "white",
+      //   waveColor: "#ddd",
+      //   progressColor: "#999",
+      //   cursorColor: "#999",
+      //   height: 30,
+      // }),
+      TimelinePlugin.create({
+        container: "#wave-timeline",
       }),
     ],
   });
@@ -87,7 +86,6 @@ export default function Waveform(SpectogramAudio) {
   let SpectogramPlugin = SpectrogramPlugin.create({
     fftSamples: 1024,
     width: "50px",
-    // windowFunc: "triangular",
     height: "300px",
     container: "#wavespectrogram",
     labels: true,
@@ -98,50 +96,53 @@ export default function Waveform(SpectogramAudio) {
     deferInit: SpectogramPluginInit,
   });
 
-  // Object.values(SpectogramAudio);
-  // console.log(`url`, url);
-  function saveCreatedRegions(regionListRedux) {
-    console.log("Load Regions without calling them");
+  // Save the region to be show in the waveform, after needs to be saved to the database.
+
+  function saveCreatedRegions(event) {
     let arrayRegion = [];
-    Object.keys(Waveform.current.regions.list).map(function (id) {
-      let region = Waveform.current.regions.list[id];
-      // console.log(`region`, region);
+    // var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    // randLetter + new Date().getTime().toString(),
 
-      var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    let singleRegion = {
+      callId: event.id,
+      label: "",
+      spectogram: "",
+      comment: "",
+      start: event.start,
+      end: event.end,
+      isCorrect: true,
+      isDeleted: false,
+      SpectogramAudio: "",
+      color: regionColor,
+    };
 
-      const regionColor = randomColor(0.1);
-      // console.log("REGION ==> ", region);
-      let singleRegion = {
-        callId: randLetter + new Date().getTime().toString(),
-        label: "Female",
-        spectogram:
-          "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/gibbon-call-1.png?alt=media&token=baf12507-37c1-4a7d-9437-2e77f479166f",
-        comment: "",
-        start: region.start,
-        end: region.end,
-        isCorrect: true,
-        isDeleted: false,
-        SpectogramAudio: "",
-        color: regionColor,
-
-        // attributes: region.attributes,
-        // data: region.data,
-      };
-
-      arrayRegion.push({ singleRegion });
-      // console.log("ARRAY", arrayRegion);
-      return { arrayRegion };
-    });
-    // console.log(`arrayRegion`, arrayRegion.length);
+    arrayRegion.push({ singleRegion });
     setRegionsArray(arrayRegion);
   }
 
-  // Save regions
+  // Set Label from new call in the new table
+
+  const labelNewCall = (event) => {
+    if (event === "Male") {
+      setLabelColor("rgba(192, 212, 255, 0.278)");
+      setLableForNewCall("Male");
+    }
+    if (event === "Female") {
+      setLabelColor("rgba(255, 192, 245, 0.278)");
+      setLableForNewCall("Female");
+    }
+    if (event === "Other") {
+      setLabelColor("#6fcf978e");
+      setLableForNewCall("Other");
+    }
+  };
+
+  // Save regions to data base, label to the save region is added here.
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
-      console.log(`regionsArray`, regionsArray);
       regionsArray?.forEach((region) => {
+        region.singleRegion.label = labelForNewCall;
         let singleCall = region.singleRegion;
         dispatch(callActions.saveRegionCall(singleCall, audioId));
         dispatch(callActions.getSingleCall(singleCall.callId));
@@ -151,6 +152,19 @@ export default function Waveform(SpectogramAudio) {
       console.log("Nothing to send");
     }
   };
+
+  // Delete region in the waveform
+  const deleteRegion = (region) => {
+    region.remove();
+    setRegionsArray([]);
+  };
+
+  // Clear all the regions from the waveform
+  const clearRegions = () => {
+    Waveform.current.clearRegions();
+    setRegionsArray([]);
+  };
+
   const url =
     "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
@@ -163,57 +177,38 @@ export default function Waveform(SpectogramAudio) {
 
     Waveform.current.on("ready", function () {
       Waveform.current.enableDragSelection({
-        color: randomColor(0.1),
+        color: regionColor,
       });
     });
 
     function editAnnotation(region) {
-      //   let form = region;
-      //   console.log(`regionEDIT`, region.element);
-      //   console.log(`Form`, form);
-      //   form.style.opacity = 0.1;
-      //   // form.element.start.value = Math.round(region.start * 10) / 10;
-      //   // form.element.end.value = Math.round(region.end * 10) / 10;
-      //   form.data.note = "First NOte";
-      //   form.onsubmit = function (e) {
-      //     e.preventDefault();
-      //     region.update({
-      //       start: form.element.start.value,
-      //       end: form.element.end.value,
-      //       data: {
-      //         note: form.element.note.value,
-      //       },
-      //     });
-      //     form.style.opacity = 0;
-      //   };
-      //   form.onreset = function () {
-      //     form.style.opacity = 0;
-      //     form.dataset.region = null;
-      //   };
-      //   form.dataset.region = region.id;
+      let form = region;
+      console.log(`regionEDIT`, region.element);
+      console.log(`Form`, form);
+      form.style.opacity = 0.1;
+      // form.element.start.value = Math.round(region.start * 10) / 10;
+      // form.element.end.value = Math.round(region.end * 10) / 10;
+      form.data.note = "First NOte";
+      form.onsubmit = function (e) {
+        e.preventDefault();
+        region.update({
+          start: form.element.start.value,
+          end: form.element.end.value,
+          data: {
+            note: form.element.note.value,
+          },
+        });
+        form.style.opacity = 0;
+      };
+      form.onreset = function () {
+        form.style.opacity = 0;
+        form.dataset.region = null;
+      };
+      // form.dataset.region = region.id;
     }
-
-    /**
-     * Display annotation.
-     */
-
-    // function showNote(region) {
-    //   //   if (!showNote.el) {
-    //   //     showNote.el = document.querySelector("#subtitle");
-    //   //   }
-    //   //   showNote.el.textContent = region.data.note || "–";
-    // }
-
-    Waveform.current.on("region-click", function (region, e) {
-      console.log("make region");
-      e.stopPropagation();
-      // Play on click, loop on shift click
-      e.shiftKey ? region.playLoop() : region.play();
-    });
     Waveform.current.on("region-click", editAnnotation);
     Waveform.current.on("region-updated", saveCreatedRegions);
-    // Waveform.current.on("region-removed", saveCreatedRegions);
-    // Waveform.current.on("region-in", showNote);
+    Waveform.current.on("region-dblclick", deleteRegion);
 
     Waveform.current.on("region-play", function (region) {
       region.once("out", function () {
@@ -226,22 +221,16 @@ export default function Waveform(SpectogramAudio) {
   }, [SpectogramPluginInit, url]);
 
   function loadRegions(regionListRedux) {
-    // var listToLoadRegions = [];
-    console.log(`regionListRedux`, regionListRedux);
     regionListRedux.forEach(function (region) {
       // eslint-disable-next-line
       region.color = region.color;
-      console.log("ADDREGION");
-      Waveform.current.addRegion(region);
+      if (region.isCorrect === true) {
+        Waveform.current.addRegion(region);
+      } else {
+        console.log("Region Not correct");
+      }
     });
   }
-
-  // useEffect(() => {
-  //   if (regionListRedux) {
-  //     loadRegions(regionListRedux);
-  //     console.log("loadREgion", regionListRedux);
-  //   }
-  // }, [regionListRedux.length, regionListRedux]);
 
   const handlePlayPause = () => {
     setPlay(!Play);
@@ -264,14 +253,12 @@ export default function Waveform(SpectogramAudio) {
     );
   }
 
-  // Slider
-
   useEffect(() => {
     // Zoom
     Waveform.current.zoom(Number(zoomValue));
   }, [zoomValue, Waveform]);
 
-  // Switch
+  // Switch to show spectogram
   const ShowSpectogram = () => {
     if (SpectogramPluginInit === false) {
       setSpectogramPluginInit(true);
@@ -280,13 +267,11 @@ export default function Waveform(SpectogramAudio) {
     }
   };
 
-  // Render list of calls of regions
-
   return (
     <div>
       {" "}
       <div>
-        <Container fluid>
+        <Container className="infoAndNotesContainer" fluid>
           <div className="containerInfoAudio">
             <div>
               {selectedAudio ? (
@@ -307,41 +292,19 @@ export default function Waveform(SpectogramAudio) {
             </div>
             <div></div>
           </div>
-        </Container>
-        <div>
-          <div className="d-flex controlsContainer ">
-            <div className="d-flex flex-column">
-              Show Spectogram
-              <label className="switch">
-                <input
-                  id="SpectogramPluginInit"
-                  type="checkbox"
-                  onChange={ShowSpectogram}
-                />
-                <span className="sliderSwitch round"></span>
-              </label>
-            </div>
-            <div className="d-flex flex-column">
-              <div>Zoom</div>
-              <div className="slidecontainer ">
-                <RangeSlider
-                  className="slider"
-                  value={zoomValue}
-                  onChange={(e) => setZoomValue(e.target.value)}
-                  variant="success"
-                  size="sm"
-                  min={20}
-                  max={100}
-                />
+          <div className="AnnotationsNotes">
+            <div>
+              <div className="FileDetails">
+                <h4>Notes</h4>
+                <p>Double click delete region.</p>
+                <p>Click and drag to create a new region.</p>
+                <p>One click to select region.</p>
+                <p>Save one region at the time.</p>
               </div>
             </div>
-            <div>
-              <PlayButton onClick={handlePlayPause}>
-                {!Play ? "Play" : "Pause"}
-              </PlayButton>
-            </div>
+            <div></div>
           </div>
-        </div>
+        </Container>
 
         <div className="spectogramandwave">
           <WaveformContianer>
@@ -357,26 +320,90 @@ export default function Waveform(SpectogramAudio) {
           </WaveformContianer>
         </div>
         <div>
-          <button
-            onClick={() =>
-              saveRegionsDataBase(
-                regionsArray,
-                selectedAudio?.audioId,
-                CallsList
-              )
-            }
-            className="btnSave draw-border"
-          >
-            Save Regions
-          </button>
-          <button
-            onClick={() => loadRegions(regionListRedux)}
-            className="btnSave draw-border"
-          >
-            Load Regions
-          </button>
+          {" "}
+          <div className="zoomContainer">
+            <div className="d-flex flex-row">
+              <div className="m-2 ">
+                <RangeSlider
+                  className="slider"
+                  value={zoomValue}
+                  onChange={(e) => setZoomValue(e.target.value)}
+                  variant="success"
+                  size="sm"
+                  min={20}
+                  max={100}
+                />
+              </div>
+              <div className="m-2">
+                {" "}
+                <FontAwesomeIcon
+                  className="savebutton "
+                  icon={["fas", "search-plus"]}
+                  color="#04c45c"
+                ></FontAwesomeIcon>
+              </div>
+            </div>
+          </div>
+          <div className="controlsContainer controlActions">
+            <div className="d-flex flex-column justify-content-center ">
+              Show Spectogram
+              <label className="switch">
+                <input
+                  id="SpectogramPluginInit"
+                  type="checkbox"
+                  onChange={ShowSpectogram}
+                />
+                <span className="sliderSwitch round"></span>
+              </label>
+            </div>
+            <button
+              onClick={() =>
+                saveRegionsDataBase(
+                  regionsArray,
+                  selectedAudio?.audioId,
+                  CallsList
+                )
+              }
+              className="btnSave draw-border"
+            >
+              Save
+            </button>{" "}
+            <div className="containerPlayButton">
+              <button className="PlayButton" onClick={handlePlayPause}>
+                {!Play ? (
+                  <FontAwesomeIcon
+                    className=""
+                    icon={["fas", "play"]}
+                    color="#04c45c"
+                  ></FontAwesomeIcon>
+                ) : (
+                  <FontAwesomeIcon
+                    className=""
+                    icon={["fas", "pause"]}
+                    color="#04c45c"
+                  ></FontAwesomeIcon>
+                )}
+              </button>
+            </div>
+            <button
+              onClick={() => clearRegions(regionsArray)}
+              className="btnSave draw-border"
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => loadRegions(regionListRedux)}
+              className="btnSave draw-border"
+            >
+              Load
+            </button>
+          </div>
           <div>
-            <TableNewCalls regionsArray={regionsArray} />
+            <TableNewCalls
+              labelNewCall={labelNewCall}
+              regionsArray={regionsArray}
+              labelColor={labelColor}
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Badge, Button, Dropdown, Table } from "react-bootstrap";
-import RangeSlider from "react-bootstrap-range-slider";
+// import RangeSlider from "react-bootstrap-range-slider";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
@@ -27,7 +27,7 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
   const [firstDoc, setFirstDoc] = useState();
-  const [docsPerPage, setDocsPerPage] = useState(10);
+  const [docsPerPage, setDocsPerPage] = useState(15);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
   // const [firstPage, setFirstPage] = useState(true);
@@ -47,7 +47,6 @@ export default function TableDashboard() {
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
 
   const showSpectrogram = (spectogram, spectogramAudio) => {
-    console.log(`spectogram`, spectogram);
     if (spectogram) {
       setSpectogramImage(spectogram);
       setSpectogramAudio(spectogramAudio);
@@ -94,7 +93,6 @@ export default function TableDashboard() {
   // This function returns the state with single calls of a Raw Audio into a state([]).
 
   const getCalls = (gibbonCallsList) => {
-    console.log(`gibbonCallsList`, gibbonCallsList);
     gibbonCallsList?.forEach((call) => {
       // console.log(`call`, call);
       dispatch(callActions.getSingleCall(call));
@@ -104,8 +102,6 @@ export default function TableDashboard() {
 
   // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, gibbonCallsList) => {
-    console.log("audio", audioId);
-    console.log("gibbonCallsList", gibbonCallsList);
     dispatch(audioActions.getSingleAudio(audioId));
     getCalls(gibbonCallsList);
   };
@@ -186,7 +182,7 @@ export default function TableDashboard() {
         <div>
           <Form>
             <Form.Group className="formFilter">
-              <div>
+              {/* <div>
                 Audios Per page
                 <RangeSlider
                   value={docsPerPage}
@@ -197,7 +193,7 @@ export default function TableDashboard() {
                   max={25}
                   className="reloadButton"
                 />{" "}
-              </div>
+              </div> */}
               <div
                 className="boxRangerSlider"
                 value={docsPerPage}
@@ -397,7 +393,6 @@ export default function TableDashboard() {
                     <FontAwesomeIcon
                       className="btndeleteAudio"
                       icon={["fas", "times"]}
-                      // size="1x"
                       color="#b94242"
                       onClick={() => deleteAudio(audio?.audioId)}
                     ></FontAwesomeIcon>{" "}
@@ -408,7 +403,7 @@ export default function TableDashboard() {
           ) : (
             <thead className="text-center tableHeader">
               <tr>
-                <th>No Audios</th>
+                <th>No Audios Go Back</th>
               </tr>
             </thead>
           )}
