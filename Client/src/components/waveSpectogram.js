@@ -3,20 +3,20 @@ import WaveSurfer from "wavesurfer.js";
 import { WaveformContianer, Wave } from "./Waveform.styled";
 import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js";
 import Regions from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
-// import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
+import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Container } from "react-bootstrap";
+import { Container, Modal } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Waveform(SpectogramAudio) {
+export default function Waveform() {
   const dispatch = useDispatch();
   const [Play, setPlay] = useState(false);
   const [SpectogramPluginInit, setSpectogramPluginInit] = useState(true);
@@ -31,6 +31,7 @@ export default function Waveform(SpectogramAudio) {
   const regionListRedux = useSelector((state) => state.call.call);
   const [labelColor, setLabelColor] = useState("");
   const [labelForNewCall, setLableForNewCall] = useState("");
+  const [helpModal, setHelpModal] = useState(false);
   const regionColor = randomColor(0.1);
 
   // Spectogram and sound waves options
@@ -40,13 +41,10 @@ export default function Waveform(SpectogramAudio) {
     cursorWidth: 1,
     backend: "WebAudio",
     height: 200,
-    barWidth: 0.5,
-    barRadius: 0.3,
-    minPxPerSec: 30,
     scrollParent: true,
-    progressColor: "#2D5BFF",
+    progressColor: "#7AD7F0",
     responsive: true,
-    waveColor: "#d7ebd6",
+    waveColor: "#F5FCFF",
     cursorColor: "blue",
     normalize: true,
     partialRender: true,
@@ -65,13 +63,13 @@ export default function Waveform(SpectogramAudio) {
       Regions.create({
         resize: false,
       }),
-      // Minimap.create({
-      //   backgroundColor: "white",
-      //   waveColor: "#ddd",
-      //   progressColor: "#999",
-      //   cursorColor: "#999",
-      //   height: 30,
-      // }),
+      Minimap.create({
+        backgroundColor: "white",
+        waveColor: "#ddd",
+        progressColor: "#999",
+        cursorColor: "#999",
+        height: 30,
+      }),
       TimelinePlugin.create({
         container: "#wave-timeline",
       }),
@@ -100,8 +98,6 @@ export default function Waveform(SpectogramAudio) {
 
   function saveCreatedRegions(event) {
     let arrayRegion = [];
-    // var randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-    // randLetter + new Date().getTime().toString(),
 
     let singleRegion = {
       callId: event.id,
@@ -165,34 +161,41 @@ export default function Waveform(SpectogramAudio) {
     setRegionsArray([]);
   };
 
-  const url =
-    "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
+  const url = selectedAudio?.audioLink;
+  // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
   useEffect(() => {
     setPlay(false);
     const options = WaveformOptions(waveformRef.current);
     Waveform.current = WaveSurfer.create(options);
-    Waveform.current.load(url);
-    // loadRegions(regionListRedux);
+    if (url) {
+      Waveform.current.load(url);
+    }
 
     Waveform.current.on("ready", function () {
       Waveform.current.enableDragSelection({
         color: regionColor,
+        passive: true,
       });
     });
-    Waveform.current.on("region-created", saveCreatedRegions);
+
+    // Play region on click
+    Waveform.current.on("region-click", function (region, e) {
+      e.stopPropagation();
+      // Play on click, loop on shift click
+      e.shiftKey ? region.playLoop() : region.play();
+      setPlay(true);
+    });
+
+    // Create a region on drag and update it in to the table to edit and add labels.
+    Waveform.current.on("region-updated", saveCreatedRegions);
     Waveform.current.on("region-dblclick", deleteRegion);
 
-    Waveform.current.on("ready", function (region) {
-      region.once("out", function () {
-        Waveform.current.play(region.start);
-        Waveform.current.pause();
-      });
-    });
     return () => Waveform.current.destroy();
     // eslint-disable-next-line
   }, [SpectogramPluginInit, url]);
 
+  // Load regions into the waveform
   function loadRegions(regionListRedux) {
     regionListRedux.forEach(function (region) {
       // eslint-disable-next-line
@@ -205,6 +208,7 @@ export default function Waveform(SpectogramAudio) {
     });
   }
 
+  // Play and pause function for the waveform
   const handlePlayPause = () => {
     setPlay(!Play);
     Waveform.current.playPause();
@@ -250,9 +254,13 @@ export default function Waveform(SpectogramAudio) {
               {selectedAudio ? (
                 <div className="FileDetails">
                   <h4>File Details:</h4>
-                  <p>Name:{selectedAudio.fileName}</p>
-                  <p>Duration:{selectedAudio.duration}</p>
-                  <p>
+                  <p className="line-break-text">
+                    Name:{selectedAudio.fileName}
+                  </p>
+                  <p className="line-break-text">
+                    Duration:{selectedAudio.duration}
+                  </p>
+                  <p className="line-break-text">
                     Record Date:{" "}
                     {new Date(
                       selectedAudio.recordDate.seconds * 1000
@@ -266,16 +274,13 @@ export default function Waveform(SpectogramAudio) {
             <div></div>
           </div>
           <div className="AnnotationsNotes">
-            <div>
-              <div className="FileDetails">
-                <h4>Notes</h4>
-                <p>Double click delete region.</p>
-                <p>Click and drag to create a new region.</p>
-                <p>One click to select region.</p>
-                <p>Save one region at the time.</p>
-              </div>
-            </div>
-            <div></div>
+            <FontAwesomeIcon
+              className="helpIcon"
+              icon={["fas", "question"]}
+              color="#04c45c"
+              onClick={() => setHelpModal(true)}
+              size="2x"
+            ></FontAwesomeIcon>
           </div>
         </Container>
 
@@ -373,6 +378,7 @@ export default function Waveform(SpectogramAudio) {
           </div>
           <div>
             <TableNewCalls
+              labelForNewCall={labelForNewCall}
               labelNewCall={labelNewCall}
               regionsArray={regionsArray}
               labelColor={labelColor}
@@ -380,6 +386,42 @@ export default function Waveform(SpectogramAudio) {
           </div>
         </div>
       </div>
+      <Modal
+        className="modalHelpContainer"
+        centered
+        show={helpModal}
+        onHide={() => setHelpModal(false)}
+      >
+        <Modal.Header className="modalHelpBody" closeButton>
+          <h4>Notes</h4>
+        </Modal.Header>
+        <Modal.Body className="modalHelpBody">
+          {" "}
+          <div>
+            <div className="FileDetails">
+              <p className="line-break-text">
+                <b>Double click</b> = Delete a region from the waveform.
+              </p>
+              <p className="line-break-text">
+                <b> Click and drag </b> = Create a new region in the waveform.
+              </p>
+              <p className="line-break-text">
+                <b>Click</b> = Play region.
+              </p>
+              <p className="line-break-text">
+                <b> Save </b> = Save a region into the databse, save one at the
+                time.
+              </p>
+              <p className="line-break-text">
+                <b> Load </b> = Load the regions from the database.
+              </p>
+              <p className="line-break-text">
+                <b> Clear </b> = Clear regions <b>only</b> from the waveform.
+              </p>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

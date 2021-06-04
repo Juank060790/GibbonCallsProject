@@ -12,18 +12,20 @@ export default function MediaPlayer(props) {
         {" "}
         <div className="spectogramContainer text-center">
           {props.spectogramImage ? (
-            <img
-              src={props.spectogramImage}
-              className="spectogramImage"
-              width="900px"
-              height="300px"
-              alt="Spectogram "
-            />
+            <div className="spectogramImageContainer">
+              <img
+                src={props.spectogramImage}
+                className="spectogramImage"
+                // width="900px"
+                // height="300px"
+                alt="Spectogram "
+              />
+            </div>
           ) : (
             <img
               src={notFoundImage}
-              width="900px"
-              height="300px"
+              // width="900px"
+              // height="300px"
               alt="Spectogram "
             />
           )}

@@ -30,11 +30,9 @@ export default function TableDashboard() {
   const [docsPerPage, setDocsPerPage] = useState(15);
   const [orderBy, setOrderBy] = useState("recordDate");
   const [order, setOrder] = useState("desc");
-  // const [firstPage, setFirstPage] = useState(true);
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
   const [spectogramImage, setSpectogramImage] = useState("");
-  const [spectogramAudio, setSpectogramAudio] = useState("");
 
   useEffect(() => {
     dispatch(
@@ -46,10 +44,9 @@ export default function TableDashboard() {
   // Spectogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
 
-  const showSpectrogram = (spectogram, spectogramAudio) => {
+  const showSpectrogram = (spectogram) => {
     if (spectogram) {
       setSpectogramImage(spectogram);
-      setSpectogramAudio(spectogramAudio);
     }
   };
 
@@ -72,7 +69,7 @@ export default function TableDashboard() {
   // To load the audios from storage (to be fixed)
   const loadAudios = (e) => {
     e.preventDefault();
-    setDocsPerPage(10);
+    setDocsPerPage(15);
     dispatch(
       audioActions.audiosRequest(docsPerPage, "recordDate", "desc", lastDoc)
     );
@@ -410,7 +407,6 @@ export default function TableDashboard() {
         </>
       </Table>
       <PaginationItem
-        // firstPage={firstPage}
         audios={audios}
         loading={loading}
         handleClickOnNext={handleClickOnNext}
@@ -422,7 +418,6 @@ export default function TableDashboard() {
         callsperAudio={callsperAudio}
         handleClose={handleClose}
         spectogramImage={spectogramImage}
-        spectogramAudio={spectogramAudio}
         showSpectrogram={showSpectrogram}
         getCalls={getCalls}
       />

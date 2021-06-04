@@ -11,7 +11,6 @@ export default function ModalCall({
   handleClose,
   showModal,
   spectogramImage,
-  spectogramAudio,
   showSpectrogram,
 }) {
   const calls = useSelector((state) => state.call.call);
@@ -56,10 +55,7 @@ export default function ModalCall({
       </Modal.Header>
       <Modal.Body>
         {" "}
-        <MediaPlayer
-          spectogramAudio={spectogramAudio}
-          spectogramImage={spectogramImage}
-        />
+        <MediaPlayer spectogramImage={spectogramImage} />
         <div>
           {" "}
           <h4>Calls Saved in the database</h4>

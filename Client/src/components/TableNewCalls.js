@@ -6,6 +6,7 @@ export default function TableNewCalls({
   regionsArray,
   labelNewCall,
   labelColor,
+  labelForNewCall,
 }) {
   const arrayForRegions = regionsArray;
 
@@ -34,14 +35,14 @@ export default function TableNewCalls({
                   style={{ backgroundColor: call.singleRegion.color }}
                   className="text-center tableKey"
                 >
-                  <td className="tableSingleKey">{index + 1}</td>
-                  <td className="tableSingleKey">
+                  <td className="tableSingleKeyEditCalls">{index + 1}</td>
+                  <td className="tableSingleKeyEditCalls">
                     {call.singleRegion.start?.toFixed(3)}
                   </td>
-                  <td className="tableSingleKey">
+                  <td className="tableSingleKeyEditCalls">
                     {call.singleRegion.end?.toFixed(3)}
                   </td>
-                  {/* <td className="tableSingleKey">
+                  {/* <td className="tableSingleKeyEditCalls">
                     <img
                       width="100px"
                       src={call.singleRegion?.spectogram}
@@ -49,41 +50,48 @@ export default function TableNewCalls({
                     />
                   </td> */}
 
-                  <td className="tableSingleKey commentKey">
+                  <td className="tableSingleKeyEditCalls commentKey">
                     (ID){call.singleRegion.callId}
                   </td>
                   <td
                     style={{ backgroundColor: labelColor }}
-                    className="tableSingleKey"
+                    className="tableSingleKeyEditCalls dropdownKey"
                   >
-                    <Dropdown
-                      className="dropdownUp"
-                      drop="left"
-                      id="dropdown-button-drop-left"
-                    >
-                      <Dropdown.Toggle
-                        className="dropdownBtn"
-                        variant="success"
+                    <h5 className="text-align-center"> {labelForNewCall}</h5>
+                    <div>
+                      <Dropdown
+                        className="dropdownUp"
+                        drop="right"
+                        id="dropdown-button-drop-right"
                       >
-                        <FontAwesomeIcon
-                          icon={["fas", "venus-mars"]}
-                        ></FontAwesomeIcon>
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item onSelect={() => labelNewCall("Female")}>
-                          Female
-                        </Dropdown.Item>
-                        <Dropdown.Item onSelect={() => labelNewCall("Male")}>
-                          Male
-                        </Dropdown.Item>
-                        <Dropdown.Item onSelect={() => labelNewCall("Other")}>
-                          Other
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                        <Dropdown.Toggle
+                          className="dropdownBtn"
+                          variant="success"
+                        >
+                          <FontAwesomeIcon
+                            icon={["fas", "venus-mars"]}
+                          ></FontAwesomeIcon>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item
+                            onSelect={() => labelNewCall("Female")}
+                          >
+                            Female
+                          </Dropdown.Item>
+                          <Dropdown.Item onSelect={() => labelNewCall("Male")}>
+                            Male
+                          </Dropdown.Item>
+                          <Dropdown.Item onSelect={() => labelNewCall("Other")}>
+                            Other
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
                   </td>
 
-                  <td className="lastCell tableSingleKey">Not sure yet </td>
+                  <td className="lastCell tableSingleKeyEditCalls">
+                    Not sure yet{" "}
+                  </td>
                 </tr>
               </tbody>
             ))}

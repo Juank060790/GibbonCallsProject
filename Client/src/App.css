@@ -1,14 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap");
 
-
-html{
+html {
   scroll-behavior: smooth;
 }
 body {
   font-family: "Roboto", serif;
   letter-spacing: 1px;
   font-weight: 300;
-
 }
 
 .spinnerContainer {
@@ -91,6 +89,12 @@ body {
 }
 .notfoundpage {
   margin-top: 20%;
+}
+
+/* Table edit call */
+
+.tableSingleKeyEditCalls{
+  max-height: min-content;
 }
 
 /* TABLE */
@@ -252,8 +256,11 @@ margin: auto;
 .dropdownBtn {
   height: 40px;
 }
-.dropdownUp{
-  margin: 2rem;
+.dropdownKey {
+padding: .5px !important;
+display: flex;
+justify-content: space-around;
+border-radius: 5px;
 }
 
 .reloadBtnContainer {
@@ -279,7 +286,7 @@ margin: auto;
   vertical-align: middle !important;
 }
 
-.tableNewCall{
+.tableNewCall {
   margin-top: 2rem;
   margin-bottom: 4rem;
 }
@@ -295,8 +302,8 @@ margin: auto;
   padding: 1rem !important;
 }
 
-.tableSingleKey{
-  border: 1px solid rgba(197, 197, 197, 0.274) ;
+.tableSingleKey {
+  border: 1px solid rgba(197, 197, 197, 0.274);
 }
 
 .tableKey:hover {
@@ -329,7 +336,23 @@ margin: auto;
   margin: auto;
 }
 
+/* Modal Help  */
+
+.modalHelpContainer{
+  width: 350px !important;
+margin-left: 40%;
+}
+
+.modalHelpBody{
+  background-color: rgba(120, 156, 167, 0.164);
+}
+
+
 /* MODAL */
+
+.AnnotationsNotes{
+  border-radius: 50%;
+}
 .idNumberModal {
   width: 200px;
 }
@@ -340,22 +363,45 @@ margin: auto;
   padding: 0;
 }
 
-.modal-content {
+.helpIcon:hover::before {
+
+  box-shadow: 0 0 15px #ffee10;
+}
+
+.helpIcon{
+margin-right: 1.5rem;
+ cursor: pointer;
+ position: absolute;
+ transform: translate(-50%, -50%);
+}
+.helpIcon::before {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffee10;
+  transition: .5s;
+  transform: scale(.9);
+  z-index: -1;
+}
+
+.helpIcon:hover{
+  color: #ffee10;
+  box-shadow: 0 0 5px #ffee10;
+  text-shadow: 0 0 5px #ffee10;
+  font-size: 35px;
+}
+
+/* .modal-content {
   height: auto;
   min-height: 100%;
   border-radius: 0;
   padding-bottom: 10rem;
-}
+} */
 
 /* Media Player */
 
-.infoAndNotesContainer{
+.infoAndNotesContainer {
   display: flex;
   justify-content: space-between;
-}
-
-.AnnotationsNotes{
-  text-align: right;
 }
 
 .MediaPlayerContainer {
@@ -365,27 +411,24 @@ margin: auto;
   margin: 2rem;
 }
 
-.controlsContainer{
+.controlsContainer {
   border: 1px rgba(47, 170, 63, 0.308) solid;
-    display: flex;
+  display: flex;
   justify-content: space-between;
-  /* background-color: #8ce6fc27; */
+  flex-wrap: wrap;
   border-radius: 10px;
-
-  
 }
 
-.controlActions{
+.controlActions {
   justify-content: space-evenly;
   margin-bottom: 3rem;
 }
 
-
-.containerPlayButton{
+.containerPlayButton {
   width: 60px;
   margin: 1rem;
 }
-.PlayButton{
+.PlayButton {
   width: 50px;
   height: 50px;
   background: #d7ebd6;
@@ -394,13 +437,12 @@ margin: auto;
   cursor: pointer;
 }
 
-.wavespectrogram{
+.wavespectrogram {
   width: 100% !important;
   /* height: 50% !important; */
 }
 
 .FileDetails {
-  line-height: 5px;
   font-weight: 300;
 }
 
@@ -408,9 +450,13 @@ margin: auto;
   margin: auto;
 }
 
+
+.spectogramImageContainer{
+  width: auto;
+}
 .spectogramImage {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 900px;
+  max-height: 300px;
 }
 
 /* Pagination */
@@ -653,4 +699,3 @@ input:checked + .sliderSwitch:before {
   border-radius: 0;
   background-position: 100% center;
 }
-
