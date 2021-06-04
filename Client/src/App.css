@@ -263,6 +263,11 @@ justify-content: space-around;
 border-radius: 5px;
 }
 
+.labelText{
+  font-size: 18px;
+  font-weight: 400;
+}
+
 .reloadBtnContainer {
   margin-left: 2%;
 }

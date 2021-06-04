@@ -57,7 +57,10 @@ export default function TableNewCalls({
                     style={{ backgroundColor: labelColor }}
                     className="tableSingleKeyEditCalls dropdownKey"
                   >
-                    <h5 className="text-align-center"> {labelForNewCall}</h5>
+                    <p className="text-align-center m-2 labelText">
+                      {" "}
+                      {labelForNewCall}
+                    </p>
                     <div>
                       <Dropdown
                         className="dropdownUp"

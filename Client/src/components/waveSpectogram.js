@@ -409,11 +409,12 @@ export default function Waveform() {
                 <b>Click</b> = Play region.
               </p>
               <p className="line-break-text">
-                <b> Save </b> = Save a region into the databse, save one at the
+                <b> Save </b> = Save a region into the database, save one at the
                 time.
               </p>
               <p className="line-break-text">
-                <b> Load </b> = Load the regions from the database.
+                <b> Load </b> = Load the regions from the database into the
+                waveform.
               </p>
               <p className="line-break-text">
                 <b> Clear </b> = Clear regions <b>only</b> from the waveform.
