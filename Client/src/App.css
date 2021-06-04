@@ -98,6 +98,15 @@ body {
 }
 
 /* TABLE */
+.notfoundAudios{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.table td, .table th {
+  padding: 2px !important;
+}
 
 .btndeleteAudio:hover {
   cursor: pointer;
@@ -284,6 +293,10 @@ border-radius: 5px;
   background-color: #d7ebd6;
   color: #686464;
   vertical-align: middle !important;
+}
+
+.indexKey{
+  background-color: #d7ebd6; 
 }
 .tableSaveRegionHeader {
   background-color: #1a686e6c;

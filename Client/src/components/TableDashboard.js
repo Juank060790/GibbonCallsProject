@@ -7,6 +7,7 @@ import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
 import PaginationItem from "./Pagination";
 import Form from "react-bootstrap/Form";
+import logoFF from "../images/logo-reduced.png";
 
 export default function TableDashboard() {
   const handleClose = () => {
@@ -280,7 +281,7 @@ export default function TableDashboard() {
                     onClick={() =>
                       toAudioId(audio?.audioId, audio.gibbonCallsList)
                     }
-                    className="tableSingleKey"
+                    className="tableSingleKey indexKey"
                   >
                     {index + 1}
                   </td>
@@ -398,9 +399,13 @@ export default function TableDashboard() {
               ))}
             </tbody>
           ) : (
-            <thead className="text-center tableHeader">
+            <thead className="text-center notfoundAudios">
               <tr>
-                <th>No Audios Go Back</th>
+                <td>
+                  <h5>No Audios Found...</h5>
+
+                  <img src={logoFF} width={"100px"} alt="logoFF" />
+                </td>
               </tr>
             </thead>
           )}
