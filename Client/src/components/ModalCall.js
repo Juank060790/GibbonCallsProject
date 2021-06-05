@@ -85,7 +85,7 @@ export default function ModalCall({
                         className="text-center tableKey"
                         key={call.callId}
                       >
-                        <td className="tableSingleKey">{index + 1}</td>
+                        <td className="tableSingleKey indexKey">{index + 1}</td>
                         <td className="tableSingleKey">{call.callId}</td>
                         <td className="tableSingleKey">
                           {call.start.toFixed(4)}
