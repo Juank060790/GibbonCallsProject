@@ -45,15 +45,18 @@ export default function ModalCall({
 
   const isCallCorrect = (callId) => {
     const selectedAudioId = selectedAudio?.audioId;
+    // Count the calls if are correct or not
     const finalCount = callsToCount.call?.filter(
       (x) => x.isCorrect === true
     ).length;
     const restCallCount = finalCount - 1;
+    console.log(`restCallCount`, callsToCount.call);
     dispatch(
       callActions.updateIsCallCorrect(callId, selectedAudioId, restCallCount)
     );
   };
 
+  console.log(`arrayCalls`, arrayCalls);
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>

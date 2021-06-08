@@ -25,10 +25,12 @@ const callReducer = (state = initialState, action) => {
         callArray[findIndexOfCall] = payload;
         // console.log(`Call is equal to payload`, callArray);
       } else {
-        callArray.push(payload);
-        // console.log("Call is not equal", callArray);
+        if (payload.isCorrect === true) {
+          callArray.push(payload);
+        } else {
+          // console.log("CALL IS NOT CORRECT");
+        }
       }
-
       return {
         ...state,
         call: callArray,
@@ -46,6 +48,19 @@ const callReducer = (state = initialState, action) => {
     case types.DELETE_COMMENT_CALL_FAILURE:
     case types.SAVE_REGION_CALL_FAILURE:
     case types.UPDATE_IS_CORRECT_CALL_SUCCESS:
+      const callArrayUpdated = [];
+      const callArrayToUpdate = state.call;
+      callArrayToUpdate.forEach((call) => {
+        if (call.isCorrect === true) {
+          callArrayUpdated.push(call);
+        } else {
+          // console.log(`call.is not correct`, call);
+        }
+      });
+      return {
+        ...state,
+        call: callArrayUpdated,
+      };
     case types.UPDATE_IS_CORRECT_CALL_FAILURE:
       return { ...state, loading: false };
 
