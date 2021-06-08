@@ -61,10 +61,15 @@ export default function TableDashboard() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const { comment } = formData;
-    const audioId = audioIdOnComment;
-    dispatch(audioActions.addCommentRawAudio(comment, audioId));
+    if (formData.comment === "") {
+      console.log("Nothing to send");
+    } else {
+      e.preventDefault();
+      const { comment } = formData;
+      console.log(`e`, formData);
+      const audioId = audioIdOnComment;
+      dispatch(audioActions.addCommentRawAudio(comment, audioId));
+    }
   };
 
   // To load the audios from storage (to be fixed)
@@ -107,13 +112,16 @@ export default function TableDashboard() {
   // ------- To do (Filters, add/delete comment in Main table) ----------.
   // Set order Record Date
 
-  const sortOrder = () => {
+  const sortOrder = (orderByFunction) => {
+    console.log(`orderBy`, orderByFunction);
     if (order === "asc") {
+      setOrderBy(orderByFunction);
       setOrder("desc");
-      setLastDoc(lastDocumentRedux);
+      // setLastDoc(firstDocumentRedux);
     } else {
       setOrder("asc");
-      setLastDoc(lastDocumentRedux);
+      // setLastDoc(firstDocumentRedux);
+      setOrderBy(orderByFunction);
     }
   };
 
@@ -186,9 +194,9 @@ export default function TableDashboard() {
               <FontAwesomeIcon
                 className="btnSortOrder"
                 icon={["fas", "sort-amount-up"]}
-                size="1x"
+                size="sm"
                 color="green"
-                onClick={sortOrder}
+                onClick={(e) => sortOrder("fileName")}
               ></FontAwesomeIcon>{" "}
             </th>
             <th className="lightweight tableSingleKey">
@@ -196,13 +204,32 @@ export default function TableDashboard() {
               <FontAwesomeIcon
                 className="btnSortOrder"
                 icon={["fas", "sort-amount-up"]}
-                size="1x"
+                size="sm"
                 color="green"
-                onClick={sortOrder}
+                onClick={(e) => sortOrder("recordDate")}
+                // onClick={sortOrder}
               ></FontAwesomeIcon>{" "}
             </th>
-            <th className="lightweight tableSingleKey">Duration</th>
-            <th className="lightweight tableSingleKey">Gibbon Calls</th>
+            <th className="lightweight tableSingleKey">
+              Duration{" "}
+              <FontAwesomeIcon
+                className="btnSortOrder"
+                icon={["fas", "sort-amount-up"]}
+                size="sm"
+                color="green"
+                onClick={(e) => sortOrder("duration")}
+              ></FontAwesomeIcon>{" "}
+            </th>
+            <th className="lightweight tableSingleKey">
+              Gibbon Calls{" "}
+              <FontAwesomeIcon
+                className="btnSortOrder"
+                icon={["fas", "sort-amount-up"]}
+                size="sm"
+                color="green"
+                onClick={(e) => sortOrder("correctCalls")}
+              ></FontAwesomeIcon>{" "}
+            </th>
             <th className="lightweight tableSingleKey">Action</th>
             <th className="lightweight tableSingleKey">Comments </th>
             <th className="lightweight m-2">

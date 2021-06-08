@@ -11,6 +11,7 @@ const audiosRequest =
       lastDocument: lastDoc || null,
       firstDocument: firstDoc || null,
     };
+    console.log(`query`, query);
     const refIsDeleted = db
       .collection("rawData")
       .where("isDeleted", "==", false)

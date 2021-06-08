@@ -93,18 +93,19 @@ body {
 
 /* Table edit call */
 
-.tableSingleKeyEditCalls{
+.tableSingleKeyEditCalls {
   max-height: min-content;
 }
 
 /* TABLE */
-.notfoundAudios{
+.notfoundAudios {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.table td, .table th {
+.table td,
+.table th {
   padding: 2px !important;
 }
 
@@ -266,13 +267,13 @@ margin: auto;
   height: 40px;
 }
 .dropdownKey {
-padding: .5px !important;
-display: flex;
-justify-content: space-around;
-border-radius: 5px;
+  padding: 0.5px !important;
+  display: flex;
+  justify-content: space-around;
+  border-radius: 5px;
 }
 
-.labelText{
+.labelText {
   font-size: 18px;
   font-weight: 400;
 }
@@ -295,8 +296,8 @@ border-radius: 5px;
   vertical-align: middle !important;
 }
 
-.indexKey{
-  background-color: #d7ebd6; 
+.indexKey {
+  background-color: #d7ebd6;
 }
 .tableSaveRegionHeader {
   background-color: #1a686e6c;
@@ -307,6 +308,10 @@ border-radius: 5px;
 .tableNewCall {
   margin-top: 2rem;
   margin-bottom: 4rem;
+}
+
+.table-responsive {
+  overflow-x: visible !important;
 }
 
 .tableSingleKey {
@@ -356,20 +361,23 @@ border-radius: 5px;
 
 /* Modal Help  */
 
-.modalHelpContainer{
+.modalHelpContainer {
   width: 350px !important;
-margin-left: 40%;
+  margin-left: 40%;
 }
 
-.modalHelpBody{
+.modalHelpBody {
   background-color: rgba(120, 156, 167, 0.164);
 }
 
-
 /* MODAL */
 
-.AnnotationsNotes{
+.AnnotationsNotes {
   border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 .idNumberModal {
   width: 200px;
@@ -381,31 +389,19 @@ margin-left: 40%;
   padding: 0;
 }
 
-.helpIcon:hover::before {
-
-  box-shadow: 0 0 15px #ffee10;
-}
-
-.helpIcon{
-margin-right: 1.5rem;
- cursor: pointer;
- position: absolute;
- transform: translate(-50%, -50%);
-}
-.helpIcon::before {
+.helpIcon {
+  right: 0;
+  cursor: pointer;
   position: absolute;
-  border-radius: 50%;
-  background: #ffee10;
-  transition: .5s;
-  transform: scale(.9);
-  z-index: -1;
+  margin: 1.5rem;
 }
 
-.helpIcon:hover{
-  color: #ffee10;
-  box-shadow: 0 0 5px #ffee10;
-  text-shadow: 0 0 5px #ffee10;
+.helpIcon:hover {
+  color: #6fcf976b;
+  box-shadow: 0 0 2px #6fcf976b;
+  text-shadow: 0 0 2px #6fcf976b;
   font-size: 35px;
+  transition: ease-in;
 }
 
 /* .modal-content {
@@ -468,8 +464,7 @@ margin-right: 1.5rem;
   margin: auto;
 }
 
-
-.spectogramImageContainer{
+.spectogramImageContainer {
   width: auto;
 }
 .spectogramImage {
@@ -536,17 +531,25 @@ margin-right: 1.5rem;
 
 /* Spectogram */
 
+.spectogramOptions {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
 #waveform {
-  width: 100%;
+  /* width: 100%; */
   background: rgba(0, 0, 0, 0.8);
 }
-/* #wavespectrogram{
+#wavespectrogram{
   margin: 10px auto;
   position: relative;
+  width: 100vw;
 }
 #wavespectrogram canvas{
   left: 0;
-} */
+}
 
 button {
   background: #eee;
@@ -559,8 +562,8 @@ button {
 }
 button:active {
   outline: none;
-  border-top: 4px solid #eee;
-  border-bottom: 2px solid #777;
+  /* border-top: 4px solid #eee;
+  border-bottom: 2px solid #777; */
 }
 button:focus {
   outline: none;

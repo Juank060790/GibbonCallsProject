@@ -14,7 +14,7 @@ export default function TableNewCalls({
     <div className="tableNewCall">
       <h4>Create or Edit Call</h4>
       {arrayForRegions ? (
-        <Table responsive>
+        <Table className="subTableNewCall" responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
               <th className="idNumberModal">N&deg;</th>

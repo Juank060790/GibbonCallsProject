@@ -10,11 +10,13 @@ import colorMap from "colormap";
 import RangeSlider from "react-bootstrap-range-slider";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Modal } from "react-bootstrap";
+import { Container, Dropdown, Modal } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import soundBeat from "../images/soundBeat.png";
+import colorPalette from "../images/colorPalette.png";
 
 export default function Waveform() {
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ export default function Waveform() {
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
   const [zoomValue, setZoomValue] = useState(30);
+  const [spectogramSize, setSetSpectogramSize] = useState(1024);
+  const [colorOfSpectogram, setColorOfSpectogram] = useState("cool");
   const [regionsArray, setRegionsArray] = useState();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const CallsList = useSelector((state) => state.audio.callsList);
@@ -40,7 +44,7 @@ export default function Waveform() {
     container: waveformRef.current,
     cursorWidth: 1,
     backend: "WebAudio",
-    height: 200,
+    // minPxPerSec: 50,
     scrollParent: true,
     progressColor: "#7AD7F0",
     responsive: true,
@@ -75,16 +79,16 @@ export default function Waveform() {
       }),
     ],
   });
+
+  // Set of colors used fot the spectogram "cool", "jet", "electric", "oxygen", "cubehelix", "copper"
   let colors = colorMap({
-    colormap: "cool",
+    colormap: colorOfSpectogram,
     nshades: 256,
     format: "float",
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    fftSamples: 1024,
-    width: "50px",
-    height: "300px",
+    fftSamples: spectogramSize,
     container: "#wavespectrogram",
     labels: true,
     responsive: true,
@@ -228,7 +232,7 @@ export default function Waveform() {
 
     return () => Waveform.current.destroy();
     // eslint-disable-next-line
-  }, [SpectogramPluginInit, url]);
+  }, [SpectogramPluginInit, url, spectogramSize, colorOfSpectogram]);
 
   // Load regions into the waveform
   function loadRegions(regionListRedux) {
@@ -309,13 +313,87 @@ export default function Waveform() {
             <div></div>
           </div>
           <div className="AnnotationsNotes">
-            <FontAwesomeIcon
-              className="helpIcon"
-              icon={["fas", "question"]}
-              color="#04c45c"
-              onClick={() => setHelpModal(true)}
-              size="2x"
-            ></FontAwesomeIcon>
+            <div>
+              <FontAwesomeIcon
+                className="helpIcon"
+                icon={["fas", "question"]}
+                color="#04c45c"
+                onClick={() => setHelpModal(true)}
+                size="2x"
+              ></FontAwesomeIcon>
+            </div>
+            <div className="spectogramOptions">
+              <div className="colorPaletteDropdownContainer m-2">
+                <Dropdown className="dropdownBtnSpectogramOption ">
+                  <Dropdown.Toggle
+                    variant="secondary"
+                    id="dropdown-basic"
+                    className="colorPaletteDropdownBtn"
+                  >
+                    <img
+                      src={colorPalette}
+                      alt="soundBeat icon"
+                      width="25px"
+                      height="25px"
+                    />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={(e) => setColorOfSpectogram("cool")}
+                    >
+                      Cool
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => setColorOfSpectogram("jet")}>
+                      Jet
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={(e) => setColorOfSpectogram("electric")}
+                    >
+                      Electric
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={(e) => setColorOfSpectogram("oxygen")}
+                    >
+                      Oxygen
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={(e) => setColorOfSpectogram("cubehelix")}
+                    >
+                      Cubehelix
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={(e) => setColorOfSpectogram("copper")}
+                    >
+                      Copper
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>{" "}
+              </div>
+              <div className="soundBeatDropdownContainer">
+                <Dropdown className="dropdownBtnSpectogramOption">
+                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                    <img
+                      src={soundBeat}
+                      alt="soundBeat icon"
+                      width="80px"
+                      color="white"
+                      // height="100px"
+                    />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(512)}>
+                      FftSamples 512
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(1024)}>
+                      FftSamples 1024
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(2048)}>
+                      FftSamples 2048
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>{" "}
+              </div>
+            </div>
           </div>
         </Container>
 
