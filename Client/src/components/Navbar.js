@@ -6,10 +6,16 @@ import logo from "../images/logo-reduced.png";
 
 export default function Navbar() {
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(null);
 
   useEffect(() => {
-    dispatch(audioActions.searchDocuments(searchQuery));
+    if (searchQuery != null) {
+      dispatch(audioActions.searchDocuments(searchQuery));
+    }
+    if (searchQuery === "") {
+      console.log("Search query equal to zero");
+    } else {
+    }
   }, [dispatch, searchQuery]);
 
   const handleLogout = () => {

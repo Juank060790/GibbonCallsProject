@@ -183,9 +183,11 @@ const searchDocuments = (searchQuery) => (dispatch) => {
     searchDoc: searchQuery,
   };
 
+  console.log(`query`, query);
+
   let searchList = [];
   db.collection("rawData")
-    .where("fileName", "==", query.searchDoc)
+    .where("fileName", "array-contains-any", [query.searchDoc])
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)
     .onSnapshot((querySnapshot) => {
@@ -199,6 +201,7 @@ const searchDocuments = (searchQuery) => (dispatch) => {
         payload: searchList,
       });
     });
+  console.log(`searchList`, searchList);
 };
 
 export const audioActions = {

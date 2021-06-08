@@ -133,14 +133,49 @@ export default function Waveform() {
     }
   };
 
-  // Save regions to data base, label to the save region is added here.
+  // Save regions to data base, label to the save region is added here and add + count to the Raw audio.
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
+      const addCallCount =
+        regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
+        // Test if Start and End time are the same
+
+        // ----------------------------------------
+        // Check if the start from the old and new region are the same
+        // const isRegionStartInTheArray = (el) =>
+        //   el.start === region.singleRegion.start;
+        // const findStartOfCall = regionListRedux.findIndex(
+        //   isRegionStartInTheArray
+        // );
+        // console.log(`findIndexOfCall`, findStartOfCall);
+        // // Check if the end of a new and old regions are the same
+        // const isRegionEndInTheArray = (el) =>
+        //   el.end === region.singleRegion.end;
+
+        // const findEndOfCall = regionListRedux.findIndex(isRegionEndInTheArray);
+        // console.log(`findIndexOfCall`, findEndOfCall);
+
+        // //  Comparare start/end from old and new region
+
+        // if (
+        //   regionListRedux[findStartOfCall]?.start ===
+        //     region.singleRegion.start &&
+        //   regionListRedux[findEndOfCall]?.end === region.singleRegion.end
+        // ) {
+        //   // regionListRedux[findIndexOfCall] = region;
+        //   console.log(`region is equal to region`, regionListRedux);
+        // } else {
+        //   // regionListRedux.push(region);
+        //   console.log("region is not equal", regionListRedux);
+        // }
+        // --------------------------
+        // ENDDDD
+
         region.singleRegion.label = labelForNewCall;
         let singleCall = region.singleRegion;
-        dispatch(callActions.saveRegionCall(singleCall, audioId));
+        dispatch(callActions.saveRegionCall(singleCall, audioId, addCallCount));
         dispatch(callActions.getSingleCall(singleCall.callId));
         setRegionsArray([]);
       });

@@ -13,15 +13,14 @@ export default function ModalCall({
   spectogramImage,
   showSpectrogram,
 }) {
+  const dispatch = useDispatch();
   const calls = useSelector((state) => state.call.call);
   const [callIdOnComment, setCallIdOnComment] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
   const [arrayCalls, setArrayCalls] = useState([]);
-  const dispatch = useDispatch();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  const callsToCount = useSelector((state) => state.call);
 
-  // eslint-disable-next-line
-  const callsTEst = useSelector((state) => state.call);
   useEffect(() => {
     setArrayCalls(calls);
   }, [arrayCalls, calls]);
@@ -45,13 +44,20 @@ export default function ModalCall({
   };
 
   const isCallCorrect = (callId) => {
-    dispatch(callActions.updateIsCallCorrect(callId));
+    const selectedAudioId = selectedAudio?.audioId;
+    const finalCount = callsToCount.call?.filter(
+      (x) => x.isCorrect === true
+    ).length;
+    const restCallCount = finalCount - 1;
+    dispatch(
+      callActions.updateIsCallCorrect(callId, selectedAudioId, restCallCount)
+    );
   };
 
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <h6>{selectedAudio?.fileName}</h6>
+        <h6>{selectedAudio?.audioId}</h6>
       </Modal.Header>
       <Modal.Body>
         {" "}

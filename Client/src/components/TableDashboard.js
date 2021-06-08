@@ -105,6 +105,8 @@ export default function TableDashboard() {
   };
 
   // ------- To do (Filters, add/delete comment in Main table) ----------.
+  // Set order Record Date
+
   const sortOrder = () => {
     if (order === "asc") {
       setOrder("desc");
@@ -114,6 +116,8 @@ export default function TableDashboard() {
       setLastDoc(lastDocumentRedux);
     }
   };
+
+  // Set order file Name
 
   // Delete Audio from table
 
@@ -145,38 +149,7 @@ export default function TableDashboard() {
       </div>
 
       <div className="filterMenu ">
-        <div className="filterBadges ">
-          {/* <Badge className="singleBadgeNumber" variant="success">
-            {" "}
-            <FontAwesomeIcon
-              onClick={clearFilterItem("docsPerPage")}
-              className="savebutton"
-              icon={["fas", "times"]}
-              color="white"
-            ></FontAwesomeIcon>{" "}
-            {docsPerPage}
-          </Badge>{" "}
-          <Badge className="singleBadge" variant="warning">
-            {" "}
-            <FontAwesomeIcon
-              onClick={clearFilterItem("orderBy")}
-              className="savebutton"
-              icon={["fas", "times"]}
-              color="white"
-            ></FontAwesomeIcon>{" "}
-            {orderBy}
-          </Badge>{" "}
-          <Badge className="singleBadge" variant="info">
-            {" "}
-            <FontAwesomeIcon
-              onClick={clearFilterItem("order")}
-              className="savebutton"
-              icon={["fas", "times"]}
-              color="white"
-            ></FontAwesomeIcon>{" "}
-            {order}
-          </Badge>{" "} */}
-        </div>
+        <div className="filterBadges "></div>
         <div>
           <Form>
             <Form.Group className="formFilter">
@@ -248,16 +221,10 @@ export default function TableDashboard() {
                   >
                     Audio Id
                   </Dropdown.Item> */}
-                  <Dropdown.Item
-                    onClick={(e) => setOrderBy("recordDate")}
-                    href="#/action-2"
-                  >
+                  <Dropdown.Item onClick={(e) => setOrderBy("recordDate")}>
                     Record Date
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    onClick={(e) => setOrderBy("fileName")}
-                    href="#/action-3"
-                  >
+                  <Dropdown.Item onClick={(e) => setOrderBy("fileName")}>
                     File Name
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -317,7 +284,7 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.gibbonCallsList?.length}
+                    {audio.correctCalls}
                   </td>
                   <td className="">
                     <div className="buttonscomments">

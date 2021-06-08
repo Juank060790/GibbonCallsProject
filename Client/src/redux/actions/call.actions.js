@@ -89,28 +89,32 @@ const deleteCall = (callId) => (dispatch) => {
     });
 };
 
-const updateIsCallCorrect = (callId) => (dispatch) => {
-  dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
-  db.collection("calls")
-    .doc(`${callId}`)
-    .update({
-      isCorrect: false,
-    })
-    .then(() => {
-      dispatch({
-        type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
-        payload: "Call update it successfully ",
+const updateIsCallCorrect =
+  (callId, slectedAudioId, restCallCount) => (dispatch) => {
+    dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
+    db.collection("calls")
+      .doc(`${callId}`)
+      .update({
+        isCorrect: false,
+      })
+      .then(() => {
+        dispatch({
+          type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
+          payload: "Call update it successfully ",
+        });
+        db.collection("rawData").doc(`${slectedAudioId}`).update({
+          correctCalls: restCallCount,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: types.UPDATE_IS_CORRECT_CALL_FAILURE,
+          payload: `Error updating call:${callId}`,
+        });
       });
-    })
-    .catch(() => {
-      dispatch({
-        type: types.UPDATE_IS_CORRECT_CALL_FAILURE,
-        payload: `Error updating call:${callId}`,
-      });
-    });
-};
+  };
 
-const saveRegionCall = (singleCall, audioId) => (dispatch) => {
+const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
   let singleCallId = singleCall.callId;
   dispatch({ type: types.SAVE_REGION_CALL_REQUEST, payload: null });
   db.collection(`calls`)
@@ -122,7 +126,12 @@ const saveRegionCall = (singleCall, audioId) => (dispatch) => {
         .update(
           "gibbonCallsList",
           firebase.firestore.FieldValue.arrayUnion(singleCallId)
-        );
+        )
+        .then(() => {
+          db.collection("rawData").doc(audioId).update({
+            correctCalls: addCallCount,
+          });
+        });
       dispatch({
         type: types.SAVE_REGION_CALL_SUCCESS,
         payload: null,
@@ -134,7 +143,6 @@ const saveRegionCall = (singleCall, audioId) => (dispatch) => {
         payload: `Error creating call:${audioId}`,
       });
     });
-  console.log(`The region was created successfully`);
 };
 
 export const callActions = {
@@ -146,61 +154,3 @@ export const callActions = {
   updateIsCallCorrect,
   saveRegionCall,
 };
-
-// ------------ Old CODE --------------//
-
-// Get single Calls from RawAudio
-
-// const getSingleCall = (callId) => async (dispatch) => {
-//   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
-//   try {
-//     const res = await api.get(`calls/${callId}`);
-//     // Get the inital state from reducer call.reducers.
-//     dispatch({
-//       type: types.GET_SINGLE_CALL_REQUEST_SUCCESS,
-//       payload: res.data,
-//     });
-//   } catch (error) {
-//     dispatch({
-//       type: types.GET_SINGLE_CALL_REQUEST_FAILURE,
-//       payload: error.data,
-//     });
-//     // dispatch(alertActions.setAlert("Not calls found", "danger"));
-//   }
-// };
-
-// // Create new comment to Call.
-// const addCommentSingleCall = (comment, callId) => async (dispatch) => {
-//   dispatch({ type: types.CREATE_COMMENT_SINGLE_CALL_REQUEST, payload: null });
-//   try {
-//     const res = await api.put(`calls/addcomment/${callId}`, {
-//       comment,
-//       callId,
-//     });
-//     dispatch({
-//       type: types.CREATE_COMMENT_SINGLE_CALL_SUCCESS,
-//       payload: res.data.data,
-//     });
-//     dispatch(alertActions.setAlert("New comment has been Added!", "success"));
-//   } catch (error) {
-//     dispatch({
-//       type: types.CREATE_COMMENT_SINGLE_CALL_FAILURE,
-//       payload: error,
-//     });
-//   }
-// };
-
-// const deleteCommentCall = (callId) => async (dispatch) => {
-//   dispatch({ type: types.DELETE_COMMENT_CALL_REQUEST, payload: null });
-//   try {
-//     const res = await api.put(`calls/deletecomment/${callId}`);
-//     dispatch({
-//       type: types.DELETE_COMMENT_CALL_SUCCESS,
-//       payload: res.data,
-//     });
-
-//     dispatch(alertActions.setAlert("Comment has been DELETED!", "success"));
-//   } catch (error) {
-//     dispatch({ type: types.DELETE_COMMENT_CALL_FAILURE, payload: error });
-//   }
-// };
