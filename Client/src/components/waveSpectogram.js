@@ -17,6 +17,7 @@ import TableNewCalls from "./TableNewCalls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import soundBeat from "../images/soundBeat.png";
 import colorPalette from "../images/colorPalette.png";
+import testAudio from "../images/testAudio.WAV";
 
 export default function Waveform() {
   const dispatch = useDispatch();
@@ -200,7 +201,8 @@ export default function Waveform() {
     setRegionsArray([]);
   };
 
-  const url = selectedAudio?.audioLink;
+  const url = testAudio;
+  // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
   useEffect(() => {

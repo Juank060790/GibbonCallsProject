@@ -57,18 +57,26 @@ export default function TableDashboard() {
     dispatch(audioActions.deleteCommentAudio(audioId));
   };
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
+    e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = (e) => {
-    if (formData.comment === "") {
-      console.log("Nothing to send");
-    } else {
+  // Send the form with the comment and Audio Id to audio actions. //
+  const handlesubmit = (e) => {
+    console.log(`e`, e);
+    if (e.code === "Enter" || e.code === "NumpadEnter" || e.type === "click") {
+      console.log("Enter key was pressed. Run your function.");
+      if (formData.comment === "") {
+        console.log("Nothing to send");
+      } else {
+        // e.preventDefault();
+        const { comment } = formData;
+        console.log(`e`, formData);
+        const audioId = audioIdOnComment;
+        dispatch(audioActions.addCommentRawAudio(comment, audioId));
+      }
       e.preventDefault();
-      const { comment } = formData;
-      console.log(`e`, formData);
-      const audioId = audioIdOnComment;
-      dispatch(audioActions.addCommentRawAudio(comment, audioId));
     }
   };
 
@@ -161,18 +169,6 @@ export default function TableDashboard() {
         <div>
           <Form>
             <Form.Group className="formFilter">
-              {/* <div>
-                Audios Per page
-                <RangeSlider
-                  value={docsPerPage}
-                  onChange={(e) => setDocsPerPage(e.target.value)}
-                  variant="dark"
-                  size="sm"
-                  min={1}
-                  max={25}
-                  className="reloadButton"
-                />{" "}
-              </div> */}
               <div
                 className="boxRangerSlider"
                 value={docsPerPage}
@@ -207,7 +203,6 @@ export default function TableDashboard() {
                 size="sm"
                 color="green"
                 onClick={(e) => sortOrder("recordDate")}
-                // onClick={sortOrder}
               ></FontAwesomeIcon>{" "}
             </th>
             <th className="lightweight tableSingleKey">
@@ -230,7 +225,7 @@ export default function TableDashboard() {
                 onClick={(e) => sortOrder("correctCalls")}
               ></FontAwesomeIcon>{" "}
             </th>
-            <th className="lightweight tableSingleKey">Action</th>
+            <th className="lightweight tableSingleKey">Comment</th>
             <th className="lightweight tableSingleKey">Comments </th>
             <th className="lightweight m-2">
               <Dropdown>
@@ -242,12 +237,6 @@ export default function TableDashboard() {
                   <FontAwesomeIcon icon={["fas", "filter"]}></FontAwesomeIcon>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {/* <Dropdown.Item
-                    onClick={(e) => setOrderBy("audioId")}
-                    href="#/action-1"
-                  >
-                    Audio Id
-                  </Dropdown.Item> */}
                   <Dropdown.Item onClick={(e) => setOrderBy("recordDate")}>
                     Record Date
                   </Dropdown.Item>
@@ -267,7 +256,7 @@ export default function TableDashboard() {
                   key={audio.audioId}
                   className={`${
                     index % 2 === 0
-                      ? "cardBlack text-center  tableInner tableKey "
+                      ? "cardDark text-center  tableInner tableKey "
                       : "cardWhite text-center tableInner tableKey"
                   }`}
                 >
@@ -311,16 +300,17 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.correctCalls}
+                    {audio.gibbonCallsList?.length}
+                    {/* {audio.correctCalls} */}
                   </td>
-                  <td className="">
+                  <td>
                     <div className="buttonscomments">
-                      <Button
+                      {/* <Button
                         className="savebutton commentBtns commentBtnsSave"
                         disabled={audio.comments ? true : false}
                         type="submit"
                         form="commentForm"
-                        onClick={handleSubmit}
+                        onClick={(e) => handlesubmit(e, "click")}
                         // variant="outline-success"
                       >
                         {" "}
@@ -329,7 +319,7 @@ export default function TableDashboard() {
                           icon={["fas", "check"]}
                           color="#04c45c"
                         ></FontAwesomeIcon>
-                      </Button>{" "}
+                      </Button>{" "} */}
                       <Button
                         className="savebutton commentBtns commentBtnsDelete"
                         disabled={audio.comments ? false : true}
@@ -357,15 +347,31 @@ export default function TableDashboard() {
                       <td className="tableSingleKey commentKey">
                         {" "}
                         <div className="commentBox textareacomments">
-                          <Form className="commentForm" key={audio.audioId}>
+                          <Form
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handlesubmit(e);
+                              }
+                            }}
+                            // handlesubmit={(e) => {
+                            //   /**
+                            //    * Prevent submit from reloading the page
+                            //    */
+                            //   e.preventDefault();
+                            //   e.stopPropagation();
+                            //   handlesubmit();
+                            // }}
+                            className="commentForm"
+                            key={audio.audioId}
+                          >
                             <div className="addCommentBox commentBoxInput ">
                               <Form.Group
-                                style={{ backgroundColor: "#d7ebd6" }}
                                 className="textareacomments textareacommentsInput"
                                 controlId={audio.audioId}
                               >
                                 <Form.Control
-                                  onClick={() =>
+                                  onSelect={() =>
                                     setAudioIdOnComment(audio?.audioId)
                                   }
                                   key={audio.audioId}
@@ -396,7 +402,7 @@ export default function TableDashboard() {
             <thead className="text-center notfoundAudios">
               <tr>
                 <td>
-                  <h5>No Audios Found...</h5>
+                  <h5>No more audios found...</h5>
 
                   <img src={logoFF} width={"100px"} alt="logoFF" />
                 </td>

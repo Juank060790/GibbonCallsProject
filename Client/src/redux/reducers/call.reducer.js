@@ -25,11 +25,11 @@ const callReducer = (state = initialState, action) => {
         callArray[findIndexOfCall] = payload;
         // console.log(`Call is equal to payload`, callArray);
       } else {
-        if (payload.isCorrect === true) {
-          callArray.push(payload);
-        } else {
-          // console.log("CALL IS NOT CORRECT");
-        }
+        callArray.push(payload);
+        // if (payload.isCorrect === true) {
+        // } else {
+        //   // console.log("CALL IS NOT CORRECT");
+        // }
       }
       return {
         ...state,
@@ -48,21 +48,20 @@ const callReducer = (state = initialState, action) => {
     case types.DELETE_COMMENT_CALL_FAILURE:
     case types.SAVE_REGION_CALL_FAILURE:
     case types.UPDATE_IS_CORRECT_CALL_SUCCESS:
-      const callArrayUpdated = [];
-      const callArrayToUpdate = state.call;
-      callArrayToUpdate.forEach((call) => {
-        if (call.isCorrect === true) {
-          callArrayUpdated.push(call);
-        } else {
-          // console.log(`call.is not correct`, call);
-        }
-      });
-      return {
-        ...state,
-        call: callArrayUpdated,
-      };
     case types.UPDATE_IS_CORRECT_CALL_FAILURE:
-      return { ...state, loading: false };
+      return { ...state, loading: false }; // const callArrayUpdated = [];
+    // const callArrayToUpdate = state.call;
+    // callArrayToUpdate.forEach((call) => {
+    //   if (call.isCorrect === true) {
+    //     callArrayUpdated.push(call);
+    //   } else {
+    //     // console.log(`call.is not correct`, call);
+    //   }
+    // });
+    // return {
+    //   ...state,
+    //   call: callArrayUpdated,
+    // };
 
     case types.CREATE_COMMENT_SINGLE_CALL_SUCCESS:
     case types.DELETE_CALL_SUCCESS:

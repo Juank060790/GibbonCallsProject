@@ -90,12 +90,15 @@ const deleteCall = (callId) => (dispatch) => {
 };
 
 const updateIsCallCorrect =
-  (callId, slectedAudioId, restCallCount) => (dispatch) => {
+  (callId, slectedAudioId, restCallCount, isCorrect) => (dispatch) => {
+    let validate = isCorrect;
+
+    console.log(`validate`, validate);
     dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
     db.collection("calls")
       .doc(`${callId}`)
       .update({
-        isCorrect: false,
+        isCorrect: validate,
       })
       .then(() => {
         dispatch({

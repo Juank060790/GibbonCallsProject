@@ -104,9 +104,10 @@ body {
   justify-content: center;
 }
 
+
 .table td,
 .table th {
-  padding: 2px !important;
+  padding: 1px !important;
 }
 
 .btndeleteAudio:hover {
@@ -135,17 +136,14 @@ body {
 
 .cardWhite {
   background-color: white;
-  border-radius: 0.5rem;
   margin: 1rem;
   color: black;
 }
 
-.cardBlack {
+.cardDark {
   width: 100%;
-  background-color: #00fd7615;
-  border-radius: 0.5rem;
+  background-color: #07daff13;
   margin: 1rem;
-  color: white;
 }
 
 .filterMenu {
@@ -183,7 +181,6 @@ margin: auto;
 .textareacomments {
   border: none;
   border-radius: 6px;
-  background-color: #d7ebd6;
 }
 .textareacomments:hover {
   background-color: #333333;
@@ -201,7 +198,7 @@ margin: auto;
 }
 
 .form-control {
-  background-color: #d7ebd6 !important;
+  /* background-color:  #07ffc113 !important; */
 }
 
 .commentBoxInput {
@@ -219,7 +216,8 @@ margin: auto;
 }
 
 .commentSubBox {
-  margin: auto;
+  text-align: center;
+  vertical-align: middle !important;
 }
 .commentsection {
   display: flex;
@@ -229,9 +227,15 @@ margin: auto;
 
 .buttonscomments {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 
+
+.commentBtnValidateCall{
+  width: 30px;
+  margin: 5px;
+
+}
 .addCommentBox {
   display: flex;
 }

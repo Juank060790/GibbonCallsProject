@@ -55,7 +55,7 @@ export default function Navbar() {
           className="search__input"
           type="text"
           onKeyPress={(e) => searchFunction(e)}
-          placeholder="Search"
+          placeholder="Search by file number"
         />
       </div>
     </Container>
