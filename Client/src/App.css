@@ -539,11 +539,12 @@ margin: auto;
   /* width: 100%; */
   background: rgba(0, 0, 0, 0.8);
 }
-#wavespectrogram {
+/* #wavespectrogram { */
   /* margin: 10px auto;
   position: relative; */
   /* width: 100vw; */
-}
+/* } */
+
 #wavespectrogram canvas {
   left: 0;
 }
