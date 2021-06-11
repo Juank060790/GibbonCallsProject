@@ -9,8 +9,8 @@ import "../../App.css";
 const LoginPage = (props) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    email: "admin@admin.com",
-    password: "123456",
+    email: "",
+    password: "",
   });
 
   // eslint-disable-next-line

@@ -4,7 +4,6 @@ import { Modal, Table, Button, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import MediaPlayer from "./MediaPlayer";
 import logoFF from "../images/logo-reduced.png";
-import Form from "react-bootstrap/Form";
 import { callActions } from "../redux/actions";
 
 export default function ModalCall({
@@ -24,53 +23,28 @@ export default function ModalCall({
   useEffect(() => {
     setArrayCalls(calls);
   }, [arrayCalls, calls]);
-  console.log(`arrayCalls`, arrayCalls);
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const { comment } = formData;
-  //   const callId = callIdOnComment;
-  //   dispatch(callActions.addCommentSingleCall(comment, callId));
-  // };
 
   // Send the form with the comment and Audio Id to audio actions. //
   const handlesubmit = (e) => {
-    console.log(`e`, e);
     if (e.code === "Enter" || e.code === "NumpadEnter" || e.type === "click") {
-      console.log("Enter key was pressed. Run your function.");
-      if (formData.comment === "") {
-        console.log("Nothing to send");
-      } else {
-        // e.preventDefault();
-        const { comment } = formData;
-        console.log(`e`, formData);
-        const callId = callIdOnComment;
-        dispatch(callActions.addCommentSingleCall(comment, callId));
-      }
+      const { comment } = formData;
+      const callId = callIdOnComment;
+      dispatch(callActions.addCommentSingleCall(comment, callId));
       e.preventDefault();
     }
+    setFormData({ comment: "" });
   };
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const deleteCommentSingleCall = (callId) => {
-    dispatch(callActions.deleteCommentCall(callId));
-  };
-
-  // const deleteCall = (callId) => {
-  //   dispatch(callActions.deleteCall(callId));
-  // };
-
   const isCallCorrect = (callId, isCorrect) => {
-    console.log(`e`, isCorrect);
     const selectedAudioId = selectedAudio?.audioId;
     // Count the calls if are correct or not
     const finalCount = callsToCount.call?.filter(
       (x) => x.isCorrect === true
     ).length;
     const restCallCount = finalCount - 1;
-    console.log(`restCallCount`, callsToCount.call);
 
     dispatch(
       callActions.updateIsCallCorrect(
@@ -84,9 +58,7 @@ export default function ModalCall({
 
   return (
     <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <h6>{selectedAudio?.audioId}</h6>
-      </Modal.Header>
+      <Modal.Header closeButton></Modal.Header>
       <Modal.Body>
         {" "}
         <MediaPlayer spectogramImage={spectogramImage} />
@@ -94,7 +66,7 @@ export default function ModalCall({
           {" "}
           <h4>Calls Saved in the database</h4>
         </div>
-        <Table responsive>
+        <Table responsive="sm">
           <thead className="text-center tableHeader">
             <tr>
               <th>Num</th>
@@ -104,6 +76,8 @@ export default function ModalCall({
               <th>Spectogram</th>
               <th>Validation</th>
               <th>Label</th>
+              <th>Created by</th>
+              <th>%</th>
               <th>Comments</th>
               <th className="text-center"></th>
             </tr>
@@ -215,100 +189,32 @@ export default function ModalCall({
                       ) : (
                         <td className="tableSingleKey "> No label</td>
                       )}
-                      {call.comment ? (
-                        <td className="tableSingleKey commentKey">
-                          <div className="commentBox textareacomments">
-                            <div className="commentSubBox ">
-                              <p className="text-center">{call.comment}</p>
-                            </div>
-                          </div>
-                          <Button
-                            className="savebutton commentBtns commentBtnsDelete"
-                            disabled={call.comment ? false : true}
-                            onClick={() =>
-                              deleteCommentSingleCall(call?.callId)
+                      <td className="tableSingleKey "> ML/Hm</td>
+                      <td className="tableSingleKey "> %</td>
+                      <td className="tableSingleKey commentKey">
+                        <form
+                          className="commentForm"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handlesubmit(e);
                             }
-                            // variant="success"
-                          >
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "times"]}
-                              color="white"
-                            ></FontAwesomeIcon>{" "}
-                          </Button>{" "}
-                        </td>
-                      ) : (
-                        <>
-                          <td className="tableSingleKey commentKey">
-                            {" "}
-                            <div className="commentBox textareacomments">
-                              <Form
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    handlesubmit(e);
-                                  }
-                                }}
-                                // handlesubmit={(e) => {
-                                //   /**
-                                //    * Prevent submit from reloading the page
-                                //    */
-                                //   e.preventDefault();
-                                //   e.stopPropagation();
-                                //   handlesubmit();
-                                // }}
-
-                                className="commentForm"
-                                key={call.callId}
-                              >
-                                <div className="addCommentBox commentBoxInput ">
-                                  <Form.Group
-                                    style={{ backgroundColor: "#d7ebd6" }}
-                                    className="textareacomments textareacommentsInput"
-                                    controlId={call.callId}
-                                  >
-                                    <Form.Control
-                                      onClick={() =>
-                                        setCallIdOnComment(call?.callId)
-                                      }
-                                      key={call.callId}
-                                      type="textarea"
-                                      name="comment"
-                                      onChange={handleChange}
-                                    />
-                                  </Form.Group>{" "}
-                                </div>
-                              </Form>
-                            </div>
-                            <div className="buttonscomments">
-                              {/* <Button
-                                className="savebutton commentBtns commentBtnsSave"
-                                disabled={call.comment ? true : false}
-                                type="submit"
-                                form="commentForm"
-                                onClick={handleSubmit}
-                              >
-                                {" "}
-                                <FontAwesomeIcon
-                                  className="savebutton "
-                                  icon={["fas", "check"]}
-                                  color="#04c45c"
-                                ></FontAwesomeIcon>
-                              </Button>{" "} */}
-                            </div>
-                          </td>
-                        </>
-                      )}
-                      {/* <td className="lastCell tableSingleKey">
-                        {" "}
-                        <FontAwesomeIcon
-                          className="btndeleteAudio"
-                          icon={["fas", "times"]}
-                          // size="1x"
-                          color="#b94242"
-                          onClick={() => deleteCall(call?.callId)}
-                        ></FontAwesomeIcon>{" "}
-                      </td> */}
+                          }}
+                          key={call.callId}
+                          id={call.callId}
+                        >
+                          <textarea
+                            className="commentBoxInput  textareacommentsInput"
+                            onSelect={() => setCallIdOnComment(call?.callId)}
+                            key={call.callId}
+                            type="textarea"
+                            name="comment"
+                            onChange={handleChange}
+                            id={index + call.callId}
+                            defaultValue={call.comment}
+                          ></textarea>
+                        </form>{" "}
+                      </td>
                     </tr>
                   </tbody>
                 ))}

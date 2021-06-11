@@ -4,14 +4,14 @@ import PrivateRoute from "./PrivateRoutes";
 import LoginPage from "../containers/LoginPage";
 import Dashboard from "../containers/Dashboard";
 import NotFoundPage from "./NotFoundPage";
-import AlertMsg from "../layouts/Alerts";
+// import AlertMsg from "../layouts/Alerts";
 import { connect } from "react-redux";
 
 function Routes(props) {
   const { isAuthenticated, isVerifying } = props;
   return (
     <>
-      <AlertMsg />
+      {/* <AlertMsg /> */}
       <Switch>
         <Route exact path="/" component={LoginPage} />
         <PrivateRoute

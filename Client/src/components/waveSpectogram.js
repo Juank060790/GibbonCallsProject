@@ -17,7 +17,7 @@ import TableNewCalls from "./TableNewCalls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import soundBeat from "../images/soundBeat.png";
 import colorPalette from "../images/colorPalette.png";
-import testAudio from "../images/testAudio.WAV";
+// import testAudio from "../images/testAudio.WAV";
 
 export default function Waveform() {
   const dispatch = useDispatch();
@@ -201,7 +201,7 @@ export default function Waveform() {
     setRegionsArray([]);
   };
 
-  const url = testAudio;
+  const url = selectedAudio?.audioLink;
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
@@ -324,90 +324,110 @@ export default function Waveform() {
                 size="2x"
               ></FontAwesomeIcon>
             </div>
-            <div className="spectogramOptions">
-              <div className="colorPaletteDropdownContainer m-2">
-                <Dropdown className="dropdownBtnSpectogramOption ">
-                  <Dropdown.Toggle
-                    variant="secondary"
-                    id="dropdown-basic"
-                    className="colorPaletteDropdownBtn"
-                  >
-                    <img
-                      src={colorPalette}
-                      alt="soundBeat icon"
-                      width="25px"
-                      height="25px"
-                    />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={(e) => setColorOfSpectogram("cool")}
+            {SpectogramPluginInit === false ? (
+              <div className="spectogramOptions">
+                <div className="colorPaletteDropdownContainer m-2">
+                  <Dropdown className="dropdownBtnSpectogramOption ">
+                    <Dropdown.Toggle
+                      id="dropdown-basic"
+                      className="colorPaletteDropdownBtn dropdownButonsSpectogram"
                     >
-                      Cool
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={(e) => setColorOfSpectogram("jet")}>
-                      Jet
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={(e) => setColorOfSpectogram("electric")}
+                      <img
+                        src={colorPalette}
+                        alt="soundBeat icon"
+                        width="25px"
+                        height="25px"
+                      />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("cool")}
+                      >
+                        Cool
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("jet")}
+                      >
+                        Jet
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("electric")}
+                      >
+                        Electric
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("oxygen")}
+                      >
+                        Oxygen
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("cubehelix")}
+                      >
+                        Cubehelix
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setColorOfSpectogram("copper")}
+                      >
+                        Copper
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>{" "}
+                </div>
+                <div className="soundBeatDropdownContainer">
+                  <Dropdown className="dropdownBtnSpectogramOption">
+                    <Dropdown.Toggle
+                      className="dropdownButonsSpectogram "
+                      id="dropdown-basic"
                     >
-                      Electric
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={(e) => setColorOfSpectogram("oxygen")}
-                    >
-                      Oxygen
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={(e) => setColorOfSpectogram("cubehelix")}
-                    >
-                      Cubehelix
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={(e) => setColorOfSpectogram("copper")}
-                    >
-                      Copper
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>{" "}
+                      <img
+                        src={soundBeat}
+                        alt="soundBeat icon"
+                        width="80px"
+                        color="white"
+                        // height="100px"
+                      />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={(e) => setSetSpectogramSize(512)}>
+                        FftSamples 512
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setSetSpectogramSize(1024)}
+                      >
+                        FftSamples 1024
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={(e) => setSetSpectogramSize(2048)}
+                      >
+                        FftSamples 2048
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>{" "}
+                </div>
               </div>
-              <div className="soundBeatDropdownContainer">
-                <Dropdown className="dropdownBtnSpectogramOption">
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    <img
-                      src={soundBeat}
-                      alt="soundBeat icon"
-                      width="80px"
-                      color="white"
-                      // height="100px"
-                    />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(512)}>
-                      FftSamples 512
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(1024)}>
-                      FftSamples 1024
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={(e) => setSetSpectogramSize(2048)}>
-                      FftSamples 2048
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>{" "}
-              </div>
-            </div>
+            ) : (
+              <> </>
+            )}
           </div>
         </Container>
 
         <div className="spectogramandwave">
           <WaveformContianer>
-            <Wave
-              className="wavespectrogram m-1"
-              ref={waveformSpectogramRef}
-              id="wavespectrogram"
-            />
-            <Wave ref={waveformTimeLineRef} id="wave-minimap" />
+            {SpectogramPluginInit === false ? (
+              <>
+                <div className="lightweight">Spectogram</div>
+                <Wave
+                  className="wavespectrogram m-1"
+                  ref={waveformSpectogramRef}
+                  id="wavespectrogram"
+                />
+              </>
+            ) : (
+              <> </>
+            )}
+            <div className="lightweight">Waveform</div>
             <Wave ref={waveformRef} id="waveform" />
+            <Wave ref={waveformTimeLineRef} id="wave-minimap" />
             <Wave ref={waveformTimeLineRef} id="wave-timeline" />
             {/* <audio src={url} /> */}
           </WaveformContianer>

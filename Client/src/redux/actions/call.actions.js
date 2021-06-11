@@ -1,6 +1,7 @@
 import * as types from "../constants/call.constants";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
+import { alertActions } from "./alert.actions";
 
 const getSingleCall = (callId) => (dispatch) => {
   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
@@ -93,7 +94,6 @@ const updateIsCallCorrect =
   (callId, slectedAudioId, restCallCount, isCorrect) => (dispatch) => {
     let validate = isCorrect;
 
-    console.log(`validate`, validate);
     dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
     db.collection("calls")
       .doc(`${callId}`)
@@ -105,6 +105,7 @@ const updateIsCallCorrect =
           type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
           payload: "Call update it successfully ",
         });
+        dispatch(alertActions.setAlert("Call has been updated it", "success"));
         db.collection("rawData").doc(`${slectedAudioId}`).update({
           correctCalls: restCallCount,
         });

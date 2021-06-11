@@ -49,8 +49,9 @@ const callReducer = (state = initialState, action) => {
     case types.SAVE_REGION_CALL_FAILURE:
     case types.UPDATE_IS_CORRECT_CALL_SUCCESS:
     case types.UPDATE_IS_CORRECT_CALL_FAILURE:
-      return { ...state, loading: false }; // const callArrayUpdated = [];
+      return { ...state, loading: false };
     // const callArrayToUpdate = state.call;
+    // const callArrayUpdated = [];
     // callArrayToUpdate.forEach((call) => {
     //   if (call.isCorrect === true) {
     //     callArrayUpdated.push(call);

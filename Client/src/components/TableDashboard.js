@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Button, Dropdown, Table } from "react-bootstrap";
-// import RangeSlider from "react-bootstrap-range-slider";
+import { Dropdown, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
@@ -53,10 +52,6 @@ export default function TableDashboard() {
 
   //Add/Delete RawAudio Comment
 
-  const deleteCommentAudio = (audioId) => {
-    dispatch(audioActions.deleteCommentAudio(audioId));
-  };
-
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,20 +59,14 @@ export default function TableDashboard() {
 
   // Send the form with the comment and Audio Id to audio actions. //
   const handlesubmit = (e) => {
-    console.log(`e`, e);
     if (e.code === "Enter" || e.code === "NumpadEnter" || e.type === "click") {
-      console.log("Enter key was pressed. Run your function.");
-      if (formData.comment === "") {
-        console.log("Nothing to send");
-      } else {
-        // e.preventDefault();
-        const { comment } = formData;
-        console.log(`e`, formData);
-        const audioId = audioIdOnComment;
-        dispatch(audioActions.addCommentRawAudio(comment, audioId));
-      }
+      const { comment } = formData;
+      console.log(`e`, formData);
+      const audioId = audioIdOnComment;
+      dispatch(audioActions.addCommentRawAudio(comment, audioId));
       e.preventDefault();
     }
+    setFormData({ comment: "" });
   };
 
   // To load the audios from storage (to be fixed)
@@ -141,21 +130,6 @@ export default function TableDashboard() {
     dispatch(audioActions.deleteAudio(audioId));
   };
 
-  // Filter
-
-  // const clearFilterItem = (value) => () => {
-  //   console.log(`value`, value);
-  //   if ("docsPerPage") {
-  //     setDocsPerPage(5);
-  //   }
-  //   if ("orderBy") {
-  //     setOrderBy("recordDate");
-  //   }
-  //   if ("order") {
-  //     setOrder("asc");
-  //   }
-  // };
-
   return (
     <>
       <div className="d-flex">
@@ -181,7 +155,7 @@ export default function TableDashboard() {
         </div>
       </div>
 
-      <Table className="fullTable" responsive>
+      <Table className="fullTable" responsive="md">
         <thead className="text-center tableHeader">
           <tr>
             <th className="lightweight tableSingleKey">N&deg; </th>
@@ -225,7 +199,6 @@ export default function TableDashboard() {
                 onClick={(e) => sortOrder("correctCalls")}
               ></FontAwesomeIcon>{" "}
             </th>
-            <th className="lightweight tableSingleKey">Comment</th>
             <th className="lightweight tableSingleKey">Comments </th>
             <th className="lightweight m-2">
               <Dropdown>
@@ -260,22 +233,8 @@ export default function TableDashboard() {
                       : "cardWhite text-center tableInner tableKey"
                   }`}
                 >
-                  <td
-                    onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallsList)
-                    }
-                    className="tableSingleKey indexKey"
-                  >
-                    {index + 1}
-                  </td>
-                  <td
-                    onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallsList)
-                    }
-                    className="tableSingleKey"
-                  >
-                    {audio.fileName}
-                  </td>
+                  <td className="tableSingleKey indexKey">{index + 1}</td>
+                  <td className="tableSingleKey">{audio.fileName}</td>
                   <td
                     onClick={() =>
                       toAudioId(audio?.audioId, audio.gibbonCallsList)
@@ -300,92 +259,37 @@ export default function TableDashboard() {
                     }
                     className="tableSingleKey"
                   >
-                    {audio.gibbonCallsList?.length}
+                    {audio.gibbonCallsList?.length > 0
+                      ? audio.gibbonCallsList?.length
+                      : 0}
                     {/* {audio.correctCalls} */}
                   </td>
-                  <td>
-                    <div className="buttonscomments">
-                      {/* <Button
-                        className="savebutton commentBtns commentBtnsSave"
-                        disabled={audio.comments ? true : false}
-                        type="submit"
-                        form="commentForm"
-                        onClick={(e) => handlesubmit(e, "click")}
-                        // variant="outline-success"
-                      >
-                        {" "}
-                        <FontAwesomeIcon
-                          className="savebutton "
-                          icon={["fas", "check"]}
-                          color="#04c45c"
-                        ></FontAwesomeIcon>
-                      </Button>{" "} */}
-                      <Button
-                        className="savebutton commentBtns commentBtnsDelete"
-                        disabled={audio.comments ? false : true}
-                        onClick={() => deleteCommentAudio(audio?.audioId)}
-                        // variant="success"
-                      >
-                        <FontAwesomeIcon
-                          className="savebutton"
-                          icon={["fas", "times"]}
-                          color="white"
-                        ></FontAwesomeIcon>{" "}
-                      </Button>{" "}
-                    </div>
+
+                  <td className="tableSingleKey commentKey">
+                    <form
+                      className="commentForm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handlesubmit(e);
+                        }
+                      }}
+                      key={audio.audioId}
+                      id={audio.audioId}
+                    >
+                      <textarea
+                        className="commentBoxInput  textareacommentsInput"
+                        onSelect={() => setAudioIdOnComment(audio?.audioId)}
+                        key={audio.audioId}
+                        type="textarea"
+                        name="comment"
+                        onChange={handleChange}
+                        id={index + audio.audioId}
+                        defaultValue={audio.comments}
+                      ></textarea>
+                    </form>
                   </td>
-                  {audio.comments ? (
-                    <td className="tableSingleKey commentKey">
-                      <div className="commentBox textareacomments">
-                        <div className="commentSubBox ">
-                          <p className="text-center">{audio.comments}</p>
-                        </div>
-                      </div>
-                    </td>
-                  ) : (
-                    <>
-                      <td className="tableSingleKey commentKey">
-                        {" "}
-                        <div className="commentBox textareacomments">
-                          <Form
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                handlesubmit(e);
-                              }
-                            }}
-                            // handlesubmit={(e) => {
-                            //   /**
-                            //    * Prevent submit from reloading the page
-                            //    */
-                            //   e.preventDefault();
-                            //   e.stopPropagation();
-                            //   handlesubmit();
-                            // }}
-                            className="commentForm"
-                            key={audio.audioId}
-                          >
-                            <div className="addCommentBox commentBoxInput ">
-                              <Form.Group
-                                className="textareacomments textareacommentsInput"
-                                controlId={audio.audioId}
-                              >
-                                <Form.Control
-                                  onSelect={() =>
-                                    setAudioIdOnComment(audio?.audioId)
-                                  }
-                                  key={audio.audioId}
-                                  type="textarea"
-                                  name="comment"
-                                  onChange={handleChange}
-                                />
-                              </Form.Group>{" "}
-                            </div>
-                          </Form>
-                        </div>
-                      </td>
-                    </>
-                  )}
+
                   <td className="lastCell tableSingleKey">
                     {" "}
                     <FontAwesomeIcon
