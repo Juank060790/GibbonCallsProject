@@ -15,7 +15,7 @@ import { callActions } from "../redux/actions";
 import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import soundBeat from "../images/soundBeat.png";
+// import soundBeat from "../images/soundBeat.png";
 import colorPalette from "../images/colorPalette.png";
 // import testAudio from "../images/testAudio.WAV";
 
@@ -28,7 +28,7 @@ export default function Waveform() {
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
   const [zoomValue, setZoomValue] = useState(30);
-  const [spectogramSize, setSetSpectogramSize] = useState(1024);
+  // const  setSe = useState(1024);
   const [colorOfSpectogram, setColorOfSpectogram] = useState("cool");
   const [regionsArray, setRegionsArray] = useState();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -89,19 +89,19 @@ export default function Waveform() {
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    fftSamples: spectogramSize,
+    // fftSamples:
     container: "#wavespectrogram",
-    labels: true,
-    responsive: true,
+    labels: false,
+    responsive: false,
     colorMap: colors,
-    noverlap: false,
-    pixelRatio: 2,
+    height: 128,
     deferInit: SpectogramPluginInit,
   });
 
   // Save the region to be show in the waveform, after needs to be saved to the database.
 
   function saveCreatedRegions(event) {
+    console.log(`event`, event);
     let arrayRegion = [];
 
     let singleRegion = {
@@ -142,6 +142,7 @@ export default function Waveform() {
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
+      console.log(`regionsArray`, regionsArray);
       const addCallCount =
         regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
@@ -234,7 +235,7 @@ export default function Waveform() {
 
     return () => Waveform.current.destroy();
     // eslint-disable-next-line
-  }, [SpectogramPluginInit, url, spectogramSize, colorOfSpectogram]);
+  }, [SpectogramPluginInit, url, colorOfSpectogram]);
 
   // Load regions into the waveform
   function loadRegions(regionListRedux) {
@@ -373,7 +374,7 @@ export default function Waveform() {
                     </Dropdown.Menu>
                   </Dropdown>{" "}
                 </div>
-                <div className="soundBeatDropdownContainer">
+                {/* <div className="soundBeatDropdownContainer">
                   <Dropdown className="dropdownBtnSpectogramOption">
                     <Dropdown.Toggle
                       className="dropdownButonsSpectogram "
@@ -388,6 +389,9 @@ export default function Waveform() {
                       />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
+                      <Dropdown.Item onClick={(e) => setSetSpectogramSize(256)}>
+                        FftSamples 128
+                      </Dropdown.Item>
                       <Dropdown.Item onClick={(e) => setSetSpectogramSize(512)}>
                         FftSamples 512
                       </Dropdown.Item>
@@ -403,7 +407,7 @@ export default function Waveform() {
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>{" "}
-                </div>
+                </div> */}
               </div>
             ) : (
               <> </>

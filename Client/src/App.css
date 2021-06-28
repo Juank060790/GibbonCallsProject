@@ -443,11 +443,6 @@ margin: auto;
   cursor: pointer;
 }
 
-.wavespectrogram {
-  width: 100% !important;
-  /* height: 50% !important; */
-}
-
 .FileDetails {
   font-weight: 300;
 }
@@ -459,10 +454,10 @@ margin: auto;
 .spectogramImageContainer {
   width: auto;
 }
-.spectogramImage {
+/* .spectogramImage {
   max-width: 900px;
   max-height: 300px;
-}
+} */
 
 /* Pagination */
 
@@ -539,15 +534,14 @@ margin: auto;
   /* width: 100%; */
   background: rgba(0, 0, 0, 0.8);
 }
-/* #wavespectrogram { */
-  /* margin: 10px auto;
-  position: relative; */
-  /* width: 100vw; */
-/* } */
+#wavespectrogram {
+  margin: 10px auto;
+  position: relative;
+  width: 100%; 
+ }
 
-#wavespectrogram canvas {
-  left: 0;
-}
+.wavespectrogram > canvas {
+width: 100vw;}
 
 button {
   background: #eee;

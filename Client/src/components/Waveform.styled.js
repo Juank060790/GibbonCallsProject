@@ -7,6 +7,7 @@ export const WaveformContianer = styled.div`
   justify-content: center;
   background: transparent;
   position: relative;
+  max-width: 100%;
 `;
 
 export const Wave = styled.div`
@@ -14,6 +15,6 @@ export const Wave = styled.div`
   height: 100%;
 `;
 
-export const wavespectrogram = styled.div`
-  width: 100vw;
-`;
+// export const wavespectrogram = styled.div`
+//   width: 100vw;
+// `;

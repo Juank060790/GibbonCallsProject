@@ -8,12 +8,11 @@ export default function TableNewCalls({
   labelColor,
   labelForNewCall,
 }) {
-  const arrayForRegions = regionsArray;
-
+  // console.log(`regionArray`, regionsArray);
   return (
     <div className="tableNewCall">
       <h4>Create or Edit Call</h4>
-      {arrayForRegions ? (
+      {regionsArray ? (
         <Table className="subTableNewCall" responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
@@ -29,7 +28,7 @@ export default function TableNewCalls({
             </tr>
           </thead>
           <>
-            {arrayForRegions?.map((call, index) => (
+            {regionsArray?.map((call, index) => (
               <tbody key={index}>
                 <tr
                   style={{ backgroundColor: call.singleRegion.color }}
