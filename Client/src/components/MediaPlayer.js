@@ -16,8 +16,8 @@ export default function MediaPlayer(props) {
               <img
                 src={props.spectogramImage}
                 className="spectogramImage"
-                // width="900px"
-                // height="300px"
+                width="900px"
+                height="300px"
                 alt="Spectogram "
               />
             </div>

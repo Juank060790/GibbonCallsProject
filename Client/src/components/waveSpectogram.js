@@ -37,7 +37,9 @@ export default function Waveform() {
   const [labelColor, setLabelColor] = useState("");
   const [labelForNewCall, setLableForNewCall] = useState("");
   const [helpModal, setHelpModal] = useState(false);
+  const [regionsInWave, setRegionsInWave] = useState(1);
   const regionColor = randomColor(0.1);
+  console.log(`regionsInWave`, regionsInWave);
 
   // Spectogram and sound waves options
 
@@ -53,6 +55,7 @@ export default function Waveform() {
     cursorColor: "blue",
     normalize: true,
     partialRender: true,
+    loopSelection: true,
     plugins: [
       CursorPlugin.create({
         showTime: true,
@@ -67,6 +70,7 @@ export default function Waveform() {
       SpectogramPlugin,
       Regions.create({
         resize: false,
+        maxRegions: [regionsInWave],
       }),
       Minimap.create({
         backgroundColor: "white",
@@ -101,7 +105,7 @@ export default function Waveform() {
   // Save the region to be show in the waveform, after needs to be saved to the database.
 
   function saveCreatedRegions(event) {
-    console.log(`event`, event);
+    // console.log(`event`, event);
     let arrayRegion = [];
 
     let singleRegion = {
@@ -240,6 +244,7 @@ export default function Waveform() {
   // Load regions into the waveform
   function loadRegions(regionListRedux) {
     regionListRedux.forEach(function (region) {
+      setRegionsInWave(regionListRedux.length);
       // eslint-disable-next-line
       region.color = region.color;
       if (region.isCorrect === true) {
@@ -419,7 +424,9 @@ export default function Waveform() {
           <WaveformContianer>
             {SpectogramPluginInit === false ? (
               <>
-                <div className="lightweight">Spectogram</div>
+                <div className="WavesTitlesContainer">
+                  <div className="lightweight">Spectogram</div>
+                </div>
                 <Wave
                   className="wavespectrogram m-1"
                   ref={waveformSpectogramRef}
@@ -429,7 +436,9 @@ export default function Waveform() {
             ) : (
               <> </>
             )}
-            <div className="lightweight">Waveform</div>
+            <div className="WavesTitlesContainer">
+              <div className="lightweight">Waveform</div>
+            </div>
             <Wave ref={waveformRef} id="waveform" />
             <Wave ref={waveformTimeLineRef} id="wave-minimap" />
             <Wave ref={waveformTimeLineRef} id="wave-timeline" />

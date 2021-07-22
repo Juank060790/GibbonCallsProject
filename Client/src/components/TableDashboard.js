@@ -234,7 +234,7 @@ export default function TableDashboard() {
                   }`}
                 >
                   <td className="tableSingleKey indexKey">{index + 1}</td>
-                  <td className="tableSingleKey">{audio.fileName}</td>
+                  <td className="tableSingleKey">{audio.audioId}</td>
                   <td
                     onClick={() =>
                       toAudioId(audio?.audioId, audio.gibbonCallsList)

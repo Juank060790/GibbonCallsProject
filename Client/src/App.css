@@ -451,6 +451,13 @@ margin: auto;
   margin: auto;
 }
 
+.WavesTitlesContainer{
+  /* background-color: #04c45c; */
+  border: solid .1px #252c3128;
+  width: 100%;
+  margin: 5px;
+}
+
 .spectogramImageContainer {
   width: auto;
 }
