@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
 import PaginationItem from "./Pagination";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
 import logoFF from "../images/logo-reduced.png";
 
 export default function TableDashboard() {
@@ -61,7 +61,6 @@ export default function TableDashboard() {
   const handlesubmit = (e) => {
     if (e.code === "Enter" || e.code === "NumpadEnter" || e.type === "click") {
       const { comment } = formData;
-      console.log(`e`, formData);
       const audioId = audioIdOnComment;
       dispatch(audioActions.addCommentRawAudio(comment, audioId));
       e.preventDefault();
@@ -94,7 +93,6 @@ export default function TableDashboard() {
 
   const getCalls = (gibbonCallsList) => {
     gibbonCallsList?.forEach((call) => {
-      // console.log(`call`, call);
       dispatch(callActions.getSingleCall(call));
     });
     handleShow();
@@ -110,7 +108,6 @@ export default function TableDashboard() {
   // Set order Record Date
 
   const sortOrder = (orderByFunction) => {
-    console.log(`orderBy`, orderByFunction);
     if (order === "asc") {
       setOrderBy(orderByFunction);
       setOrder("desc");
@@ -138,35 +135,18 @@ export default function TableDashboard() {
         </div>
       </div>
 
-      <div className="filterMenu ">
-        <div className="filterBadges "></div>
-        <div>
-          <Form>
-            <Form.Group className="formFilter">
-              <div
-                className="boxRangerSlider"
-                value={docsPerPage}
-                readOnly="readonly"
-              >
-                <div className="boxRangerSliderInner">{docsPerPage}</div>
-              </div>
-            </Form.Group>
-          </Form>
-        </div>
-      </div>
-
       <Table className="fullTable" responsive="md">
         <thead className="text-center tableHeader">
           <tr>
             <th className="lightweight tableSingleKey">N&deg; </th>
             <th className="lightweight tableSingleKey">
-              File Name{" "}
+              Audio Id{" "}
               <FontAwesomeIcon
                 className="btnSortOrder"
                 icon={["fas", "sort-amount-up"]}
                 size="sm"
                 color="green"
-                onClick={(e) => sortOrder("fileName")}
+                onClick={(e) => sortOrder("audioId")}
               ></FontAwesomeIcon>{" "}
             </th>
             <th className="lightweight tableSingleKey">
@@ -189,16 +169,7 @@ export default function TableDashboard() {
                 onClick={(e) => sortOrder("duration")}
               ></FontAwesomeIcon>{" "}
             </th>
-            <th className="lightweight tableSingleKey">
-              Gibbon Calls{" "}
-              <FontAwesomeIcon
-                className="btnSortOrder"
-                icon={["fas", "sort-amount-up"]}
-                size="sm"
-                color="green"
-                onClick={(e) => sortOrder("correctCalls")}
-              ></FontAwesomeIcon>{" "}
-            </th>
+            <th className="lightweight tableSingleKey">Gibbon Calls </th>
             <th className="lightweight tableSingleKey">Comments </th>
             <th className="lightweight m-2">
               <Dropdown>
@@ -237,7 +208,7 @@ export default function TableDashboard() {
                   <td className="tableSingleKey">{audio.audioId}</td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallsList)
+                      toAudioId(audio?.audioId, audio?.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -247,7 +218,7 @@ export default function TableDashboard() {
                   </td>
                   <td
                     onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallsList)
+                      toAudioId(audio?.audioId, audio?.gibbonCallsList)
                     }
                     className="tableSingleKey"
                   >
@@ -278,7 +249,7 @@ export default function TableDashboard() {
                       id={audio.audioId}
                     >
                       <textarea
-                        className="commentBoxInput  textareacommentsInput"
+                        className="textareacommentsInput"
                         onSelect={() => setAudioIdOnComment(audio?.audioId)}
                         key={audio.audioId}
                         type="textarea"
@@ -286,6 +257,9 @@ export default function TableDashboard() {
                         onChange={handleChange}
                         id={index + audio.audioId}
                         defaultValue={audio.comments}
+                        placeholder="Add comment..."
+                        cols="30"
+                        rows="30"
                       ></textarea>
                     </form>
                   </td>

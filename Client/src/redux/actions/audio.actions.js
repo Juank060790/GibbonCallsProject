@@ -174,35 +174,58 @@ const clearSelectedAudioReducer = () => (dispatch) => {
   dispatch({ type: types.CLEAR_SELECTED_AUDIO, payload: null });
 };
 
-const searchDocuments = (searchQuery) => (dispatch) => {
+const searchDocuments = (searchQuery, searchCategory) => (dispatch) => {
   dispatch({ type: types.AUDIO_SEARCH_REQUEST });
 
   let query = {
-    limit: 5,
+    limit: 10,
     sortBy: "recordDate",
     order: "desc",
     searchDoc: searchQuery,
+    category: searchCategory,
   };
-
-  console.log(`query`, query);
 
   let searchList = [];
   db.collection("rawData")
-    .where("fileName", "array-contains-any", [query.searchDoc])
+    .where(query.category, "==", query.searchDoc)
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)
     .onSnapshot((querySnapshot) => {
-      querySnapshot.docChanges().forEach(() => {
-        querySnapshot.forEach((doc) => {
-          searchList.push(doc.data());
-        });
+      querySnapshot.forEach((doc) => {
+        searchList.push(doc.data());
       });
+
       dispatch({
         type: types.AUDIO_SEARCH_SUCCESS,
         payload: searchList,
       });
     });
-  console.log(`searchList`, searchList);
+};
+
+const searchByDate = (searchQuery, searchCategory) => (dispatch) => {
+  dispatch({ type: types.AUDIO_SEARCHBYDATE_REQUEST });
+
+  let query = {
+    sortBy: "recordDate",
+    order: "desc",
+    searchDoc: searchQuery,
+    category: searchCategory,
+  };
+
+  let searchList = [];
+  db.collection("rawData")
+    .where(query.category, "<", query.searchDoc)
+    .orderBy(query.sortBy, query.order)
+    .onSnapshot((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        searchList.push(doc.data());
+      });
+
+      dispatch({
+        type: types.AUDIO_SEARCHBYDATE_SUCCESS,
+        payload: searchList,
+      });
+    });
 };
 
 export const audioActions = {
@@ -213,4 +236,5 @@ export const audioActions = {
   deleteCommentAudio,
   deleteAudio,
   searchDocuments,
+  searchByDate,
 };

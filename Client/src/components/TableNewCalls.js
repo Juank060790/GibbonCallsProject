@@ -8,7 +8,6 @@ export default function TableNewCalls({
   labelColor,
   labelForNewCall,
 }) {
-  // console.log(`regionArray`, regionsArray);
   return (
     <div className="tableNewCall">
       <h4>Create or Edit Call</h4>

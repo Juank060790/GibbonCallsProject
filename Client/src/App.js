@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
@@ -12,10 +12,6 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 
 function App() {
-  useEffect(() => {
-    // console.log("FIREBASE", myFirebase);
-  }, []);
-
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (

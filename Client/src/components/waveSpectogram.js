@@ -1,22 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import WaveSurfer from "wavesurfer.js";
+import { useDispatch, useSelector } from "react-redux";
+import { Container, Dropdown, Modal } from "react-bootstrap";
 import { WaveformContianer, Wave } from "./Waveform.styled";
+import { callActions } from "../redux/actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "../Styles/Styles.scss";
+import colorPalette from "../images/colorPalette.png";
+import WaveSurfer from "wavesurfer.js";
 import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js";
 import Regions from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
 import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
-import RangeSlider from "react-bootstrap-range-slider";
-import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
-import { useDispatch, useSelector } from "react-redux";
-import { Container, Dropdown, Modal } from "react-bootstrap";
-import { callActions } from "../redux/actions";
-import "../Styles/Styles.scss";
 import TableNewCalls from "./TableNewCalls";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import soundBeat from "../images/soundBeat.png";
-import colorPalette from "../images/colorPalette.png";
+
 // import testAudio from "../images/testAudio.WAV";
 
 export default function Waveform() {
@@ -27,8 +25,8 @@ export default function Waveform() {
   var Waveform = useRef(null);
   const waveformTimeLineRef = useRef(null);
   const waveformSpectogramRef = useRef(null);
-  const [zoomValue, setZoomValue] = useState(30);
-  // const  setSe = useState(1024);
+  // const [zoomValue, setZoomValue] = useState(30);
+
   const [colorOfSpectogram, setColorOfSpectogram] = useState("cool");
   const [regionsArray, setRegionsArray] = useState();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -37,22 +35,24 @@ export default function Waveform() {
   const [labelColor, setLabelColor] = useState("");
   const [labelForNewCall, setLableForNewCall] = useState("");
   const [helpModal, setHelpModal] = useState(false);
-  const [regionsInWave, setRegionsInWave] = useState(1);
+  const [regionsInWave, setRegionsInWave] = useState(10);
   const regionColor = randomColor(0.1);
-  console.log(`regionsInWave`, regionsInWave);
 
   // Spectogram and sound waves options
 
   const WaveformOptions = (ref) => ({
     container: waveformRef.current,
     cursorWidth: 1,
-    backend: "WebAudio",
-    // minPxPerSec: 50,
-    scrollParent: true,
+    cursorColor: "rgba(255,255,255,0.5)",
     progressColor: "#7AD7F0",
-    responsive: true,
     waveColor: "#F5FCFF",
-    cursorColor: "blue",
+    dragSelection: true,
+    drawingContextAttributes: {
+      // Boolean that hints the user agent to reduce the latency
+      // by desynchronizing the canvas paint cycle from the event
+      // loop
+      desynchronized: true,
+    },
     normalize: true,
     partialRender: true,
     loopSelection: true,
@@ -93,23 +93,20 @@ export default function Waveform() {
   });
 
   let SpectogramPlugin = SpectrogramPlugin.create({
-    // fftSamples:
     container: "#wavespectrogram",
     labels: false,
     responsive: false,
     colorMap: colors,
-    height: 128,
     deferInit: SpectogramPluginInit,
   });
 
   // Save the region to be show in the waveform, after needs to be saved to the database.
 
   function saveCreatedRegions(event) {
-    // console.log(`event`, event);
     let arrayRegion = [];
-
+    var d = Date.now();
     let singleRegion = {
-      callId: event.id,
+      callId: d.toString(),
       label: "",
       spectogram: "",
       comment: "",
@@ -146,7 +143,6 @@ export default function Waveform() {
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
-      console.log(`regionsArray`, regionsArray);
       const addCallCount =
         regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
@@ -225,6 +221,7 @@ export default function Waveform() {
       });
     });
 
+    Waveform.current.zoom(Number(40));
     // Play region on click
     Waveform.current.on("region-click", function (region, e) {
       e.stopPropagation();
@@ -277,10 +274,10 @@ export default function Waveform() {
     );
   }
 
-  useEffect(() => {
-    // Zoom
-    Waveform.current.zoom(Number(zoomValue));
-  }, [zoomValue, Waveform]);
+  // useEffect(() => {
+  //   // Zoom
+  //   Waveform.current.zoom(Number(zoomValue));
+  // }, [zoomValue, Waveform]);
 
   // Switch to show spectogram
   const ShowSpectogram = () => {
@@ -447,7 +444,7 @@ export default function Waveform() {
         </div>
         <div>
           {" "}
-          <div className="zoomContainer">
+          {/* <div className="zoomContainer">
             <div className="d-flex flex-row">
               <div className="m-2 ">
                 <RangeSlider
@@ -469,7 +466,7 @@ export default function Waveform() {
                 ></FontAwesomeIcon>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="controlsContainer controlActions">
             <div className="d-flex flex-column justify-content-center ">
               Show Spectogram

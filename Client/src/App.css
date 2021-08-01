@@ -1,24 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,100;1,300;1,400;1,700&display=swap");
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 body {
-  letter-spacing: 1px;
+  color: #575756;
+  letter-spacing: 1.3px;
   font-weight: 300;
-}
-
-/* Alert */
-
-.popup {
-  position: absolute;
-  /* margin: 3rem; */
-  top: 0;
-  bottom: 1;
-  right: 0;
-  position: "relative";
-  min-height: "100px";
-  /* background-color: #04c45c !important; */
 }
 
 /* Text utils */
@@ -77,6 +65,19 @@ body {
 }
 
 /* Dashboard */
+.titleDashboardContainer {
+  display: grid;
+  align-content: space-around;
+}
+
+.titleDashboard {
+  color: #575756;
+  font-style: italic;
+  font-weight: 400;
+  text-align: center;
+  width: 60%;
+  margin: auto;
+}
 .logoMenu {
   padding-top: 1rem;
 }
@@ -195,7 +196,10 @@ margin: auto;
   margin-top: 3px;
   width: 100%;
   border: none !important;
-  /* background-color: black !important ; */
+}
+
+.textareacommentsInput::placeholder {
+  color: #ccc;
 }
 
 /* .form-control {
@@ -451,9 +455,9 @@ margin: auto;
   margin: auto;
 }
 
-.WavesTitlesContainer{
+.WavesTitlesContainer {
   /* background-color: #04c45c; */
-  border: solid .1px #252c3128;
+  border: solid 0.1px #252c3128;
   width: 100%;
   margin: 5px;
 }
@@ -474,22 +478,19 @@ margin: auto;
 }
 
 .footerPagination {
-  right: 0;
+  /* right: 0;
   bottom: 0;
-  left: 0;
+  left: 0; */
   width: 100vw;
   font-size: 12px;
   font-weight: 500;
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  justify-items: center;
   background-color: #d7ebd6;
   color: #686464;
   margin-right: 2rem;
 }
 
-.marginButtonPagination {
-  margin: 5px 60px 0px 60px;
-}
 .paginationButton {
   font-size: 18px;
   font-weight: 700;
@@ -515,8 +516,9 @@ margin: auto;
 .previousNextbtn:hover {
   border-radius: 25px;
   padding: 10px;
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: pointer;
+  color: #2196f3;
 }
 
 .previousNextbtnDisabled {
@@ -532,8 +534,7 @@ margin: auto;
   justify-content: space-around;
 }
 
-
-.dropdownButonsSpectogram{
+.dropdownButonsSpectogram {
   background-color: #adadad79 !important;
   border-color: none !important;
 }
@@ -544,11 +545,12 @@ margin: auto;
 #wavespectrogram {
   margin: 10px auto;
   position: relative;
-  width: 100%; 
- }
+  width: 100%;
+}
 
 .wavespectrogram > canvas {
-width: 100vw;}
+  width: 100vw;
+}
 
 button {
   background: #eee;
@@ -683,25 +685,21 @@ input:checked + .sliderSwitch:before {
 
 .search__input {
   width: 100%;
-  padding: 12px 24px;
-  background-color: transparent;
-  transition: transform 250ms ease-in-out;
   font-size: 14px;
   line-height: 18px;
-
   color: #575756;
   background-color: transparent;
-  /*         background-image: url(http://mihaeltomic.com/codepen/input-search/ic_search_black_24px.svg); */
-
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: 18px 18px;
-  background-position: 95% center;
-  border-radius: 50px;
-  border: 1px solid #575756;
   transition: all 250ms ease-in-out;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
+  padding: 12px 0;
+  outline: 0;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #575756;
+  border-radius: 0;
+  background-position: 100% center;
 }
 
 .search__input::placeholder {
@@ -710,12 +708,53 @@ input:checked + .sliderSwitch:before {
   letter-spacing: 1.5px;
 }
 
-.search__input:hover,
-.search__input:focus {
-  padding: 12px 0;
-  outline: 0;
-  border: 1px solid transparent;
-  border-bottom: 1px solid #575756;
-  border-radius: 0;
-  background-position: 100% center;
+/* Search Dropdown */
+
+.dropbtn {
+  background-color: transparent;
+  color: black;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content div {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content div:hover {
+  background-color: #04c45c;
+  cursor: pointer;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #04c45c;
 }

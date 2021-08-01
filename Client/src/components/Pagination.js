@@ -16,10 +16,6 @@ const PaginationItem = ({
   return (
     <div className="footerPagination">
       <div className="footerPaginationContainer ">
-        <div className="marginNone marginButtonPagination ">
-          <p>Rows per page:{audiosPerPage}</p>
-        </div>
-        <div className="marginNone "></div>
         <div className=" d-flex marginButtonPagination">
           <div className="previousNextbtn">
             <FontAwesomeIcon
@@ -36,6 +32,9 @@ const PaginationItem = ({
               onClick={() => handleClickOnNext()}
             ></FontAwesomeIcon>
           </div>
+        </div>
+        <div className="marginNone marginButtonPagination ">
+          <p>Files per page:{audiosPerPage}</p>
         </div>
       </div>
     </div>
