@@ -115,7 +115,11 @@ export default function ModalCall({
                           onClick={() => showSpectrogram(call.spectogram)}
                           className="tableSingleKey"
                         >
-                          <p>No picture added</p>
+                          <FontAwesomeIcon
+                            className="savebutton"
+                            icon={["fas", "eye-slash"]}
+                            size={"sm"}
+                          ></FontAwesomeIcon>{" "}
                         </td>
                       )}
 

@@ -294,7 +294,7 @@ export default function Waveform() {
       <div>
         <Container className="infoAndNotesContainer" fluid>
           <div className="containerInfoAudio">
-            <div>
+            {/* <div>
               {selectedAudio ? (
                 <div className="FileDetails">
                   <h4>File Details:</h4>
@@ -314,7 +314,7 @@ export default function Waveform() {
               ) : (
                 <p></p>
               )}
-            </div>
+            </div> */}
             <div></div>
           </div>
           <div className="AnnotationsNotes">
@@ -324,7 +324,7 @@ export default function Waveform() {
                 icon={["fas", "question"]}
                 color="#04c45c"
                 onClick={() => setHelpModal(true)}
-                size="2x"
+                size="lg"
               ></FontAwesomeIcon>
             </div>
             {SpectogramPluginInit === false ? (
@@ -417,7 +417,7 @@ export default function Waveform() {
           </div>
         </Container>
 
-        <div className="spectogramandwave">
+        <div className="spectogramwave">
           <WaveformContianer>
             {SpectogramPluginInit === false ? (
               <>
@@ -468,8 +468,8 @@ export default function Waveform() {
             </div>
           </div> */}
           <div className="controlsContainer controlActions">
-            <div className="d-flex flex-column justify-content-center ">
-              Show Spectogram
+            <div className="d-flex flex-column justify-content-center align-items-center ">
+              Spectogram
               <label className="switch">
                 <input
                   id="SpectogramPluginInit"

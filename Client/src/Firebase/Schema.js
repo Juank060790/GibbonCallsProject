@@ -23,4 +23,5 @@
 //     isCorrect: Boolean, // is correct
 //     isDeleted: Boolean, // is deleted
 //     label: String, // labels of audio file
+//     accuracy: String // accuracy of the call (0-100%)
 // }
