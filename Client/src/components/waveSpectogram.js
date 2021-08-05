@@ -117,7 +117,11 @@ export default function Waveform() {
       SpectogramAudio: "",
       color: regionColor,
     };
-
+    var regions = event.wavesurfer.regions.list;
+    var keys = Object.keys(regions);
+    if (keys.length > 1) {
+      regions[keys[0]].remove();
+    }
     arrayRegion.push({ singleRegion });
     setRegionsArray(arrayRegion);
   }
@@ -146,39 +150,6 @@ export default function Waveform() {
       const addCallCount =
         regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
-        // Test if Start and End time are the same
-
-        // ----------------------------------------
-        // Check if the start from the old and new region are the same
-        // const isRegionStartInTheArray = (el) =>
-        //   el.start === region.singleRegion.start;
-        // const findStartOfCall = regionListRedux.findIndex(
-        //   isRegionStartInTheArray
-        // );
-        // console.log(`findIndexOfCall`, findStartOfCall);
-        // // Check if the end of a new and old regions are the same
-        // const isRegionEndInTheArray = (el) =>
-        //   el.end === region.singleRegion.end;
-
-        // const findEndOfCall = regionListRedux.findIndex(isRegionEndInTheArray);
-        // console.log(`findIndexOfCall`, findEndOfCall);
-
-        // //  Comparare start/end from old and new region
-
-        // if (
-        //   regionListRedux[findStartOfCall]?.start ===
-        //     region.singleRegion.start &&
-        //   regionListRedux[findEndOfCall]?.end === region.singleRegion.end
-        // ) {
-        //   // regionListRedux[findIndexOfCall] = region;
-        //   console.log(`region is equal to region`, regionListRedux);
-        // } else {
-        //   // regionListRedux.push(region);
-        //   console.log("region is not equal", regionListRedux);
-        // }
-        // --------------------------
-        // ENDDDD
-
         region.singleRegion.label = labelForNewCall;
         let singleCall = region.singleRegion;
         dispatch(callActions.saveRegionCall(singleCall, audioId, addCallCount));
@@ -242,8 +213,8 @@ export default function Waveform() {
   function loadRegions(regionListRedux) {
     regionListRedux.forEach(function (region) {
       setRegionsInWave(regionListRedux.length);
-      // eslint-disable-next-line
-      region.color = region.color;
+      // // eslint-disable-next-line
+      // region.color = region.color;
       if (region.isCorrect === true) {
         Waveform.current.addRegion(region);
       } else {
@@ -439,7 +410,6 @@ export default function Waveform() {
             <Wave ref={waveformRef} id="waveform" />
             <Wave ref={waveformTimeLineRef} id="wave-minimap" />
             <Wave ref={waveformTimeLineRef} id="wave-timeline" />
-            {/* <audio src={url} /> */}
           </WaveformContianer>
         </div>
         <div>

@@ -2,6 +2,8 @@ import * as types from "../constants/call.constants";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
 import { alertActions } from "./alert.actions";
+// Main collection where we store all audio files
+const collectionData = "rawData";
 
 const getSingleCall = (callId) => (dispatch) => {
   dispatch({ type: types.GET_SINGLE_CALL_REQUEST, payload: null });
@@ -106,7 +108,7 @@ const updateIsCallCorrect =
           payload: "Call update it successfully ",
         });
         dispatch(alertActions.setAlert("Call has been updated it", "success"));
-        db.collection("rawData").doc(`${slectedAudioId}`).update({
+        db.collection(collectionData).doc(`${slectedAudioId}`).update({
           correctCalls: restCallCount,
         });
       })
@@ -125,14 +127,14 @@ const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
     .doc(singleCallId)
     .set(singleCall)
     .then(() => {
-      db.collection("rawData")
+      db.collection(collectionData)
         .doc(audioId)
         .update(
           "gibbonCallsList",
           firebase.firestore.FieldValue.arrayUnion(singleCallId)
         )
         .then(() => {
-          db.collection("rawData").doc(audioId).update({
+          db.collection(collectionData).doc(audioId).update({
             correctCalls: addCallCount,
           });
         });

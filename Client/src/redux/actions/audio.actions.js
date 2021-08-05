@@ -1,5 +1,6 @@
 import * as types from "../constants/audio.constants";
 import { db } from "../../Firebase/firebase";
+const collectionData = "rawData";
 
 const audiosRequest =
   (limit, sortBy, order, lastDoc, firstDoc) => (dispatch) => {
@@ -13,7 +14,7 @@ const audiosRequest =
     };
 
     const refIsDeleted = db
-      .collection("rawData")
+      .collection(collectionData)
       .where("isDeleted", "==", false)
       .orderBy(query.sortBy, query.order);
 
@@ -87,7 +88,7 @@ const getSingleAudio = (audioId) => (dispatch) => {
   let singleAudio = {};
   dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST, payload: null });
 
-  db.doc(`rawData/${audioId}`)
+  db.doc(`${collectionData}/${audioId}`)
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -108,7 +109,7 @@ const getSingleAudio = (audioId) => (dispatch) => {
 // Create new comment to audio.
 const addCommentRawAudio = (comment, audioId) => (dispatch) => {
   dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
-  db.collection("rawData")
+  db.collection(collectionData)
     .doc(`${audioId}`)
     .update({
       comments: comment,
@@ -130,7 +131,7 @@ const addCommentRawAudio = (comment, audioId) => (dispatch) => {
 const deleteCommentAudio = (audioId) => (dispatch) => {
   dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
 
-  db.collection("rawData")
+  db.collection(collectionData)
     .doc(`${audioId}`)
     .update({
       comments: "",
@@ -150,7 +151,7 @@ const deleteCommentAudio = (audioId) => (dispatch) => {
 
 const deleteAudio = (audioId) => (dispatch) => {
   dispatch({ type: types.DELETE_RAW_AUDIO_REQUEST, payload: null });
-  db.collection("rawData")
+  db.collection(collectionData)
     .doc(`${audioId}`)
     .update({
       isDeleted: true,
@@ -186,7 +187,7 @@ const searchDocuments = (searchQuery, searchCategory) => (dispatch) => {
   };
 
   let searchList = [];
-  db.collection("rawData")
+  db.collection(collectionData)
     .where(query.category, "==", query.searchDoc)
     .orderBy(query.sortBy, query.order)
     .limit(query.limit)
@@ -213,7 +214,7 @@ const searchByDate = (searchQuery, searchCategory) => (dispatch) => {
   };
 
   let searchList = [];
-  db.collection("rawData")
+  db.collection(collectionData)
     .where(query.category, "<", query.searchDoc)
     .orderBy(query.sortBy, query.order)
     .onSnapshot((querySnapshot) => {
