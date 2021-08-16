@@ -2,10 +2,10 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import notFoundImage from "../images/No_image_available.svg";
-import WaveSpectogram from "./waveSpectogram";
+import WaveSpectrogram from "./waveSpectrogram";
 
 export default function MediaPlayer(props) {
-  const SpectogramAudio = props?.spectogramAudio;
+  const SpectrogramAudio = props?.spectrogramAudio;
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
 
   return (
@@ -36,15 +36,15 @@ export default function MediaPlayer(props) {
             )}
           </div>
         </div>{" "}
-        <div className="spectogramContainer text-center">
-          {props.spectogramImage ? (
-            <div className="spectogramImageContainer">
+        <div className="spectrogramContainer text-center">
+          {props.spectrogramImage ? (
+            <div className="spectrogramImageContainer">
               <img
-                src={props.spectogramImage}
-                className="spectogramImage"
+                src={props.spectrogramImage}
+                className="spectrogramImage"
                 width="900px"
                 height="300px"
-                alt="Spectogram "
+                alt="Spectrogram "
               />
             </div>
           ) : (
@@ -52,12 +52,12 @@ export default function MediaPlayer(props) {
               src={notFoundImage}
               // width="900px"
               // height="300px"
-              alt="Spectogram "
+              alt="Spectrogram "
             />
           )}
         </div>
       </Container>{" "}
-      <WaveSpectogram SpectogramAudio={SpectogramAudio} />
+      <WaveSpectrogram SpectrogramAudio={SpectrogramAudio} />
     </>
   );
 }

@@ -9,7 +9,7 @@ import { callActions } from "../redux/actions";
 export default function ModalCall({
   handleClose,
   showModal,
-  spectogramImage,
+  spectrogramImage,
   showSpectrogram,
 }) {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ export default function ModalCall({
       <Modal.Header closeButton></Modal.Header>
       <Modal.Body>
         {" "}
-        <MediaPlayer spectogramImage={spectogramImage} />
+        <MediaPlayer spectrogramImage={spectrogramImage} />
         <div>
           {" "}
           <h4>Calls Saved in the database</h4>
@@ -73,7 +73,7 @@ export default function ModalCall({
               <th className="idNumberModal">Id N&deg;</th>
               <th>Time Start</th>
               <th>Time End</th>
-              <th>Spectogram</th>
+              <th>Spectrogram</th>
               <th>Validation</th>
               <th>Label</th>
               <th>Created by</th>
@@ -98,21 +98,21 @@ export default function ModalCall({
                         {call.start.toFixed(4)}
                       </td>
                       <td className="tableSingleKey">{call.end.toFixed(4)}</td>
-                      {call.spectogram ? (
+                      {call.spectrogram ? (
                         <td
-                          onClick={() => showSpectrogram(call.spectogram)}
+                          onClick={() => showSpectrogram(call.spectrogram)}
                           className="tableSingleKey"
                         >
                           <img
-                            src={call.spectogram}
-                            alt="spectogram of a single call"
+                            src={call.spectrogram}
+                            alt="spectrogram of a single call"
                             width="150px"
                             height="100px"
                           />
                         </td>
                       ) : (
                         <td
-                          onClick={() => showSpectrogram(call.spectogram)}
+                          onClick={() => showSpectrogram(call.spectrogram)}
                           className="tableSingleKey"
                         >
                           <FontAwesomeIcon

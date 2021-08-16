@@ -18,7 +18,7 @@ export default function TableNewCalls({
               <th className="idNumberModal">N&deg;</th>
               <th>Time Start</th>
               <th>Time End</th>
-              {/* <th>Spectogram</th> */}
+              {/* <th>Spectrogram</th> */}
               <th>Action</th>
               <th>Label</th>
               <th>(To be checked)</th>
@@ -43,8 +43,8 @@ export default function TableNewCalls({
                   {/* <td className="tableSingleKeyEditCalls">
                     <img
                       width="100px"
-                      src={call.singleRegion?.spectogram}
-                      alt="spectogramfrom region"
+                      src={call.singleRegion?.spectrogram}
+                      alt="spectrogramfrom region"
                     />
                   </td> */}
 

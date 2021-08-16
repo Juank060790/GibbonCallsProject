@@ -14,7 +14,7 @@ export default function TableDashboard() {
     dispatch(callActions.clearCallsReducer());
     dispatch(audioActions.clearSelectedAudioReducer());
     setCallsperAudio([]);
-    setSpectogramImage("");
+    setSpectrogramImage("");
   };
   const handleShow = () => setShow(true);
   const audios = useSelector((state) => state.audio.audio);
@@ -32,7 +32,7 @@ export default function TableDashboard() {
   const [order, setOrder] = useState("desc");
   const [formData, setFormData] = useState({ comment: "" });
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
-  const [spectogramImage, setSpectogramImage] = useState("");
+  const [spectrogramImage, setSpectrogramImage] = useState("");
 
   useEffect(() => {
     dispatch(
@@ -41,12 +41,12 @@ export default function TableDashboard() {
     );
   }, [dispatch, docsPerPage, orderBy, order, lastDoc, firstDoc]);
 
-  // Spectogram
+  // Spectrogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
 
-  const showSpectrogram = (spectogram) => {
-    if (spectogram) {
-      setSpectogramImage(spectogram);
+  const showSpectrogram = (spectrogram) => {
+    if (spectrogram) {
+      setSpectrogramImage(spectrogram);
     }
   };
 
@@ -300,7 +300,7 @@ export default function TableDashboard() {
         selectedAudio={selectedAudio}
         callsperAudio={callsperAudio}
         handleClose={handleClose}
-        spectogramImage={spectogramImage}
+        spectrogramImage={spectrogramImage}
         showSpectrogram={showSpectrogram}
         getCalls={getCalls}
       />

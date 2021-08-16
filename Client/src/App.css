@@ -401,7 +401,7 @@ margin: auto;
   transition: ease-in;
 }
 
-.spectogramwave {
+.spectrogramwave {
   margin-top: 3%;
 }
 /* Media Player */
@@ -453,7 +453,7 @@ margin: auto;
   font-weight: 300;
 }
 
-.spectogramContainer {
+.spectrogramContainer {
   border: solid 0.1px #252c3128;
 }
 
@@ -464,10 +464,10 @@ margin: auto;
   margin: 5px;
 }
 
-.spectogramImageContainer {
+.spectrogramImageContainer {
   width: auto;
 }
-/* .spectogramImage {
+/* .spectrogramImage {
   max-width: 900px;
   max-height: 300px;
 } */
@@ -527,16 +527,16 @@ margin: auto;
   opacity: 0.2;
 }
 
-/* Spectogram */
+/* Spectrogram */
 
-.spectogramOptions {
+.spectrogramOptions {
   padding: 5px;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
-.dropdownButonsSpectogram {
+.dropdownButonsSpectrogram {
   background-color: #adadad79 !important;
   border-color: none !important;
 }
