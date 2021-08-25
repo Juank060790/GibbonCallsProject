@@ -15,7 +15,7 @@ import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import colorMap from "colormap";
 import TableNewCalls from "./TableNewCalls";
 
-// import testAudio from "../images/testAudio.WAV";
+import testAudio from "../images/testAudio.WAV";
 
 export default function Waveform() {
   const dispatch = useDispatch();
@@ -183,8 +183,8 @@ export default function Waveform() {
     setRegionsArray([]);
   };
 
-  // const url = testAudio;
-  const url = selectedAudio?.audioLink;
+  const url = testAudio;
+  // const url = selectedAudio?.audioLink;
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
@@ -266,20 +266,18 @@ export default function Waveform() {
     }
   };
 
-  const DrawCanvas = () => {
+  let canvasRegions = [];
+
+  const DrawInCanvas = () => {
     let newSelection = {};
     let mousedown = false;
 
     canvas = waveformSpectrogramRef.current?.children[0]?.children[0];
-
     ctx = canvas?.getContext("2d");
     if (!ctx) {
       return;
     }
-    ctx.linecap = "round";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 5;
-
+    ctx.scale(2, 2);
     contextRef.current = ctx;
     console.log(`canvasTag`, contextRef.current);
 
@@ -317,20 +315,14 @@ export default function Waveform() {
 
     const drawSelection = (start, end) => {
       console.log("NewSelection", start, end);
-      if (start < end) {
-        console.log("drawing!!");
-      }
 
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.rect(start, 0, end - start, canvas.height);
-
       ctx.stroke();
       ctx.fillStyle = "rgba(255,0,0,0.2)";
       ctx.fill();
       ctx.closePath();
-
-      console.log(`newSelection`, newSelection);
     };
 
     canvas.addEventListener("mousedown", (e) => {
@@ -343,6 +335,9 @@ export default function Waveform() {
     canvas.addEventListener("mouseup", (e) => {
       mousedown = false;
       drawSelection(newSelection.start, newSelection.end);
+      canvasRegions.push({ newSelection });
+      console.log(`newSelection`, newSelection);
+      console.log(`canvasRegions`, canvasRegions);
     });
 
     canvas.addEventListener("mousemove", (e) => {
@@ -360,17 +355,18 @@ export default function Waveform() {
     });
   };
 
-  useEffect(() => {
-    if (SpectrogramPluginInit === false) {
-      DrawCanvas();
-    }
-  });
+  // useEffect(() => {
+  //   if (SpectrogramPluginInit === false) {
+  //     console.log("drawing in useeffect");
+  //     DrawInCanvas();
+  //   }
+  // });
 
   return (
     <div>
       {SpectrogramPluginInit === false ? (
         <>
-          <button onClick={DrawCanvas}> Set CANVAS </button>
+          <button onClick={DrawInCanvas}> Set CANVAS </button>
           <button id="saveRegionCanvas"> Save </button>
         </>
       ) : (
