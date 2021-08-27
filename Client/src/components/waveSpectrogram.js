@@ -1,114 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Container, Dropdown, Modal } from "react-bootstrap";
-import { WaveformContianer, Wave } from "./Waveform.styled";
-import { callActions } from "../redux/actions";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../Styles/Styles.scss";
-import colorPalette from "../images/colorPalette.png";
-import WaveSurfer from "wavesurfer.js";
-import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js";
-import Regions from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
-import Minimap from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
-import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
-import colorMap from "colormap";
-import TableNewCalls from "./TableNewCalls";
-
+import { useDispatch, useSelector } from "react-redux";
+import ImageTest from "../images/Spectogram2.png";
 import testAudio from "../images/testAudio.WAV";
+import { callActions } from "../redux/actions";
+import TableNewCalls from "./TableNewCalls";
+// import colorMap from "colormap";
+import "../Styles/Styles.scss";
 
 export default function Waveform() {
-  const dispatch = useDispatch();
-  const [Play, setPlay] = useState(false);
-  const [SpectrogramPluginInit, setSpectrogramPluginInit] = useState(true);
-  const waveformRef = useRef(null);
-  var Waveform = useRef(null);
-  const waveformTimeLineRef = useRef(null);
-  const waveformSpectrogramRef = useRef(null);
-  const contextRef = useRef(null);
-  // const [isDrawing, setIsDrawing] = useState(false);
-
-  // const [zoomValue, setZoomValue] = useState(30);
-
-  const [colorOfSpectrogram, setColorOfSpectrogram] = useState("cool");
-  const [regionsArray, setRegionsArray] = useState();
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const CallsList = useSelector((state) => state.audio.callsList);
   const regionListRedux = useSelector((state) => state.call.call);
-  const [labelColor, setLabelColor] = useState("");
+  const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
-  const [helpModal, setHelpModal] = useState(false);
   const [regionsInWave, setRegionsInWave] = useState(10);
+  const [regionsArray, setRegionsArray] = useState();
+  const [labelColor, setLabelColor] = useState("");
   const regionColor = randomColor(0.1);
+  const [Play, setPlay] = useState("Play");
+  const [run, setRun] = useState(true);
+  const SpectrogramRef = useRef(null);
+  const playerRef = useRef(null);
+  const dispatch = useDispatch();
+  let canvasRegions = [];
+  let context = null;
   let canvas = null;
-  let ctx = null;
-
-  // Spectrogram and sound waves options
-
-  const WaveformOptions = (ref) => ({
-    container: waveformRef.current,
-    cursorWidth: 1,
-    cursorColor: "rgba(255,255,255,0.5)",
-    progressColor: "#7AD7F0",
-    waveColor: "#F5FCFF",
-    dragSelection: true,
-    backend: "WebAudio",
-    drawingContextAttributes: {
-      // Boolean that hints the user agent to reduce the latency
-      // by desynchronizing the canvas paint cycle from the event
-      // loop
-      desynchronized: true,
-    },
-    normalize: true,
-    partialRender: true,
-    loopSelection: true,
-    plugins: [
-      CursorPlugin.create({
-        showTime: true,
-        opacity: 1,
-        customShowTimeStyle: {
-          "background-color": "#000",
-          color: "#999",
-          padding: "2px",
-          "font-size": "10px",
-        },
-      }),
-      SpectroPlugin,
-      Regions.create({
-        resize: false,
-        maxRegions: [regionsInWave],
-      }),
-      Minimap.create({
-        backgroundColor: "white",
-        waveColor: "#ddd",
-        progressColor: "#999",
-        cursorColor: "#999",
-        height: 30,
-      }),
-      TimelinePlugin.create({
-        container: "#wave-timeline",
-      }),
-    ],
-  });
-
-  // Set of colors used fot the spectrogram "cool", "jet", "electric", "oxygen", "cubehelix", "copper"
-  let colors = colorMap({
-    colormap: colorOfSpectrogram,
-    nshades: 256,
-    format: "float",
-  });
-
-  let SpectroPlugin = SpectrogramPlugin.create({
-    container: "#wavespectrogram",
-    labels: false,
-    responsive: false,
-    colorMap: colors,
-    deferInit: SpectrogramPluginInit,
-  });
+  let posX = 0;
 
   // Save the region to be show in the waveform, after needs to be saved to the database.
-
-  function saveCreatedRegions(event) {
+  function saveCreatedRegions(region) {
+    console.log(`region`, region);
     let arrayRegion = [];
     var d = Date.now();
     let singleRegion = {
@@ -116,18 +37,18 @@ export default function Waveform() {
       label: "",
       spectrogram: "",
       comment: "",
-      start: event.start,
-      end: event.end,
+      start: region.start,
+      end: region.end,
       isCorrect: true,
       isDeleted: false,
       SpectrogramAudio: "",
       color: regionColor,
     };
-    var regions = event.wavesurfer.regions.list;
-    var keys = Object.keys(regions);
-    if (keys.length > 1) {
-      regions[keys[0]].remove();
-    }
+    // var regions = region.wavesurfer.regions.list;
+    // var keys = Object.keys(regions);
+    // if (keys.length > 1) {
+    //   regions[keys[0]].remove();
+    // }
     arrayRegion.push({ singleRegion });
     setRegionsArray(arrayRegion);
   }
@@ -153,10 +74,6 @@ export default function Waveform() {
 
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
-      // let regionCutted = cut(regionsArray[0].singleRegion, Waveform.current);
-      // console.log(regionCutted);
-      // console.log(`audioBufferToWav`, audioBufferToWav(regionCutted));
-
       const addCallCount =
         regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
@@ -179,7 +96,6 @@ export default function Waveform() {
 
   // Clear all the regions from the waveform
   const clearRegions = () => {
-    Waveform.current.clearRegions();
     setRegionsArray([]);
   };
 
@@ -187,39 +103,6 @@ export default function Waveform() {
   // const url = selectedAudio?.audioLink;
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
-
-  useEffect(() => {
-    setPlay(false);
-    const options = WaveformOptions(waveformRef.current);
-    Waveform.current = WaveSurfer.create(options);
-    if (url) {
-      Waveform.current.load(url);
-    }
-
-    Waveform.current.on("ready", function () {
-      Waveform.current.enableDragSelection({
-        color: regionColor,
-        passive: true,
-      });
-    });
-
-    Waveform.current.zoom(Number(40));
-    // Play region on click
-    Waveform.current.on("region-click", function (region, e) {
-      e.stopPropagation();
-      // Play on click, loop on shift click
-      e.shiftKey ? region.playLoop() : region.play();
-      setPlay(true);
-    });
-
-    // Create a region on drag and update it in to the table to edit and add labels.
-    Waveform.current.on("region-updated", saveCreatedRegions);
-    Waveform.current.on("region-dblclick", deleteRegion);
-
-    return () => Waveform.current.destroy();
-
-    // eslint-disable-next-line
-  }, [SpectrogramPluginInit, url, colorOfSpectrogram]);
 
   // Load regions into the waveform
   function loadRegions(regionListRedux) {
@@ -234,12 +117,6 @@ export default function Waveform() {
       }
     });
   }
-
-  // Play and pause function for the waveform
-  const handlePlayPause = () => {
-    setPlay(!Play);
-    Waveform.current.playPause();
-  };
 
   /**
    * Random RGBA color.
@@ -257,275 +134,200 @@ export default function Waveform() {
     );
   }
 
-  // Switch to show spectrogram
-  const ShowSpectrogram = () => {
-    if (SpectrogramPluginInit === false) {
-      setSpectrogramPluginInit(true);
-    } else {
-      setSpectrogramPluginInit(false);
+  function resizeCanvasToDisplaySize(canvas) {
+    const { width, height } = canvas.getBoundingClientRect();
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.height = height;
+      canvas.width = width;
+      return true; // here you can return some usefull information like delta width and delta height instead of just true
+      // this information can be used in the next redraw...
     }
-  };
 
-  let canvasRegions = [];
+    return false;
+  }
 
-  const DrawInCanvas = () => {
+  const DrawInCanvas = (canvas, ctx) => {
     let newSelection = {};
     let mousedown = false;
-
-    canvas = waveformSpectrogramRef.current?.children[0]?.children[0];
-    ctx = canvas?.getContext("2d");
-    if (!ctx) {
+    if (!ctx || !canvas) {
       return;
     }
-    ctx.scale(2, 2);
-    contextRef.current = ctx;
-    console.log(`canvasTag`, contextRef.current);
 
-    // const startDrawing = (nativeEvent) => {
-    //   const { offsetX, offsetY } = nativeEvent;
-    //   ctx.beginPath();
-    //   ctx.moveTo(offsetX, offsetY);
-    //   setIsDrawing(true);
-    // };
-
-    // const finishDrawing = (nativeEvent) => {
-    //   ctx.closePath();
-    //   setIsDrawing(false);
-    // };
-
-    // const draw = (nativeEvent) => {
-    //   if (!isDrawing) {
-    //     return;
-    //   }
-    //   const { offsetX, offsetY } = nativeEvent;
-    //   ctx.lineTo(offsetX, offsetY);
-    //   ctx.stroke();
-    // };
-
-    // canvas.addEventListener("mousedown", (e) => {
-    //   startDrawing(e);
-    // });
-
-    // canvas.addEventListener("mouseup", () => {
-    //   finishDrawing();
-    // });
-    // canvas.addEventListener("mousemove", (e) => {
-    //   draw(e);
-    // });
-
+    // Draw the region on the canvas
     const drawSelection = (start, end) => {
-      console.log("NewSelection", start, end);
-
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.rect(start, 0, end - start, canvas.height);
       ctx.stroke();
-      ctx.fillStyle = "rgba(255,0,0,0.2)";
+      ctx.fillStyle = "rgba(106,204,135,0.2)";
       ctx.fill();
       ctx.closePath();
     };
-
+    // Start the selection
     canvas.addEventListener("mousedown", (e) => {
+      e.preventDefault();
       mousedown = true;
       newSelection.start = e.offsetX;
       newSelection.end = e.offsetX;
       drawSelection(newSelection.start, newSelection.end);
     });
-
+    // End the selection
     canvas.addEventListener("mouseup", (e) => {
+      e.preventDefault();
       mousedown = false;
       drawSelection(newSelection.start, newSelection.end);
-      canvasRegions.push({ newSelection });
-      console.log(`newSelection`, newSelection);
-      console.log(`canvasRegions`, canvasRegions);
+      let newRegion = {
+        start: newSelection.start / (canvas.width / 60),
+        end: newSelection.end / (canvas.width / 60),
+        id: Date.now(),
+        color: "rgba(106,204,135,0.2)",
+      };
+
+      saveCreatedRegions(newRegion);
     });
 
     canvas.addEventListener("mousemove", (e) => {
+      e.preventDefault();
       if (mousedown === true) {
         newSelection = { ...newSelection, end: e.offsetX };
-
-        // console.log("mousemove", newSelection);
       }
     });
 
-    const btnSave = document.getElementById("saveRegionCanvas");
-    btnSave.addEventListener("click", () => {
-      console.log("SAVEREGION");
-      ctx.save();
-    });
+    // const btnSave = document.getElementById("saveRegionCanvas");
+    // btnSave.addEventListener("click", () => {
+    //   console.log("SAVEREGION");
+    //   ctx.save();
+    // });
   };
 
-  // useEffect(() => {
-  //   if (SpectrogramPluginInit === false) {
-  //     console.log("drawing in useeffect");
-  //     DrawInCanvas();
-  //   }
-  // });
+  function DrawPlayTracker(ctx, canvas) {
+    let v = window.innerWidth / 60 / 60;
+    ctx.linearWith = 50;
+    ctx.strokeStyle = "rgba(255, 165, 0, .9)";
+    ctx.beginPath();
+    ctx.rect(
+      posX, // x
+      0, // y
+      0, // width
+      canvas.height // height
+    );
+    ctx.clearRect(0, 0, posX, canvas.height);
+    ctx.stroke();
+    ctx.moveTo((posX += v), 0);
+    ctx.closePath();
+  }
+
+  // useCallback hook with a play audio function
+  const playAudio = useCallback(() => {
+    if (run === true) {
+      playerRef.current.play();
+      setPlay("Pause");
+      // posX = 0;
+    } else {
+      console.log(`run`, run);
+      playerRef.current.pause();
+      setPlay("Play");
+    }
+  }, [setPlay, run]);
+
+  const restartAudio = () => {
+    playerRef.current.currentTime = 0;
+  };
+
+  // Load the spectrogram audio
+  useEffect(() => {
+    playerRef.current.src = testAudio;
+  }, []);
+
+  useEffect(() => {
+    canvas = SpectrogramRef.current;
+    context = canvas.getContext("2d");
+    resizeCanvasToDisplaySize(context.canvas);
+    console.log(`resizeCAnvasToDisplaySize`, resizeCanvasToDisplaySize);
+    context.canvas.width = window.innerWidth;
+    context.canvas.height = 200;
+    const image = new Image();
+    image.src = ImageTest;
+    image.onload = () => {
+      context.drawImage(
+        image,
+        0,
+        0,
+        context.canvas.width,
+        context.canvas.height
+      );
+    };
+    let animationFrameId;
+    DrawInCanvas(canvas, context);
+    const render = () => {
+      if (run === false) {
+        DrawPlayTracker(context, canvas);
+      }
+      window.cancelAnimationFrame(animationFrameId);
+      animationFrameId = window.requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      console.log("render");
+      window.cancelAnimationFrame(animationFrameId);
+    };
+    // eslint-disable-next-line
+  }, [run]);
 
   return (
     <div>
-      {SpectrogramPluginInit === false ? (
-        <>
-          <button onClick={DrawInCanvas}> Set CANVAS </button>
-          <button id="saveRegionCanvas"> Save </button>
-        </>
-      ) : (
-        <> </>
-      )}
-      <div className="row">
-        {/* <CuttedRegion regionCutted={regionCutted} /> */}
-      </div>
+      <div className="row"></div>
       <div>
-        <Container className="infoAndNotesContainer" fluid>
-          <div className="containerInfoAudio"></div>
-          <div className="AnnotationsNotes">
-            <div>
-              <FontAwesomeIcon
-                className="helpIcon"
-                icon={["fas", "question"]}
-                color="#04c45c"
-                onClick={() => setHelpModal(true)}
-                size="lg"
-              ></FontAwesomeIcon>
-            </div>
-            {SpectrogramPluginInit === false ? (
-              <div className="spectrogramOptions">
-                <div className="colorPaletteDropdownContainer m-2">
-                  <Dropdown className="dropdownBtnSpectrogramOption ">
-                    <Dropdown.Toggle
-                      id="dropdown-basic"
-                      className="colorPaletteDropdownBtn dropdownButonsSpectrogram"
-                    >
-                      <img
-                        src={colorPalette}
-                        alt="soundBeat icon"
-                        width="25px"
-                        height="25px"
-                      />
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("cool")}
-                      >
-                        Cool
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("jet")}
-                      >
-                        Jet
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("electric")}
-                      >
-                        Electric
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("oxygen")}
-                      >
-                        Oxygen
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("cubehelix")}
-                      >
-                        Cubehelix
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={(e) => setColorOfSpectrogram("copper")}
-                      >
-                        Copper
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>{" "}
+        <div>
+          <div>
+            <div className="m-2">
+              <div>
+                <div className="Spectrogram-container">
+                  <canvas width="100%" ref={SpectrogramRef} />
+                  <audio ref={playerRef} id="playCall">
+                    <source id="audioCall" src={url} type="audio/mpeg" />
+                  </audio>
+                  <button
+                    className="btnSave "
+                    onClick={() =>
+                      playAudio(run === true ? setRun(false) : setRun(true))
+                    }
+                    type="button"
+                  >
+                    {Play === "Play" ? (
+                      <FontAwesomeIcon
+                        className=""
+                        icon={["fas", "play-circle"]}
+                        color="#04c45c"
+                        size="2x"
+                      ></FontAwesomeIcon>
+                    ) : (
+                      <FontAwesomeIcon
+                        className=""
+                        icon={["fas", "pause-circle"]}
+                        color="#04c45c"
+                        size="2x"
+                      ></FontAwesomeIcon>
+                    )}
+                  </button>
+                  <button
+                    className="btnSave "
+                    onClick={() => restartAudio()}
+                    type="button"
+                  >
+                    <FontAwesomeIcon
+                      className=""
+                      icon={["fas", "undo"]}
+                      color="#04c45c"
+                      size="2x"
+                    ></FontAwesomeIcon>
+                  </button>
                 </div>
               </div>
-            ) : (
-              <> </>
-            )}
-          </div>
-        </Container>
+            </div>
 
-        <div className="spectrogramwave">
-          <WaveformContianer>
-            {SpectrogramPluginInit === false ? (
-              <>
-                <div className="WavesTitlesContainer">
-                  <div className="lightweight">Spectrogram</div>
-                </div>
-
-                <Wave
-                  className="wavespectrogram m-1"
-                  ref={waveformSpectrogramRef}
-                  id="wavespectrogram"
-                />
-              </>
-            ) : (
-              <> </>
-            )}
-            <div className="WavesTitlesContainer">
-              <div className="lightweight">Waveform</div>
-            </div>
-            <Wave ref={waveformRef} id="waveform" />
-            <Wave ref={waveformTimeLineRef} id="wave-minimap" />
-            <Wave ref={waveformTimeLineRef} id="wave-timeline" />
-          </WaveformContianer>
-        </div>
-        <div>
-          {" "}
-          <div className="controlsContainer controlActions">
-            <div className="d-flex flex-column justify-content-center align-items-center ">
-              Spectrogram
-              <label className="switch">
-                <input
-                  id="SpectrogramPluginInit"
-                  type="checkbox"
-                  onChange={ShowSpectrogram}
-                />
-                <span className="sliderSwitch round"></span>
-              </label>
-            </div>
-            <button
-              onClick={() =>
-                saveRegionsDataBase(
-                  regionsArray,
-                  selectedAudio?.audioId,
-                  CallsList
-                )
-              }
-              className="btnSave draw-border"
-            >
-              Save
-            </button>{" "}
-            <div className="containerPlayButton">
-              <button className="PlayButton" onClick={handlePlayPause}>
-                {!Play ? (
-                  <FontAwesomeIcon
-                    className=""
-                    icon={["fas", "play"]}
-                    color="#04c45c"
-                  ></FontAwesomeIcon>
-                ) : (
-                  <FontAwesomeIcon
-                    className=""
-                    icon={["fas", "pause"]}
-                    color="#04c45c"
-                  ></FontAwesomeIcon>
-                )}
-              </button>
-            </div>
-            <button
-              onClick={() => clearRegions(regionsArray)}
-              className="btnSave draw-border"
-            >
-              Clear
-            </button>
-            <button
-              onClick={() => loadRegions(regionListRedux)}
-              className="btnSave draw-border"
-            >
-              Load
-            </button>
-          </div>
-          <div>
             <TableNewCalls
               labelForNewCall={labelForNewCall}
               labelNewCall={labelNewCall}
@@ -535,43 +337,6 @@ export default function Waveform() {
           </div>
         </div>
       </div>
-      <Modal
-        className="modalHelpContainer"
-        centered
-        show={helpModal}
-        onHide={() => setHelpModal(false)}
-      >
-        <Modal.Header className="modalHelpBody" closeButton>
-          <h4>Notes</h4>
-        </Modal.Header>
-        <Modal.Body className="modalHelpBody">
-          {" "}
-          <div>
-            <div className="FileDetails">
-              <p className="line-break-text">
-                <b>Double click</b> = Delete a region from the waveform.
-              </p>
-              <p className="line-break-text">
-                <b> Click and drag </b> = Create a new region in the waveform.
-              </p>
-              <p className="line-break-text">
-                <b>Click</b> = Play region.
-              </p>
-              <p className="line-break-text">
-                <b> Save </b> = Save a region into the database, save one at the
-                time.
-              </p>
-              <p className="line-break-text">
-                <b> Load </b> = Load the regions from the database into the
-                waveform.
-              </p>
-              <p className="line-break-text">
-                <b> Clear </b> = Clear regions <b>only</b> from the waveform.
-              </p>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
     </div>
   );
 }

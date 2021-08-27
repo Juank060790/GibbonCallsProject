@@ -529,6 +529,16 @@ margin: auto;
 
 /* Spectrogram */
 
+/* NewStyles */
+
+.Spectrogram-container {
+  width: 100%;
+}
+
+.Spectrogram-container > canvas {
+  width: 100%;
+}
+
 .spectrogramOptions {
   padding: 5px;
   display: flex;
@@ -549,10 +559,10 @@ margin: auto;
   position: relative;
   width: 100%;
 }
-
+/* 
 .wavespectrogram > canvas {
   width: 100vw;
-}
+} */
 
 button {
   background: #eee;
@@ -759,4 +769,25 @@ input:checked + .sliderSwitch:before {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
   background-color: #04c45c;
+}
+
+/* zooom */
+
+.img-zoom-container {
+  position: relative;
+}
+
+.img-zoom-lens {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  /*set the size of the lens:*/
+  width: 40px;
+  height: 40px;
+}
+
+.img-zoom-result {
+  border: 1px solid #d4d4d4;
+  /*set the size of the result div:*/
+  width: 300px;
+  height: 300px;
 }

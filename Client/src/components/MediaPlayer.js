@@ -10,6 +10,7 @@ export default function MediaPlayer(props) {
 
   return (
     <>
+      <WaveSpectrogram SpectrogramAudio={SpectrogramAudio} />
       <Container fluid className="MediaPlayerContainer">
         <div className="infoAudio">
           {" "}
@@ -57,7 +58,6 @@ export default function MediaPlayer(props) {
           )}
         </div>
       </Container>{" "}
-      <WaveSpectrogram SpectrogramAudio={SpectrogramAudio} />
     </>
   );
 }
