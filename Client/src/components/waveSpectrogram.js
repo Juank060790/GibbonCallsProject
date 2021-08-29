@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import ImageTest from "../images/Spectogram2.png";
+import miniImage from "../images/miniImage.png";
 import testAudio from "../images/testAudio.WAV";
 import { callActions } from "../redux/actions";
 import TableNewCalls from "./TableNewCalls";
@@ -13,8 +14,9 @@ export default function Waveform() {
   const regionListRedux = useSelector((state) => state.call.call);
   const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
+  const [formData, setFormData] = useState({ comment: "" });
   const [regionsInWave, setRegionsInWave] = useState(10);
-  const [regionsArray, setRegionsArray] = useState();
+  const [regionsArray, setRegionsArray] = useState([]);
   const [labelColor, setLabelColor] = useState("");
   const regionColor = randomColor(0.1);
   const [Play, setPlay] = useState("Play");
@@ -22,51 +24,64 @@ export default function Waveform() {
   const SpectrogramRef = useRef(null);
   const playerRef = useRef(null);
   const dispatch = useDispatch();
-  let canvasRegions = [];
   let context = null;
   let canvas = null;
   let posX = 0;
 
   // Save the region to be show in the waveform, after needs to be saved to the database.
+
   function saveCreatedRegions(region) {
-    console.log(`region`, region);
-    let arrayRegion = [];
     var d = Date.now();
     let singleRegion = {
       callId: d.toString(),
-      label: "",
-      spectrogram: "",
-      comment: "",
+      SpectrogramAudio: "",
       start: region.start,
       end: region.end,
+      spectrogram: miniImage,
       isCorrect: true,
       isDeleted: false,
-      SpectrogramAudio: "",
-      color: regionColor,
+      color: region.color,
+      comment: "",
+      label: "",
     };
-    // var regions = region.wavesurfer.regions.list;
-    // var keys = Object.keys(regions);
-    // if (keys.length > 1) {
-    //   regions[keys[0]].remove();
-    // }
-    arrayRegion.push({ singleRegion });
-    setRegionsArray(arrayRegion);
+    // Update teh state with the single call selected in the spectrogram
+    setRegionsArray((regionsArray) => [...regionsArray, singleRegion]);
   }
 
   // Set Label from new call in the new table
 
-  const labelNewCall = (event) => {
-    if (event === "Male") {
+  const labelNewCall = (tag, id) => {
+    console.log(`regionsArray`, regionsArray);
+    let regionId = regionsArray.findIndex(
+      (regionsArray) => regionsArray.callId === id
+    );
+    console.log(`tag`, regionId);
+
+    if (tag === "Male") {
+      regionsArray[regionId].label = "Male";
       setLabelColor("rgba(192, 212, 255, 0.278)");
       setLableForNewCall("Male");
     }
-    if (event === "Female") {
+    if (tag === "Female") {
+      regionsArray[regionId].label = "Female";
       setLabelColor("rgba(255, 192, 245, 0.278)");
       setLableForNewCall("Female");
     }
-    if (event === "Other") {
+    if (tag === "Other") {
+      regionsArray[regionId].label = "Other";
       setLabelColor("#6fcf978e");
       setLableForNewCall("Other");
+    }
+  };
+
+  // Save comments into the region
+
+  const saveCommentNewCall = (event, regionId) => {
+    let region = regionsArray.findIndex(
+      (regionsArray) => regionsArray.callId === regionId
+    );
+    if (event.target.value) {
+      regionsArray[region].comment = event.target.value;
     }
   };
 
@@ -77,8 +92,7 @@ export default function Waveform() {
       const addCallCount =
         regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       regionsArray?.forEach((region) => {
-        region.singleRegion.label = labelForNewCall;
-        let singleCall = region.singleRegion;
+        let singleCall = region;
         dispatch(callActions.saveRegionCall(singleCall, audioId, addCallCount));
         dispatch(callActions.getSingleCall(singleCall.callId));
         setRegionsArray([]);
@@ -89,18 +103,18 @@ export default function Waveform() {
   };
 
   // Delete region in the waveform
-  const deleteRegion = (region) => {
-    region.remove();
-    setRegionsArray([]);
-  };
+  // const deleteRegion = (region) => {
+  //   region.remove();
+  //   setRegionsArray([]);
+  // };
 
   // Clear all the regions from the waveform
   const clearRegions = () => {
     setRegionsArray([]);
   };
 
-  const url = testAudio;
-  // const url = selectedAudio?.audioLink;
+  // const url = testAudio;
+  const url = selectedAudio?.audioLink;
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
@@ -154,13 +168,14 @@ export default function Waveform() {
       return;
     }
 
+    let regionColor = randomColor(0.3);
     // Draw the region on the canvas
     const drawSelection = (start, end) => {
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.rect(start, 0, end - start, canvas.height);
       ctx.stroke();
-      ctx.fillStyle = "rgba(106,204,135,0.2)";
+      ctx.fillStyle = regionColor;
       ctx.fill();
       ctx.closePath();
     };
@@ -181,7 +196,7 @@ export default function Waveform() {
         start: newSelection.start / (canvas.width / 60),
         end: newSelection.end / (canvas.width / 60),
         id: Date.now(),
-        color: "rgba(106,204,135,0.2)",
+        color: regionColor,
       };
 
       saveCreatedRegions(newRegion);
@@ -193,12 +208,6 @@ export default function Waveform() {
         newSelection = { ...newSelection, end: e.offsetX };
       }
     });
-
-    // const btnSave = document.getElementById("saveRegionCanvas");
-    // btnSave.addEventListener("click", () => {
-    //   console.log("SAVEREGION");
-    //   ctx.save();
-    // });
   };
 
   function DrawPlayTracker(ctx, canvas) {
@@ -244,7 +253,6 @@ export default function Waveform() {
     canvas = SpectrogramRef.current;
     context = canvas.getContext("2d");
     resizeCanvasToDisplaySize(context.canvas);
-    console.log(`resizeCAnvasToDisplaySize`, resizeCanvasToDisplaySize);
     context.canvas.width = window.innerWidth;
     context.canvas.height = 200;
     const image = new Image();
@@ -270,7 +278,6 @@ export default function Waveform() {
     render();
 
     return () => {
-      console.log("render");
       window.cancelAnimationFrame(animationFrameId);
     };
     // eslint-disable-next-line
@@ -329,10 +336,13 @@ export default function Waveform() {
             </div>
 
             <TableNewCalls
+              selectedAudio={selectedAudio}
               labelForNewCall={labelForNewCall}
               labelNewCall={labelNewCall}
               regionsArray={regionsArray}
               labelColor={labelColor}
+              saveCommentNewCall={saveCommentNewCall}
+              saveRegionsDataBase={saveRegionsDataBase}
             />
           </div>
         </div>

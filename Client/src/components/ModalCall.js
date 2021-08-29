@@ -157,11 +157,6 @@ export default function ModalCall({
                           <Badge className="labelTag femaleTag">
                             {" "}
                             {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "venus"]}
-                              color="white"
-                            ></FontAwesomeIcon>
                           </Badge>
                         </td>
                       ) : call.label === "Male" ? (
@@ -170,25 +165,12 @@ export default function ModalCall({
                           <Badge className="labelTag maleTag">
                             {" "}
                             {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "mars"]}
-                              color="white"
-                            ></FontAwesomeIcon>
                           </Badge>
                         </td>
                       ) : call.label === "Other" ? (
                         <td className="tableSingleKey ">
                           {" "}
-                          <Badge className="labelTag">
-                            {" "}
-                            {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "feather"]}
-                              color="black"
-                            ></FontAwesomeIcon>
-                          </Badge>
+                          <Badge className="labelTag"> {call.label} </Badge>
                         </td>
                       ) : (
                         <td className="tableSingleKey "> No label</td>
