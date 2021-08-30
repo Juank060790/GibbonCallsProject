@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import notFoundImage from "../images/No_image_available.svg";
 import logoFF from "../images/logo-reduced.png";
-import { Container, Table } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
+import { Container, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
+import React, { useState } from "react";
+
 export default function TableNewCalls(props) {
   const {
     regionsArray,
@@ -10,30 +10,55 @@ export default function TableNewCalls(props) {
     saveCommentNewCall,
     saveRegionsDataBase,
     selectedAudio,
+    clearRegions,
   } = props;
+
+  console.log(`selectedAudio`, props);
   const [imageToShow, setImageToShow] = useState(logoFF);
 
-  useEffect(() => {
-    if (imageToShow === notFoundImage) {
-      return;
-    } else {
-      console.log("imageTrans");
-      const imageTranstition = () => {};
-    }
-  }, [imageToShow]);
+  const saveBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Save regions
+    </Tooltip>
+  );
+  const deleteBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Delete regions
+    </Tooltip>
+  );
 
   return (
     <Container fluid className=" MediaPlayerContainer">
       <div className="subTableNewCall">
         <div className="ButtonsRegionsContainer">
-          <h4>Create or Edit Call</h4>
+          <h4>Create a Call</h4>
           <div>
-            <button
-              className="saveBtn btn-success"
-              onClick={() => saveRegionsDataBase(regionsArray, selectedAudio)}
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 100, hide: 100 }}
+              overlay={saveBtnTooltip}
             >
-              <FontAwesomeIcon icon="save" />
-            </button>
+              <button
+                className="saveBtn btn-success"
+                onClick={() =>
+                  saveRegionsDataBase(regionsArray, selectedAudio.audioId)
+                }
+              >
+                <FontAwesomeIcon icon="save" />
+              </button>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 100, hide: 100 }}
+              overlay={deleteBtnTooltip}
+            >
+              <button
+                className="saveBtn btn-success"
+                onClick={() => clearRegions()}
+              >
+                <FontAwesomeIcon icon="trash-alt" />
+              </button>
+            </OverlayTrigger>
           </div>
         </div>
         <Table responsive>
@@ -144,13 +169,9 @@ export default function TableNewCalls(props) {
       ) : (
         <div className="spectrogramImageContainer">
           <img
-            className={`${
-              imageToShow === logoFF
-                ? "spectrogramImageFull fade-out"
-                : "spectrogramImageFull fade-in"
-            }`}
+            className=" spectrogramImageFull fade-in"
             src={imageToShow}
-            alt="Spectrogram "
+            alt="Spectrogram"
           />
         </div>
       )}

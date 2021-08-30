@@ -6,16 +6,14 @@ import miniImage from "../images/miniImage.png";
 import testAudio from "../images/testAudio.WAV";
 import { callActions } from "../redux/actions";
 import TableNewCalls from "./TableNewCalls";
-// import colorMap from "colormap";
 import "../Styles/Styles.scss";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const regionListRedux = useSelector((state) => state.call.call);
-  const CallsList = useSelector((state) => state.audio.callsList);
+  // const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
-  const [formData, setFormData] = useState({ comment: "" });
-  const [regionsInWave, setRegionsInWave] = useState(10);
+  // const [regionsInWave, setRegionsInWave] = useState(10);
   const [regionsArray, setRegionsArray] = useState([]);
   const [labelColor, setLabelColor] = useState("");
   const regionColor = randomColor(0.1);
@@ -42,7 +40,7 @@ export default function Waveform() {
       isDeleted: false,
       color: region.color,
       comment: "",
-      label: "",
+      label: "Female",
     };
     // Update teh state with the single call selected in the spectrogram
     setRegionsArray((regionsArray) => [...regionsArray, singleRegion]);
@@ -119,17 +117,22 @@ export default function Waveform() {
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
   // Load regions into the waveform
-  function loadRegions(regionListRedux) {
-    regionListRedux.forEach(function (region) {
-      setRegionsInWave(regionListRedux.length);
-      // // eslint-disable-next-line
-      // region.color = region.color;
-      if (region.isCorrect === true) {
-        Waveform.current.addRegion(region);
-      } else {
-        console.log("Region Not correct");
-      }
-    });
+  function loadRegions(regionListRedux, ctx, canvas) {
+    console.log(`regionListRedux`, regionListRedux);
+    if (!ctx || !canvas) {
+      // console.log("ctx and canvas not found");
+      return;
+    }
+    // console.log("Draw region");
+
+    // regionListRedux.forEach(function (region) {
+    //   setRegionsInWave(regionListRedux.length);
+    //   if (region.isCorrect === true) {
+    //     Waveform.current.addRegion(region);
+    //   } else {
+    //     console.log("Region Not correct");
+    //   }
+    // });
   }
 
   /**
@@ -168,7 +171,6 @@ export default function Waveform() {
       return;
     }
 
-    let regionColor = randomColor(0.3);
     // Draw the region on the canvas
     const drawSelection = (start, end) => {
       ctx.lineWidth = 1;
@@ -198,7 +200,7 @@ export default function Waveform() {
         id: Date.now(),
         color: regionColor,
       };
-
+      console.log(`regionCOlor`, regionColor);
       saveCreatedRegions(newRegion);
     });
 
@@ -285,7 +287,7 @@ export default function Waveform() {
 
   return (
     <div>
-      <div className="row"></div>
+      <div className="row"> </div>
       <div>
         <div>
           <div>
@@ -336,6 +338,8 @@ export default function Waveform() {
             </div>
 
             <TableNewCalls
+              loadRegions={loadRegions}
+              clearRegions={clearRegions}
               selectedAudio={selectedAudio}
               labelForNewCall={labelForNewCall}
               labelNewCall={labelNewCall}

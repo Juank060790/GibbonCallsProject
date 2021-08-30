@@ -122,6 +122,7 @@ const updateIsCallCorrect =
 
 const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
   let singleCallId = singleCall.callId;
+  console.log(`singleCallId`, audioId);
   dispatch({ type: types.SAVE_REGION_CALL_REQUEST, payload: null });
   db.collection(`calls`)
     .doc(singleCallId)
@@ -132,12 +133,12 @@ const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
         .update(
           "gibbonCallsList",
           firebase.firestore.FieldValue.arrayUnion(singleCallId)
-        )
-        .then(() => {
-          db.collection(collectionData).doc(audioId).update({
-            correctCalls: addCallCount,
-          });
+        );
+      console.log(`singleCall`, singleCall).then(() => {
+        db.collection(collectionData).doc(audioId).update({
+          correctCalls: addCallCount,
         });
+      });
       dispatch({
         type: types.SAVE_REGION_CALL_SUCCESS,
         payload: null,

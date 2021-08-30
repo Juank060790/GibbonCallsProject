@@ -9,8 +9,6 @@ const PaginationItem = ({
   handleClickOnNext,
   firstPage,
 }) => {
-  // const lastPage = useSelector((state) => state.audio.lastPage);
-
   const audiosPerPage = useSelector((state) => state.audio.audio?.length);
 
   return (

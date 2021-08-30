@@ -268,8 +268,8 @@ export default function TableDashboard() {
                     {" "}
                     <FontAwesomeIcon
                       className="btndeleteAudio"
-                      icon={["fas", "times"]}
-                      color="#b94242"
+                      icon={["fas", "trash-alt"]}
+                      // color="#b94242"
                       onClick={() => deleteAudio(audio?.audioId)}
                     ></FontAwesomeIcon>{" "}
                   </td>

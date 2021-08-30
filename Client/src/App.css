@@ -6,10 +6,19 @@ html {
   width: 100vw;
   height: 100vh;
 }
+
 body {
-  color: #575756;
   letter-spacing: 1.3px;
   font-weight: 300;
+  /* background-color: rgb(28, 28, 28); */
+  background-image: linear-gradient(
+    to bottom,
+    #cff4d27a 30%,
+    #7be49580 69%,
+    #56c59770 90%
+  );
+  color: rgb(231, 230, 230);
+  height: 100vh;
 }
 
 /* Text utils */
@@ -60,13 +69,6 @@ body {
   padding: 15px;
 }
 
-@media (max-width: 992px) {
-  .logincontainer {
-    margin-top: 3rem;
-    padding-bottom: 2rem;
-  }
-}
-
 /* Dashboard */
 .titleDashboardContainer {
   display: grid;
@@ -100,20 +102,15 @@ body {
   margin-top: 20%;
 }
 
-/* Table edit call */
+/* TABLES */
 
-.indexandcolor {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* Table edit call */
 
 .tableSingleKeyEditCalls {
   max-height: min-content;
   vertical-align: middle !important;
 }
 
-/* TABLE */
 .notfoundAudios {
   display: flex;
   flex-direction: column;
@@ -134,15 +131,6 @@ body {
   cursor: pointer;
 }
 
-.lastCell {
-  max-width: 10px;
-}
-
-.commentFilter {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .commentKey {
   max-width: 500px;
 }
@@ -159,76 +147,23 @@ body {
   margin: 1rem;
 }
 
-.filterMenu {
-  display: flex;
-  border: 0.5px solid rgba(0, 0, 0, 0.103);
-  justify-content: flex-end;
-}
-
-/* .filterBadges{
-margin: auto;
-} */
-
-.singleBadge {
-  margin: 5px;
-  height: 20px;
-  width: 100px;
-}
-
-.singleBadge:hover {
-  cursor: pointer;
-  opacity: 0.5;
-}
-
-.singleBadgeNumber {
-  margin: 1rem;
-  height: 20px;
-  width: 50px;
-}
-
-.singleBadgeNumber:hover {
-  cursor: pointer;
-  opacity: 0.5;
-}
-
 .textareacomments {
   border: none;
   border-radius: 6px;
 }
 .commentForm {
-  margin: auto;
+  margin-top: 5px;
 }
-.inputComment {
-  width: inherit;
-}
+
 .textareacommentsInput {
   height: 30px;
   border-radius: 5px;
-  margin-top: 3px;
   width: 100%;
-  border: none !important;
+  border: none;
 }
 
 .textareacommentsInput::placeholder {
   color: #ccc;
-}
-
-.commentBox {
-  margin: auto;
-  /* max-width: 250px; */
-  border: 1px solid #d7ebd6;
-  width: 100%;
-  justify-content: center;
-}
-
-.commentSubBox {
-  text-align: center;
-  vertical-align: middle !important;
-}
-.commentsection {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .buttonscomments {
@@ -250,15 +185,21 @@ margin: auto;
   border-color: currentColor !important;
   margin: auto;
 }
+.validationBtn {
+  font-size: 22px;
+}
+.validationBtn:hover {
+  font-size: 26px;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
 
 .commentBtnsSave {
   width: 40px;
-  background-color: #97d893 !important;
 }
 
 .commentBtnsDelete {
   width: 40px;
-  background-color: #b94242 !important;
+  color: #b94242;
 }
 
 .commentBtns:disabled {
@@ -270,15 +211,6 @@ margin: auto;
 
 .dropdownBtn {
   height: 40px;
-}
-.dropdownKey {
-  padding: 0.5px !important;
-  border-radius: 5px;
-}
-
-.labelText {
-  font-size: 18px;
-  font-weight: 400;
 }
 
 .reloadBtnContainer {
@@ -294,17 +226,17 @@ margin: auto;
   cursor: pointer;
 }
 .tableHeader {
-  background-color: #d7ebd6;
+  background-color: #56c597ab;
   color: #686464;
   vertical-align: middle !important;
 }
 
 .indexKey {
-  background-color: #d7ebd6;
+  background-color: #56c597ab;
 }
 .tableSaveRegionHeader {
-  background-color: #2ecc71;
-  color: white;
+  background-color: #56c597ab;
+  color: #686464;
 }
 
 .tableNewCall {
@@ -317,12 +249,9 @@ margin: auto;
   margin-bottom: 4rem;
 }
 
-.table-responsive {
-  overflow-x: visible !important;
-}
-
 .tableSingleKey {
   vertical-align: middle !important;
+  border: 1px solid rgba(197, 197, 197, 0.274);
 }
 
 .tableKey {
@@ -332,12 +261,8 @@ margin: auto;
   padding: 1rem !important;
 }
 
-.tableSingleKey {
-  border: 1px solid rgba(197, 197, 197, 0.274);
-}
-
 .tableKey:hover {
-  background-color: #6acc938f;
+  background-color: #6acc9349;
   cursor: pointer;
 }
 
@@ -353,9 +278,11 @@ margin: auto;
 }
 
 .labelTag {
-  font-size: large !important;
-  font-weight: 200 !important;
   margin: auto;
+}
+
+.callsTable {
+  margin-top: 2%;
 }
 
 /* Create Or edit table  */
@@ -376,10 +303,8 @@ margin: auto;
   border-radius: 10px;
 }
 
-/* Rows colors */
-
 .spectrogramImageContainer {
-  border: 1px solid #d7ebd6;
+  border: 1px solid #56c597ab;
   padding: 10px;
   width: 100%;
   margin-left: 10px;
@@ -388,9 +313,8 @@ margin: auto;
 }
 
 .subTableNewCall {
-  border: 1px solid #d7ebd6;
+  border: 1px solid #56c597ab;
   padding: 10px;
-
   background-color: #e9e9e950;
   border-radius: 5px;
 }
@@ -405,12 +329,55 @@ margin: auto;
 }
 
 .fade-in {
-  transition: all 1s;
+  animation: fadeIn 5s;
+  -webkit-animation: fadeIn 5s;
+  -moz-animation: fadeIn 5s;
+  -o-animation: fadeIn 5s;
+  -ms-animation: fadeIn 5s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.fade-out {
-  opacity: 0;
-  transition: opacity 1s ease;
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .labelColorSquare {
@@ -421,28 +388,11 @@ margin: auto;
 .indexCell {
   max-width: 50px;
 }
-/* Modal Help  */
-
-.modalHelpContainer {
-  width: 350px !important;
-  margin-left: 40%;
-}
-
-.modalHelpBody {
-  background-color: rgba(120, 156, 167, 0.164);
-}
 
 /* MODAL */
 
-.AnnotationsNotes {
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
 .idNumberModal {
-  width: 200px;
+  width: 20px;
 }
 
 .modal-dialog {
@@ -450,80 +400,13 @@ margin: auto;
   padding: 0;
 }
 
-.helpIcon {
-  right: 0;
-  cursor: pointer;
-  position: absolute;
-  margin: 1.5rem;
-}
-
-.helpIcon:hover {
-  color: #6fcf976b;
-  box-shadow: 0 0 2px #6fcf976b;
-  text-shadow: 0 0 2px #6fcf976b;
-  font-size: 35px;
-  transition: ease-in;
-}
-
 /* Media Player */
 
-.infoAndNotesContainer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.infoAudio {
-  width: 100%;
-  color: whitesmoke;
-  background-color: rgba(51, 51, 51, 1);
-}
 .MediaPlayerContainer {
   display: grid;
   grid-template-columns: 1fr 0.75fr;
-  height: 300px;
-}
-
-.controlsContainer {
-  border: 1px rgba(47, 170, 63, 0.308) solid;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  border-radius: 10px;
-}
-
-.controlActions {
-  margin-top: 1rem;
-  justify-content: center;
-  margin-bottom: 3rem;
-}
-
-.containerPlayButton {
-  width: 60px;
-  margin: 1rem;
-}
-.PlayButton {
-  width: 50px;
-  height: 50px;
-  background: #d7ebd6;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-}
-
-.FileDetails {
-  margin: 15px;
-  font-weight: 300;
-}
-
-.spectrogramContainer {
-  border: solid 0.1px #252c3128;
-}
-
-.WavesTitlesContainer {
-  /* background-color: #04c45c; */
-  border: solid 0.1px #252c3128;
-  width: 100%;
-  margin: 5px;
+  height: auto;
+  grid-template-columns: repeat(auto-fill, minmax(800px, 1fr));
 }
 
 /* Pagination */
@@ -534,15 +417,14 @@ margin: auto;
 }
 
 .footerPagination {
-  /* right: 0;
+  position: fixed;
   bottom: 0;
-  left: 0; */
   width: 100vw;
   font-size: 12px;
   font-weight: 500;
   display: grid;
   justify-items: center;
-  background-color: #d7ebd6;
+  background-color: #56c597ab;
   color: #686464;
   margin-right: 2rem;
 }
@@ -583,8 +465,6 @@ margin: auto;
 
 /* Spectrogram */
 
-/* NewStyles */
-
 .Spectrogram-container {
   width: 100%;
 }
@@ -613,10 +493,6 @@ margin: auto;
   position: relative;
   width: 100%;
 }
-/* 
-.wavespectrogram > canvas {
-  width: 100vw;
-} */
 
 button {
   background: #eee;
@@ -634,192 +510,6 @@ button:active {
 }
 button:focus {
   outline: none;
-}
-
-/* slider */
-
-.formFilter {
-  margin: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.boxRangerSlider {
-  margin-left: 1rem;
-  font-size: 18px;
-  font-weight: 300;
-  height: 35px;
-  width: 35px;
-  position: relative;
-  border: 2px solid rgba(0, 128, 0, 0.527);
-  border-radius: 25px;
-}
-
-.boxRangerSliderInner {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.slidecontainer {
-  width: 100%; /* Width of the outside container */
-}
-
-/* The slider itself */
-.slider {
-  -webkit-appearance: none; /* Override default CSS styles */
-  appearance: none;
-  outline: none; /* Remove outline */
-}
-
-/* CheckBox */
-
-/* Base for label styling */
-[type="checkbox"]:not(:checked),
-[type="checkbox"]:checked {
-  position: absolute;
-  left: 0;
-  opacity: 0.01;
-}
-[type="checkbox"]:not(:checked) + label,
-[type="checkbox"]:checked + label {
-  position: relative;
-  padding-left: 2.3em;
-  font-size: 1.05em;
-  line-height: 1.7;
-  cursor: pointer;
-}
-
-/* checkbox aspect */
-[type="checkbox"]:not(:checked) + label:before,
-[type="checkbox"]:checked + label:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.4em;
-  height: 1.4em;
-  border: 1px solid #aaa;
-  background: #fff;
-  border-radius: 0.2em;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 rgba(203, 34, 237, 0.2);
-  -webkit-transition: all 0.275s;
-  transition: all 0.275s;
-}
-
-/* checked mark aspect */
-[type="checkbox"]:not(:checked) + label:after,
-[type="checkbox"]:checked + label:after {
-  content: "✕";
-  position: absolute;
-  top: 0.525em;
-  left: 0.18em;
-  font-size: 1.375em;
-  color: #cb22ed;
-  line-height: 0;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
-}
-
-/* checked mark aspect changes */
-[type="checkbox"]:not(:checked) + label:after {
-  opacity: 0;
-  -webkit-transform: scale(0) rotate(45deg);
-  transform: scale(0) rotate(45deg);
-}
-
-[type="checkbox"]:checked + label:after {
-  opacity: 1;
-  -webkit-transform: scale(1) rotate(0);
-  transform: scale(1) rotate(0);
-}
-
-/* Disabled checkbox */
-[type="checkbox"]:disabled:not(:checked) + label:before,
-[type="checkbox"]:disabled:checked + label:before {
-  box-shadow: none;
-  border-color: #bbb;
-  background-color: #e9e9e9;
-}
-
-[type="checkbox"]:disabled:checked + label:after {
-  color: #777;
-}
-
-[type="checkbox"]:disabled + label {
-  color: #aaa;
-}
-
-/* Accessibility */
-[type="checkbox"]:checked:focus + label:before,
-[type="checkbox"]:not(:checked):focus + label:before {
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
-    0 0 0 6px rgba(203, 34, 237, 0.2);
-}
-
-/* Switch */
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.sliderSwitch {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgb(51, 51, 51);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-.sliderSwitch:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-input:checked + .sliderSwitch {
-  background-color: #04c45c;
-}
-
-input:focus + .sliderSwitch {
-  box-shadow: 0 0 1px #04c45c;
-}
-
-input:checked + .sliderSwitch:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliderSwitchs */
-.sliderSwitch.round {
-  border-radius: 34px;
-}
-
-.sliderSwitch.round:before {
-  border-radius: 50%;
 }
 
 /* Search */
@@ -910,23 +600,28 @@ input:checked + .sliderSwitch:before {
   background-color: #04c45c;
 }
 
-/* zooom */
+/* Tooltips */
 
-.img-zoom-container {
-  position: relative;
+#button-tooltip {
+  text-decoration: none;
 }
 
-.img-zoom-lens {
-  position: absolute;
-  border: 1px solid #d4d4d4;
-  /*set the size of the lens:*/
-  width: 40px;
-  height: 40px;
+/* Media queries */
+
+/* Media player */
+
+@media (max-width: 992px) {
+  .logincontainer {
+    margin-top: 3rem;
+    padding-bottom: 2rem;
+  }
 }
 
-.img-zoom-result {
-  border: 1px solid #d4d4d4;
-  /*set the size of the result div:*/
-  width: 300px;
-  height: 300px;
+@media screen and (max-width: 1000px) {
+  .spectrogramImageContainer {
+    margin: 10px 0px 10px 0px;
+  }
+  .MediaPlayerContainer {
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  }
 }
