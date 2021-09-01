@@ -13,7 +13,6 @@ export default function TableNewCalls(props) {
     clearRegions,
   } = props;
 
-  console.log(`selectedAudio`, props);
   const [imageToShow, setImageToShow] = useState(logoFF);
 
   const saveBtnTooltip = (props) => (
@@ -41,7 +40,7 @@ export default function TableNewCalls(props) {
               <button
                 className="saveBtn btn-success"
                 onClick={() =>
-                  saveRegionsDataBase(regionsArray, selectedAudio.audioId)
+                  saveRegionsDataBase(regionsArray, selectedAudio.id)
                 }
               >
                 <FontAwesomeIcon icon="save" />

@@ -122,7 +122,6 @@ const updateIsCallCorrect =
 
 const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
   let singleCallId = singleCall.callId;
-  console.log(`singleCallId`, audioId);
   dispatch({ type: types.SAVE_REGION_CALL_REQUEST, payload: null });
   db.collection(`calls`)
     .doc(singleCallId)

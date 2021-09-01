@@ -11,6 +11,7 @@ import "../Styles/Styles.scss";
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const regionListRedux = useSelector((state) => state.call.call);
+  console.log(`regionListRedux`, regionListRedux);
   // const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
   // const [regionsInWave, setRegionsInWave] = useState(10);
@@ -117,11 +118,27 @@ export default function Waveform() {
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
   // Load regions into the waveform
-  function loadRegions(regionListRedux, ctx, canvas) {
+  function loadRegions(canvas, ctx, regionListRedux) {
     console.log(`regionListRedux`, regionListRedux);
-    if (!ctx || !canvas) {
-      // console.log("ctx and canvas not found");
+    if (!ctx || !canvas || !regionListRedux) {
+      console.log("ctx and canvas not found");
       return;
+    } else {
+      regionListRedux.forEach((region) => {
+        console.log(`ctx`, region);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.rect(
+          region.start * canvas.width * 60,
+          0,
+          region.end * canvas.width * 60 - region.start * canvas.width * 60,
+          canvas.height
+        );
+        ctx.stroke();
+        ctx.fillStyle = region.color;
+        ctx.fill();
+        ctx.closePath();
+      });
     }
     // console.log("Draw region");
 
@@ -200,7 +217,7 @@ export default function Waveform() {
         id: Date.now(),
         color: regionColor,
       };
-      console.log(`regionCOlor`, regionColor);
+
       saveCreatedRegions(newRegion);
     });
 
@@ -259,6 +276,7 @@ export default function Waveform() {
     context.canvas.height = 200;
     const image = new Image();
     image.src = ImageTest;
+    DrawInCanvas(canvas, context);
     image.onload = () => {
       context.drawImage(
         image,
@@ -269,9 +287,9 @@ export default function Waveform() {
       );
     };
     let animationFrameId;
-    DrawInCanvas(canvas, context);
     const render = () => {
       if (run === false) {
+        loadRegions(canvas, context, regionListRedux);
         DrawPlayTracker(context, canvas);
       }
       window.cancelAnimationFrame(animationFrameId);

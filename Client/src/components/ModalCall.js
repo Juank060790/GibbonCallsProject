@@ -39,7 +39,7 @@ export default function ModalCall({
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const isCallCorrect = (callId, isCorrect) => {
-    const selectedAudioId = selectedAudio?.audioId;
+    const selectedAudioId = selectedAudio?.id;
     // Count the calls if are correct or not
     const finalCount = callsToCount.call?.filter(
       (x) => x.isCorrect === true

@@ -124,6 +124,7 @@ export default function TableDashboard() {
   // Delete Audio from table
 
   const deleteAudio = (audioId) => {
+    console.log(`audioId`, audioId);
     dispatch(audioActions.deleteAudio(audioId));
   };
 
@@ -197,7 +198,7 @@ export default function TableDashboard() {
             <tbody className="lightweight">
               {audios.map((audio, index) => (
                 <tr
-                  key={audio.audioId}
+                  key={audio.id}
                   className={`${
                     index % 2 === 0
                       ? "cardDark text-center  tableInner tableKey "
@@ -205,11 +206,9 @@ export default function TableDashboard() {
                   }`}
                 >
                   <td className="tableSingleKey indexKey">{index + 1}</td>
-                  <td className="tableSingleKey">{audio.audioId}</td>
+                  <td className="tableSingleKey">{audio.id}</td>
                   <td
-                    onClick={() =>
-                      toAudioId(audio?.audioId, audio?.gibbonCallsList)
-                    }
+                    onClick={() => toAudioId(audio?.id, audio?.gibbonCallsList)}
                     className="tableSingleKey"
                   >
                     {new Date(
@@ -217,17 +216,13 @@ export default function TableDashboard() {
                     ).toLocaleDateString()}
                   </td>
                   <td
-                    onClick={() =>
-                      toAudioId(audio?.audioId, audio?.gibbonCallsList)
-                    }
+                    onClick={() => toAudioId(audio?.id, audio?.gibbonCallsList)}
                     className="tableSingleKey"
                   >
                     {audio.duration}
                   </td>
                   <td
-                    onClick={() =>
-                      toAudioId(audio?.audioId, audio.gibbonCallsList)
-                    }
+                    onClick={() => toAudioId(audio?.id, audio.gibbonCallsList)}
                     className="tableSingleKey"
                   >
                     {audio.gibbonCallsList?.length > 0
@@ -245,17 +240,17 @@ export default function TableDashboard() {
                           handlesubmit(e);
                         }
                       }}
-                      key={audio.audioId}
-                      id={audio.audioId}
+                      key={audio.id}
+                      id={audio.id}
                     >
                       <textarea
                         className="textareacommentsInput"
-                        onSelect={() => setAudioIdOnComment(audio?.audioId)}
-                        key={audio.audioId}
+                        onSelect={() => setAudioIdOnComment(audio?.id)}
+                        key={audio.id}
                         type="textarea"
                         name="comment"
                         onChange={handleChange}
-                        id={index + audio.audioId}
+                        id={index + audio.id}
                         defaultValue={audio.comments}
                         placeholder="Add comment..."
                         cols="30"
@@ -270,7 +265,7 @@ export default function TableDashboard() {
                       className="btndeleteAudio"
                       icon={["fas", "trash-alt"]}
                       // color="#b94242"
-                      onClick={() => deleteAudio(audio?.audioId)}
+                      onClick={() => deleteAudio(audio.id)}
                     ></FontAwesomeIcon>{" "}
                   </td>
                 </tr>
