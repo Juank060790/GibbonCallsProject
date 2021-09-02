@@ -1,25 +1,27 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
-import ImageTest from "../images/Spectogram2.png";
-import miniImage from "../images/miniImage.png";
-import testAudio from "../images/testAudio.WAV";
 import { callActions } from "../redux/actions";
+import { storage } from "../Firebase/firebase";
 import TableNewCalls from "./TableNewCalls";
+import testAudio from "../images/testAudio.WAV";
 import "../Styles/Styles.scss";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  console.log(`selectedAudio`, selectedAudio);
   const regionListRedux = useSelector((state) => state.call.call);
-  console.log(`regionListRedux`, regionListRedux);
   // const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
   // const [regionsInWave, setRegionsInWave] = useState(10);
   const [regionsArray, setRegionsArray] = useState([]);
   const [labelColor, setLabelColor] = useState("");
-  const regionColor = randomColor(0.1);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [duration, setDuration] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
   const [Play, setPlay] = useState("Play");
-  const [run, setRun] = useState(true);
+  const regionColor = randomColor(0.1);
+  const [run, setRun] = useState(null);
   const SpectrogramRef = useRef(null);
   const playerRef = useRef(null);
   const dispatch = useDispatch();
@@ -36,7 +38,7 @@ export default function Waveform() {
       SpectrogramAudio: "",
       start: region.start,
       end: region.end,
-      spectrogram: miniImage,
+      spectrogram: "",
       isCorrect: true,
       isDeleted: false,
       color: region.color,
@@ -50,11 +52,9 @@ export default function Waveform() {
   // Set Label from new call in the new table
 
   const labelNewCall = (tag, id) => {
-    console.log(`regionsArray`, regionsArray);
     let regionId = regionsArray.findIndex(
       (regionsArray) => regionsArray.callId === id
     );
-    console.log(`tag`, regionId);
 
     if (tag === "Male") {
       regionsArray[regionId].label = "Male";
@@ -74,7 +74,6 @@ export default function Waveform() {
   };
 
   // Save comments into the region
-
   const saveCommentNewCall = (event, regionId) => {
     let region = regionsArray.findIndex(
       (regionsArray) => regionsArray.callId === regionId
@@ -85,7 +84,6 @@ export default function Waveform() {
   };
 
   // Save regions to data base, label to the save region is added here and add + count to the Raw audio.
-
   const saveRegionsDataBase = (regionsArray, audioId) => {
     if (regionsArray) {
       const addCallCount =
@@ -101,55 +99,86 @@ export default function Waveform() {
     }
   };
 
-  // Delete region in the waveform
-  // const deleteRegion = (region) => {
-  //   region.remove();
-  //   setRegionsArray([]);
-  // };
-
   // Clear all the regions from the waveform
   const clearRegions = () => {
     setRegionsArray([]);
   };
 
-  // const url = testAudio;
-  const url = selectedAudio?.audioLink;
+  // Get image from the database
+  const getImage = (image) => {
+    console.log("loadimage");
+    // spectrograms/20200926_033000.png
+    // console.log(`imageUrl`, imageUrl);
+    if (selectedAudio.spectrogram) {
+      var storageRef = storage.ref();
+      storageRef
+        .child(`/${selectedAudio.spectrogram}`)
+        .getDownloadURL()
+        .then(function (imgUrl) {
+          setImgUrl(imgUrl);
+          console.log(`imgUrl`, imgUrl);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  };
+
+  // Get Audio from the database
+  const getAudio = (audio) => {
+    const audioUrl = selectedAudio?.audioLink; // spectrograms/20200926_033000.png
+    console.log(`audioUrl`, audioUrl);
+    if (audioUrl) {
+      var storageRef = storage.ref();
+      storageRef
+        .child(`/${audioUrl}`)
+        .getDownloadURL()
+        .then(function (audioUrl) {
+          setAudioUrl(audioUrl);
+          console.log(`audioUrl`, audioUrl);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  };
+
+  const onLoadedMetadata = () => {
+    if (playerRef.current) {
+      setDuration(playerRef.current.duration);
+    }
+  };
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
 
   // Load regions into the waveform
   function loadRegions(canvas, ctx, regionListRedux) {
-    console.log(`regionListRedux`, regionListRedux);
     if (!ctx || !canvas || !regionListRedux) {
       console.log("ctx and canvas not found");
       return;
     } else {
-      regionListRedux.forEach((region) => {
-        console.log(`ctx`, region);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.rect(
-          region.start * canvas.width * 60,
-          0,
-          region.end * canvas.width * 60 - region.start * canvas.width * 60,
-          canvas.height
-        );
-        ctx.stroke();
-        ctx.fillStyle = region.color;
-        ctx.fill();
-        ctx.closePath();
+      regionListRedux.forEach(function (region) {
+        if (region.isCorrect === true) {
+          console.log(`region`, region);
+          console.log(`ctx`);
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.rect(
+            (canvas.width / duration) * region.start,
+            0,
+            (canvas.width / duration) * region.start -
+              (canvas.width / duration) * region.end,
+            canvas.height
+          );
+          ctx.stroke();
+          ctx.fillStyle = region.color;
+          ctx.fill();
+          ctx.closePath();
+        } else {
+          console.log("Region Not correct");
+        }
       });
     }
-    // console.log("Draw region");
-
-    // regionListRedux.forEach(function (region) {
-    //   setRegionsInWave(regionListRedux.length);
-    //   if (region.isCorrect === true) {
-    //     Waveform.current.addRegion(region);
-    //   } else {
-    //     console.log("Region Not correct");
-    //   }
-    // });
   }
 
   /**
@@ -212,8 +241,8 @@ export default function Waveform() {
       mousedown = false;
       drawSelection(newSelection.start, newSelection.end);
       let newRegion = {
-        start: newSelection.start / (canvas.width / 60),
-        end: newSelection.end / (canvas.width / 60),
+        start: newSelection.start / (canvas.width / duration),
+        end: newSelection.end / (canvas.width / duration),
         id: Date.now(),
         color: regionColor,
       };
@@ -230,7 +259,7 @@ export default function Waveform() {
   };
 
   function DrawPlayTracker(ctx, canvas) {
-    let v = window.innerWidth / 60 / 60;
+    let v = window.innerWidth / duration / duration;
     ctx.linearWith = 50;
     ctx.strokeStyle = "rgba(255, 165, 0, .9)";
     ctx.beginPath();
@@ -264,18 +293,24 @@ export default function Waveform() {
   };
 
   // Load the spectrogram audio
-  useEffect(() => {
-    playerRef.current.src = testAudio;
-  }, []);
+  // useEffect(() => {
+  //   getAudio();
+  //   playerRef.current.src = audioUrl;
+  // }, []);
 
   useEffect(() => {
+    // getAudio(selectedAudio);
+    // getImage(selectedAudio);
+
+    // eslint-disable-next-line
     canvas = SpectrogramRef.current;
+    // eslint-disable-next-line
     context = canvas.getContext("2d");
     resizeCanvasToDisplaySize(context.canvas);
     context.canvas.width = window.innerWidth;
     context.canvas.height = 200;
     const image = new Image();
-    image.src = ImageTest;
+    image.src = imgUrl;
     DrawInCanvas(canvas, context);
     image.onload = () => {
       context.drawImage(
@@ -286,20 +321,23 @@ export default function Waveform() {
         context.canvas.height
       );
     };
+
     let animationFrameId;
+
     const render = () => {
       if (run === false) {
         loadRegions(canvas, context, regionListRedux);
         DrawPlayTracker(context, canvas);
       }
-      window.cancelAnimationFrame(animationFrameId);
-      animationFrameId = window.requestAnimationFrame(render);
     };
+    window.cancelAnimationFrame(animationFrameId);
+    animationFrameId = window.requestAnimationFrame(render);
     render();
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
+
     // eslint-disable-next-line
   }, [run]);
 
@@ -313,8 +351,12 @@ export default function Waveform() {
               <div>
                 <div className="Spectrogram-container">
                   <canvas width="100%" ref={SpectrogramRef} />
-                  <audio ref={playerRef} id="playCall">
-                    <source id="audioCall" src={url} type="audio/mpeg" />
+                  <audio
+                    ref={playerRef}
+                    id="playCall"
+                    onLoadedMetadata={onLoadedMetadata}
+                  >
+                    <source id="audioCall" src={testAudio} type="audio/mpeg" />
                   </audio>
                   <button
                     className="btnSave "

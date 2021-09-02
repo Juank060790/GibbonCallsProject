@@ -1,7 +1,8 @@
 import * as types from "../constants/call.constants";
+import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
-import { alertActions } from "./alert.actions";
+
 // Main collection where we store all audio files
 const collectionData = "rawData";
 
@@ -10,7 +11,7 @@ const getSingleCall = (callId) => (dispatch) => {
   db.doc(`calls/${callId}`).onSnapshot((doc) => {
     let singleCall = [];
     if (doc.exists) {
-      singleCall = doc.data();
+      singleCall = { id: doc.id, ...doc.data() };
       dispatch({
         type: types.GET_SINGLE_CALL_SUCCESS,
         payload: singleCall,
@@ -93,7 +94,7 @@ const deleteCall = (callId) => (dispatch) => {
 };
 
 const updateIsCallCorrect =
-  (callId, slectedAudioId, restCallCount, isCorrect) => (dispatch) => {
+  (callId, slectedAudioId, isCorrect) => (dispatch) => {
     let validate = isCorrect;
 
     dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
@@ -108,9 +109,9 @@ const updateIsCallCorrect =
           payload: "Call update it successfully ",
         });
         dispatch(alertActions.setAlert("Call has been updated it", "success"));
-        db.collection(collectionData).doc(`${slectedAudioId}`).update({
-          correctCalls: restCallCount,
-        });
+        // db.collection(collectionData).doc(`${slectedAudioId}`).update({
+        //   correctCalls: restCallCount,
+        // });
       })
       .catch(() => {
         dispatch({

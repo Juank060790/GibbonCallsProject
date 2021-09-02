@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Modal, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import MediaPlayer from "./MediaPlayer";
+import React, { useEffect, useState } from "react";
+import WaveSpectrogram from "./waveSpectrogram";
 import logoFF from "../images/logo-reduced.png";
+import { Modal, Table } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 
-export default function ModalCall({
-  handleClose,
-  showModal,
-  spectrogramImage,
-  showSpectrogram,
-}) {
-  const dispatch = useDispatch();
-  const calls = useSelector((state) => state.call.call);
+export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const [callIdOnComment, setCallIdOnComment] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
-  const [arrayCalls, setArrayCalls] = useState([]);
-  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const callsToCount = useSelector((state) => state.call);
+  const [arrayCalls, setArrayCalls] = useState(null);
+  const calls = useSelector((state) => state.call);
+  const dispatch = useDispatch();
 
+  // Set the state for the table with the call of each audio
   useEffect(() => {
-    setArrayCalls(calls);
-  }, [arrayCalls, calls]);
+    setArrayCalls(calls.call);
+  }, [calls]);
 
   // Send the form with the comment and Audio Id to audio actions. //
   const handlesubmit = (e) => {
@@ -35,32 +30,29 @@ export default function ModalCall({
     setFormData({ comment: "" });
   };
 
+  // Handle the comment in the call modal //
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // To Do[count how many calls are correct]
   const isCallCorrect = (callId, isCorrect) => {
     const selectedAudioId = selectedAudio?.id;
     // Count the calls if are correct or not
-    const finalCount = callsToCount.call?.filter(
-      (x) => x.isCorrect === true
-    ).length;
-    const restCallCount = finalCount - 1;
-
+    // const finalCount = callsToCount.call?.filter(
+    //   (x) => x.isCorrect === true
+    // ).length;
+    // const restCallCount = finalCount - 1;
     dispatch(
-      callActions.updateIsCallCorrect(
-        callId,
-        selectedAudioId,
-        restCallCount,
-        isCorrect
-      )
+      callActions.updateIsCallCorrect(callId, selectedAudioId, isCorrect)
     );
   };
 
   return (
     <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton></Modal.Header>
+      <Modal.Header closeButton>{selectedAudio?.id}</Modal.Header>
       <Modal.Body>
-        <MediaPlayer spectrogramImage={spectrogramImage} />
+        <WaveSpectrogram />
 
         <div className="callsTable">
           {" "}
@@ -82,18 +74,27 @@ export default function ModalCall({
               </tr>
             </thead>
             <>
-              {arrayCalls ? (
+              {arrayCalls === null ? (
                 <>
-                  {arrayCalls.map((call, index) => (
+                  <thead className="text-center notfoundpage ">
+                    <th>
+                      <h1>No calls Found</h1>
+                      <img src={logoFF} alt="logoFF" />
+                    </th>
+                  </thead>
+                </>
+              ) : (
+                <>
+                  {arrayCalls?.map((call, index) => (
                     <tbody key={index}>
-                      <tr className="text-center tableKey" key={call.callId}>
+                      <tr className="text-center tableKey" key={call.id}>
                         <td className="tableSingleKey indexKey">{index + 1}</td>
-                        <td className="tableSingleKey">{call.callId}</td>
+                        <td className="tableSingleKey">{call.id}</td>
                         <td className="tableSingleKey">
-                          {call.start.toFixed(4)}
+                          {(call.start / 60).toFixed(2)}
                         </td>
                         <td className="tableSingleKey">
-                          {call.end.toFixed(4)}
+                          {(call.end / 60).toFixed(2)}
                         </td>
                         {call.spectrogram ? (
                           <td
@@ -101,10 +102,10 @@ export default function ModalCall({
                             className="tableSingleKey"
                           >
                             <img
-                              src={call.spectrogram}
                               alt="spectrogram of a single call"
-                              width="150px"
+                              src={call.spectrogram}
                               height="100px"
+                              width="150px"
                             />
                           </td>
                         ) : (
@@ -113,8 +114,8 @@ export default function ModalCall({
                             className="tableSingleKey"
                           >
                             <FontAwesomeIcon
-                              className="savebutton"
                               icon={["fas", "eye-slash"]}
+                              className="savebutton"
                               size={"sm"}
                             ></FontAwesomeIcon>{" "}
                           </td>
@@ -125,9 +126,7 @@ export default function ModalCall({
                             {call?.isCorrect === false ? (
                               <div
                                 className="commentBtns commentBtnsDelete"
-                                onClick={() =>
-                                  isCallCorrect(call?.callId, true)
-                                }
+                                onClick={() => isCallCorrect(call?.id, true)}
                               >
                                 <FontAwesomeIcon
                                   className="validationBtn"
@@ -137,85 +136,48 @@ export default function ModalCall({
                             ) : (
                               <div
                                 className="commentBtns commentBtnsSave"
-                                onClick={() =>
-                                  isCallCorrect(call?.callId, false)
-                                }
+                                onClick={() => isCallCorrect(call?.id, false)}
                               >
                                 {" "}
                                 <FontAwesomeIcon
-                                  className="validationBtn "
                                   icon={["fas", "check-circle"]}
+                                  className="validationBtn"
                                   color="#04c45c"
                                 ></FontAwesomeIcon>
                               </div>
                             )}
                           </div>
                         </td>
-                        {call.label === "Female" ? (
-                          <td className="tableSingleKey ">
-                            {" "}
-                            <div className="labelTag femaleTag">
-                              {" "}
-                              {call.label}{" "}
-                            </div>
-                          </td>
-                        ) : call.label === "Male" ? (
-                          <td className="tableSingleKey ">
-                            {" "}
-                            <div className="labelTag maleTag">
-                              {" "}
-                              {call.label}{" "}
-                            </div>
-                          </td>
-                        ) : call.label === "Other" ? (
-                          <td className="tableSingleKey ">
-                            {" "}
-                            <div className="labelTag"> {call.label} </div>
-                          </td>
-                        ) : (
-                          <td className="labelTag tableSingleKey ">
-                            {" "}
-                            No label
-                          </td>
-                        )}
-                        <td className="tableSingleKey "> ML/Hm</td>
-                        <td className="tableSingleKey "> %</td>
+                        <td className="tableSingleKey ">{call.label}</td>
+                        <td className="tableSingleKey ">{call.createdBy}</td>
+                        <td className="tableSingleKey "> {call.accuracy}</td>
                         <td className="tableSingleKey commentKey">
                           <form
-                            className="commentForm"
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 e.preventDefault();
                                 handlesubmit(e);
                               }
                             }}
-                            key={call.callId}
-                            id={call.callId}
+                            className="commentForm"
+                            key={call.id}
+                            id={call.id}
                           >
                             <textarea
                               className="commentBoxInput  textareacommentsInput"
-                              onSelect={() => setCallIdOnComment(call?.callId)}
-                              key={call.callId}
+                              onSelect={() => setCallIdOnComment(call?.id)}
+                              defaultValue={call.comment}
+                              onChange={handleChange}
+                              id={index + call.id}
                               type="textarea"
                               name="comment"
-                              onChange={handleChange}
-                              id={index + call.callId}
-                              defaultValue={call.comment}
+                              key={call.id}
                             ></textarea>
                           </form>{" "}
                         </td>
                       </tr>
                     </tbody>
                   ))}
-                </>
-              ) : (
-                <>
-                  <thead className="text-center notfoundpage ">
-                    <th>
-                      <h1>No calls Found</h1>
-                      <img src={logoFF} alt="logoFF" />
-                    </th>
-                  </thead>
                 </>
               )}
             </>

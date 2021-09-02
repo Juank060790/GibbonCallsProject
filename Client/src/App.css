@@ -273,6 +273,11 @@ body {
   z-index: 2;
 }
 
+.audioIdKey {
+  min-width: 250px;
+  width: 300px;
+}
+
 .submitcommentbtn:hover {
   display: block;
 }

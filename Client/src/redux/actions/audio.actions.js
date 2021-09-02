@@ -28,7 +28,7 @@ const audiosRequest =
           querySnapshot.docChanges().forEach(() => {
             filteredaudioList = [];
             querySnapshot.forEach((doc) => {
-              filteredaudioList.audios.push({ id: doc.id, ...doc.data() });
+              filteredaudioList.push({ id: doc.id, ...doc.data() });
             });
           });
           latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
