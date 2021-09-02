@@ -17,7 +17,6 @@ const audiosRequest =
       .collection(collectionData)
       .where("isDeleted", "==", false)
       .orderBy(query.sortBy, query.order);
-
     if (query.lastDocument) {
       refIsDeleted
         .limit(query.limit)
@@ -29,7 +28,7 @@ const audiosRequest =
           querySnapshot.docChanges().forEach(() => {
             filteredaudioList = [];
             querySnapshot.forEach((doc) => {
-              filteredaudioList.push(doc.data());
+              filteredaudioList.push({ id: doc.id, ...doc.data() });
             });
           });
           latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -52,7 +51,7 @@ const audiosRequest =
           querySnapshot.docChanges().forEach(() => {
             filteredaudioList = [];
             querySnapshot.forEach((doc) => {
-              filteredaudioList.push(doc.data());
+              filteredaudioList.push({ id: doc.id, ...doc.data() });
             });
           });
           latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -71,7 +70,7 @@ const audiosRequest =
         querySnapshot.docChanges().forEach(() => {
           filteredaudioList = [];
           querySnapshot.forEach((doc) => {
-            filteredaudioList.push(doc.data());
+            filteredaudioList.push({ id: doc.id, ...doc.data() });
           });
         });
         latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -92,7 +91,7 @@ const getSingleAudio = (audioId) => (dispatch) => {
     .get()
     .then((doc) => {
       if (doc.exists) {
-        singleAudio = doc.data();
+        singleAudio = { id: doc.id, ...doc.data() };
         dispatch({
           type: types.GET_SINGLE_AUDIO_REQUEST_SUCCESS,
           payload: singleAudio,
@@ -150,9 +149,10 @@ const deleteCommentAudio = (audioId) => (dispatch) => {
 };
 
 const deleteAudio = (audioId) => (dispatch) => {
+  console.log(`audioId`, audioId);
   dispatch({ type: types.DELETE_RAW_AUDIO_REQUEST, payload: null });
   db.collection(collectionData)
-    .doc(`${audioId}`)
+    .doc(audioId)
     .update({
       isDeleted: true,
     })
@@ -193,7 +193,7 @@ const searchDocuments = (searchQuery, searchCategory) => (dispatch) => {
     .limit(query.limit)
     .onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        searchList.push(doc.data());
+        searchList.push({ id: doc.id, ...doc.data() });
       });
 
       dispatch({
@@ -219,7 +219,7 @@ const searchByDate = (searchQuery, searchCategory) => (dispatch) => {
     .orderBy(query.sortBy, query.order)
     .onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        searchList.push(doc.data());
+        searchList.push({ id: doc.id, ...doc.data() });
       });
 
       dispatch({

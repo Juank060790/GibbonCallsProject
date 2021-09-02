@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Modal, Table, Button, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import MediaPlayer from "./MediaPlayer";
+import React, { useEffect, useState } from "react";
+import WaveSpectrogram from "./waveSpectrogram";
 import logoFF from "../images/logo-reduced.png";
+import { Modal, Table } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 
-export default function ModalCall({
-  handleClose,
-  showModal,
-  spectogramImage,
-  showSpectrogram,
-}) {
-  const dispatch = useDispatch();
-  const calls = useSelector((state) => state.call.call);
+export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const [callIdOnComment, setCallIdOnComment] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
-  const [arrayCalls, setArrayCalls] = useState([]);
-  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const callsToCount = useSelector((state) => state.call);
+  const [arrayCalls, setArrayCalls] = useState(null);
+  const calls = useSelector((state) => state.call);
+  const dispatch = useDispatch();
 
+  // Set the state for the table with the call of each audio
   useEffect(() => {
-    setArrayCalls(calls);
-  }, [arrayCalls, calls]);
+    setArrayCalls(calls.call);
+  }, [calls]);
 
   // Send the form with the comment and Audio Id to audio actions. //
   const handlesubmit = (e) => {
@@ -35,206 +30,159 @@ export default function ModalCall({
     setFormData({ comment: "" });
   };
 
+  // Handle the comment in the call modal //
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // To Do[count how many calls are correct]
   const isCallCorrect = (callId, isCorrect) => {
-    const selectedAudioId = selectedAudio?.audioId;
+    const selectedAudioId = selectedAudio?.id;
     // Count the calls if are correct or not
-    const finalCount = callsToCount.call?.filter(
-      (x) => x.isCorrect === true
-    ).length;
-    const restCallCount = finalCount - 1;
-
+    // const finalCount = callsToCount.call?.filter(
+    //   (x) => x.isCorrect === true
+    // ).length;
+    // const restCallCount = finalCount - 1;
     dispatch(
-      callActions.updateIsCallCorrect(
-        callId,
-        selectedAudioId,
-        restCallCount,
-        isCorrect
-      )
+      callActions.updateIsCallCorrect(callId, selectedAudioId, isCorrect)
     );
   };
 
   return (
     <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton></Modal.Header>
+      <Modal.Header closeButton>{selectedAudio?.id}</Modal.Header>
       <Modal.Body>
-        {" "}
-        <MediaPlayer spectogramImage={spectogramImage} />
-        <div>
+        <WaveSpectrogram />
+
+        <div className="callsTable">
           {" "}
           <h4>Calls Saved in the database</h4>
-        </div>
-        <Table responsive="sm">
-          <thead className="text-center tableHeader">
-            <tr>
-              <th>Num</th>
-              <th className="idNumberModal">Id N&deg;</th>
-              <th>Time Start</th>
-              <th>Time End</th>
-              <th>Spectogram</th>
-              <th>Validation</th>
-              <th>Label</th>
-              <th>Created by</th>
-              <th>%</th>
-              <th>Comments</th>
-              <th className="text-center"></th>
-            </tr>
-          </thead>
-          <>
-            {arrayCalls ? (
-              <>
-                {arrayCalls.map((call, index) => (
-                  <tbody key={index}>
-                    <tr
-                      style={{ backgroundColor: call?.color }}
-                      className="text-center tableKey"
-                      key={call.callId}
-                    >
-                      <td className="tableSingleKey indexKey">{index + 1}</td>
-                      <td className="tableSingleKey">{call.callId}</td>
-                      <td className="tableSingleKey">
-                        {call.start.toFixed(4)}
-                      </td>
-                      <td className="tableSingleKey">{call.end.toFixed(4)}</td>
-                      {call.spectogram ? (
-                        <td
-                          onClick={() => showSpectrogram(call.spectogram)}
-                          className="tableSingleKey"
-                        >
-                          <img
-                            src={call.spectogram}
-                            alt="spectogram of a single call"
-                            width="150px"
-                            height="100px"
-                          />
+          <Table responsive="lg">
+            <thead className="text-center tableHeader">
+              <tr>
+                <th>Num</th>
+                <th className="idNumberModal">Id N&deg;</th>
+                <th>Time Start</th>
+                <th>Time End</th>
+                <th>Spectrogram</th>
+                <th>Validation</th>
+                <th>Label</th>
+                <th>Created by</th>
+                <th>%</th>
+                <th>Comments</th>
+                <th className="text-center"></th>
+              </tr>
+            </thead>
+            <>
+              {arrayCalls === null ? (
+                <>
+                  <thead className="text-center notfoundpage ">
+                    <th>
+                      <h1>No calls Found</h1>
+                      <img src={logoFF} alt="logoFF" />
+                    </th>
+                  </thead>
+                </>
+              ) : (
+                <>
+                  {arrayCalls?.map((call, index) => (
+                    <tbody key={index}>
+                      <tr className="text-center tableKey" key={call.id}>
+                        <td className="tableSingleKey indexKey">{index + 1}</td>
+                        <td className="tableSingleKey">{call.id}</td>
+                        <td className="tableSingleKey">
+                          {(call.start / 60).toFixed(2)}
                         </td>
-                      ) : (
-                        <td
-                          onClick={() => showSpectrogram(call.spectogram)}
-                          className="tableSingleKey"
-                        >
-                          <FontAwesomeIcon
-                            className="savebutton"
-                            icon={["fas", "eye-slash"]}
-                            size={"sm"}
-                          ></FontAwesomeIcon>{" "}
+                        <td className="tableSingleKey">
+                          {(call.end / 60).toFixed(2)}
                         </td>
-                      )}
+                        {call.spectrogram ? (
+                          <td
+                            onClick={() => showSpectrogram(call.spectrogram)}
+                            className="tableSingleKey"
+                          >
+                            <img
+                              alt="spectrogram of a single call"
+                              src={call.spectrogram}
+                              height="100px"
+                              width="150px"
+                            />
+                          </td>
+                        ) : (
+                          <td
+                            onClick={() => showSpectrogram(call.spectrogram)}
+                            className="tableSingleKey"
+                          >
+                            <FontAwesomeIcon
+                              icon={["fas", "eye-slash"]}
+                              className="savebutton"
+                              size={"sm"}
+                            ></FontAwesomeIcon>{" "}
+                          </td>
+                        )}
 
-                      <td className="tableSingleKey commentKey">
-                        <div className="buttonscomments">
-                          {call?.isCorrect === false ? (
-                            <Button
-                              className="savebutton commentBtns commentBtnsDelete"
-                              onClick={() => isCallCorrect(call?.callId, true)}
-                            >
-                              <FontAwesomeIcon
-                                className="savebutton"
-                                icon={["fas", "times"]}
-                                size={"sm"}
-                              ></FontAwesomeIcon>{" "}
-                            </Button>
-                          ) : (
-                            <Button
-                              className="savebutton commentBtns commentBtnsSave"
-                              onClick={() => isCallCorrect(call?.callId, false)}
-                            >
-                              {" "}
-                              <FontAwesomeIcon
-                                className="savebutton "
-                                icon={["fas", "check"]}
-                                color="#04c45c"
-                              ></FontAwesomeIcon>
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                      {call.label === "Female" ? (
-                        <td className="tableSingleKey ">
-                          {" "}
-                          <Badge className="labelTag femaleTag">
-                            {" "}
-                            {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "venus"]}
-                              color="white"
-                            ></FontAwesomeIcon>
-                          </Badge>
+                        <td className="tableSingleKey commentKey">
+                          <div className="buttonscomments">
+                            {call?.isCorrect === false ? (
+                              <div
+                                className="commentBtns commentBtnsDelete"
+                                onClick={() => isCallCorrect(call?.id, true)}
+                              >
+                                <FontAwesomeIcon
+                                  className="validationBtn"
+                                  icon={["fas", "times-circle"]}
+                                ></FontAwesomeIcon>{" "}
+                              </div>
+                            ) : (
+                              <div
+                                className="commentBtns commentBtnsSave"
+                                onClick={() => isCallCorrect(call?.id, false)}
+                              >
+                                {" "}
+                                <FontAwesomeIcon
+                                  icon={["fas", "check-circle"]}
+                                  className="validationBtn"
+                                  color="#04c45c"
+                                ></FontAwesomeIcon>
+                              </div>
+                            )}
+                          </div>
                         </td>
-                      ) : call.label === "Male" ? (
-                        <td className="tableSingleKey ">
-                          {" "}
-                          <Badge className="labelTag maleTag">
-                            {" "}
-                            {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "mars"]}
-                              color="white"
-                            ></FontAwesomeIcon>
-                          </Badge>
+                        <td className="tableSingleKey ">{call.label}</td>
+                        <td className="tableSingleKey ">{call.createdBy}</td>
+                        <td className="tableSingleKey "> {call.accuracy}</td>
+                        <td className="tableSingleKey commentKey">
+                          <form
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handlesubmit(e);
+                              }
+                            }}
+                            className="commentForm"
+                            key={call.id}
+                            id={call.id}
+                          >
+                            <textarea
+                              className="commentBoxInput  textareacommentsInput"
+                              onSelect={() => setCallIdOnComment(call?.id)}
+                              defaultValue={call.comment}
+                              onChange={handleChange}
+                              id={index + call.id}
+                              type="textarea"
+                              name="comment"
+                              key={call.id}
+                            ></textarea>
+                          </form>{" "}
                         </td>
-                      ) : call.label === "Other" ? (
-                        <td className="tableSingleKey ">
-                          {" "}
-                          <Badge className="labelTag">
-                            {" "}
-                            {call.label}{" "}
-                            <FontAwesomeIcon
-                              className="savebutton"
-                              icon={["fas", "feather"]}
-                              color="black"
-                            ></FontAwesomeIcon>
-                          </Badge>
-                        </td>
-                      ) : (
-                        <td className="tableSingleKey "> No label</td>
-                      )}
-                      <td className="tableSingleKey "> ML/Hm</td>
-                      <td className="tableSingleKey "> %</td>
-                      <td className="tableSingleKey commentKey">
-                        <form
-                          className="commentForm"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handlesubmit(e);
-                            }
-                          }}
-                          key={call.callId}
-                          id={call.callId}
-                        >
-                          <textarea
-                            className="commentBoxInput  textareacommentsInput"
-                            onSelect={() => setCallIdOnComment(call?.callId)}
-                            key={call.callId}
-                            type="textarea"
-                            name="comment"
-                            onChange={handleChange}
-                            id={index + call.callId}
-                            defaultValue={call.comment}
-                          ></textarea>
-                        </form>{" "}
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-              </>
-            ) : (
-              <>
-                <thead className="text-center notfoundpage ">
-                  <th>
-                    <h1>No calls Found</h1>
-                    <img src={logoFF} alt="logoFF" />
-                  </th>
-                </thead>
-              </>
-            )}
-          </>
-        </Table>
+                      </tr>
+                    </tbody>
+                  ))}
+                </>
+              )}
+            </>
+          </Table>
+        </div>
       </Modal.Body>
     </Modal>
   );

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Button, Container, Nav } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { logoutUser, audioActions } from "../redux/actions";
-import logo from "../images/logo-reduced.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { logoutUser, audioActions } from "../redux/actions";
+import { Button, Container, Nav } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import logo from "../images/logo-reduced.png";
+import { useDispatch } from "react-redux";
 
 export default function Navbar() {
-  const dispatch = useDispatch();
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("audioId");
   const [inputType, setInputType] = useState("text");
+  const [category, setCategory] = useState("audioId");
+  const [query, setQuery] = useState("");
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -35,14 +35,14 @@ export default function Navbar() {
   };
 
   const categorySearch = (e) => {
-    setCategory(e);
     setInputType("text");
+    setCategory(e);
     setQuery("");
   };
 
   return (
     <Container fluid>
-      <Nav className="NavBar m-2">
+      <Nav className="NavBar">
         <Nav.Item>
           <Button variant="success" onClick={handleLogout}>
             Logout

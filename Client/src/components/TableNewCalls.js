@@ -1,106 +1,179 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Table } from "react-bootstrap";
+import logoFF from "../images/logo-reduced.png";
+import { Container, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
+import React, { useState } from "react";
 
-export default function TableNewCalls({
-  regionsArray,
-  labelNewCall,
-  labelColor,
-  labelForNewCall,
-}) {
+export default function TableNewCalls(props) {
+  const {
+    regionsArray,
+    labelNewCall,
+    saveCommentNewCall,
+    saveRegionsDataBase,
+    selectedAudio,
+    clearRegions,
+  } = props;
+
+  const [imageToShow, setImageToShow] = useState(logoFF);
+
+  const saveBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Save regions
+    </Tooltip>
+  );
+  const deleteBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Delete regions
+    </Tooltip>
+  );
+
   return (
-    <div className="tableNewCall">
-      <h4>Create or Edit Call</h4>
-      {regionsArray ? (
-        <Table className="subTableNewCall" responsive>
+    <Container fluid className=" MediaPlayerContainer">
+      <div className="subTableNewCall">
+        <div className="ButtonsRegionsContainer">
+          <h4>Create a Call</h4>
+          <div>
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 100, hide: 100 }}
+              overlay={saveBtnTooltip}
+            >
+              <button
+                className="saveBtn btn-success"
+                onClick={() =>
+                  saveRegionsDataBase(regionsArray, selectedAudio.id)
+                }
+              >
+                <FontAwesomeIcon icon="save" />
+              </button>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 100, hide: 100 }}
+              overlay={deleteBtnTooltip}
+            >
+              <button
+                className="saveBtn btn-success"
+                onClick={() => clearRegions()}
+              >
+                <FontAwesomeIcon icon="trash-alt" />
+              </button>
+            </OverlayTrigger>
+          </div>
+        </div>
+        <Table responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
-              <th className="idNumberModal">N&deg;</th>
+              <th className="indexCell idNumberModal">Call</th>
+
               <th>Time Start</th>
               <th>Time End</th>
-              {/* <th>Spectogram</th> */}
-              <th>Action</th>
+              <th>Spectrogram</th>
+              <th>Call Id</th>
               <th>Label</th>
-              <th>(To be checked)</th>
-
-              <th className="text-center"></th>
+              <th>Comments</th>
             </tr>
           </thead>
           <>
             {regionsArray?.map((call, index) => (
               <tbody key={index}>
                 <tr
-                  style={{ backgroundColor: call.singleRegion.color }}
-                  className="text-center tableKey"
+                  key={call.callId}
+                  className={`${
+                    index % 2 === 0
+                      ? "cardDark text-center  tableInner tableKey "
+                      : "cardWhite text-center tableInner tableKey"
+                  }`}
                 >
-                  <td className="tableSingleKeyEditCalls">{index + 1}</td>
+                  <td className="indexandcolor indexCell tableSingleKeyEditCalls">
+                    <FontAwesomeIcon
+                      className="labelColorSquare m-2"
+                      icon={["fas", "square"]}
+                      color={call?.color}
+                    ></FontAwesomeIcon>
+                  </td>
+
                   <td className="tableSingleKeyEditCalls">
-                    {call.singleRegion.start?.toFixed(3)}
+                    {call.start?.toFixed(3)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    {call.singleRegion.end?.toFixed(3)}
+                    {call.end?.toFixed(3)}
                   </td>
-                  {/* <td className="tableSingleKeyEditCalls">
+                  <td className="tableSingleKeyEditCalls">
                     <img
+                      onMouseEnter={() => {
+                        setTimeout(() => {
+                          setImageToShow(call.spectrogram);
+                        }, 300);
+                      }}
+                      onMouseOut={() => {
+                        setImageToShow(logoFF);
+                      }}
                       width="100px"
-                      src={call.singleRegion?.spectogram}
-                      alt="spectogramfrom region"
+                      src={call?.spectrogram}
+                      alt="spectrogramfrom region"
                     />
-                  </td> */}
+                  </td>
 
                   <td className="tableSingleKeyEditCalls commentKey">
-                    (ID){call.singleRegion.callId}
+                    {call.callId}
                   </td>
                   <td
-                    style={{ backgroundColor: labelColor }}
-                    className="tableSingleKeyEditCalls dropdownKey"
+                    key={call.callId}
+                    className=" tableSingleKeyEditCalls dropdownKey"
                   >
-                    <p className="text-align-center m-2 labelText">
-                      {" "}
-                      {labelForNewCall}
-                    </p>
-                    <div>
-                      <Dropdown
-                        className="dropdownUp"
-                        drop="right"
-                        id="dropdown-button-drop-right"
-                      >
-                        <Dropdown.Toggle
-                          className="dropdownBtn"
-                          variant="success"
-                        >
-                          <FontAwesomeIcon
-                            icon={["fas", "venus-mars"]}
-                          ></FontAwesomeIcon>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onSelect={() => labelNewCall("Female")}
-                          >
-                            Female
-                          </Dropdown.Item>
-                          <Dropdown.Item onSelect={() => labelNewCall("Male")}>
-                            Male
-                          </Dropdown.Item>
-                          <Dropdown.Item onSelect={() => labelNewCall("Other")}>
-                            Other
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
+                    <select
+                      className="dropdownKey"
+                      onChange={(event) =>
+                        labelNewCall(event.target.value, call.callId)
+                      }
+                    >
+                      <option value="Female">Female</option>
+                      <option value="Male">Male</option>
+                    </select>
                   </td>
 
                   <td className="lastCell tableSingleKeyEditCalls">
-                    Not sure yet{" "}
+                    <textarea
+                      className="textareacommentsInput"
+                      // onSelect={() => saveCommentNewCall(call?.callId)}
+                      key={call.callId}
+                      type="textarea"
+                      name="comment"
+                      onChange={(event) =>
+                        saveCommentNewCall(event, call?.callId)
+                      }
+                      id={index + call.callId}
+                      defaultValue={call.comments}
+                      placeholder="Add comment..."
+                      cols="30"
+                      rows="30"
+                    ></textarea>
+                    {/* </form> */}
                   </td>
                 </tr>
               </tbody>
             ))}
           </>
         </Table>
+      </div>
+
+      {imageToShow === logoFF ? (
+        <div className="spectrogramImageContainer">
+          <img
+            className="spectrogramImage fade-in"
+            src={logoFF}
+            alt="Spectrogram "
+          />
+        </div>
       ) : (
-        <div> There is no selected region</div>
+        <div className="spectrogramImageContainer">
+          <img
+            className=" spectrogramImageFull fade-in"
+            src={imageToShow}
+            alt="Spectrogram"
+          />
+        </div>
       )}
-    </div>
+    </Container>
   );
 }

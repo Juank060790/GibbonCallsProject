@@ -14,8 +14,8 @@
 // {
 //     callId: String, // unique id of call
 //     createdBy: String, // Created by ML or Human
-//     spectogramImage: String, // spectogram of audio file
-//     color: String, ("rgba(252,110,191,0.1") // color of spectogram
+//     spectrogramImage: String, // spectrogram of audio file
+//     color: String, ("rgba(252,110,191,0.1") // color of spectrogram
 //     comment: String, // comment of audio file
 //     start: Number, // start time of audio file
 //     end: Number, // end time of audio file

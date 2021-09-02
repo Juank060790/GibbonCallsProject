@@ -17,7 +17,7 @@
 //       .doc("1627622832156")
 //       .update({
 //         name: file.name,
-//         spectogram: await fileRef.getDownloadURL(),
+//         spectrogram: await fileRef.getDownloadURL(),
 //       });
 //   };
 //   return (
