@@ -1,19 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { logoutUser, audioActions } from "../redux/actions";
-import { Button, Container, Nav } from "react-bootstrap";
+import { audioActions } from "../redux/actions";
 import React, { useEffect, useState } from "react";
-import logo from "../images/logo-reduced.png";
+
 import { useDispatch } from "react-redux";
 
-export default function Navbar() {
+export default function SearchBar() {
   const [inputType, setInputType] = useState("text");
   const [category, setCategory] = useState("audioId");
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
 
   useEffect(() => {
     if (query !== "" && category !== "recordDate") {
@@ -41,24 +36,7 @@ export default function Navbar() {
   };
 
   return (
-    <Container fluid>
-      <Nav className="NavBar">
-        <Nav.Item>
-          <Button variant="success" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Nav.Item>
-        <Nav.Item className="titleDashboardContainer">
-          <h1 className="heavyLight titleDashboard">
-            Automated Passive Acoustic Monitoring for Cao Vit Gibbons
-          </h1>{" "}
-        </Nav.Item>
-
-        <Nav.Item className="logoMenu">
-          <img src={logo} alt="FF" width="auto" height="auto" />
-        </Nav.Item>
-      </Nav>
-
+    <>
       <div className="d-flex bodySearch">
         {" "}
         <div className="dropdown">
@@ -90,6 +68,6 @@ export default function Navbar() {
           />
         </form>
       </div>
-    </Container>
+    </>
   );
 }

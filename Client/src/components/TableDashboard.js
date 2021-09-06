@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Dropdown, Table } from "react-bootstrap";
+import { Container, Dropdown, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
 import ModalCall from "./ModalCall";
 import PaginationItem from "./Pagination";
 // import Form from "react-bootstrap/Form";
 import logoFF from "../images/logo-reduced.png";
+import SearchBar from "./SearchBar";
 
 export default function TableDashboard() {
   const handleClose = () => {
@@ -68,13 +69,13 @@ export default function TableDashboard() {
   };
 
   // To load the audios from storage (to be fixed)
-  const loadAudios = (e) => {
-    e.preventDefault();
-    setDocsPerPage(15);
-    dispatch(
-      audioActions.audiosRequest(docsPerPage, "recordDate", "desc", lastDoc)
-    );
-  };
+  // const loadAudios = (e) => {
+  //   e.preventDefault();
+  //   setDocsPerPage(15);
+  //   dispatch(
+  //     audioActions.audiosRequest(docsPerPage, "recordDate", "desc", lastDoc)
+  //   );
+  // };
 
   // Pagination
   const handleClickOnNext = () => {
@@ -129,152 +130,147 @@ export default function TableDashboard() {
 
   return (
     <>
-      <div className="d-flex">
-        <div className="reloadBtnContainer">
-          <div className="reloadButton" onClick={loadAudios}></div>{" "}
-        </div>
-      </div>
-
-      <Table className="fullTable" responsive="md">
-        <thead className="text-center tableHeader">
-          <tr>
-            <th className="lightweight tableSingleKey">N&deg; </th>
-            <th className="lightweight tableSingleKey audioIdKey">
-              Audio Id{" "}
-              <FontAwesomeIcon
-                className="btnSortOrder"
-                icon={["fas", "sort-amount-up"]}
-                size="sm"
-                color="green"
-                onClick={(e) => sortOrder("audioId")}
-              ></FontAwesomeIcon>{" "}
-            </th>
-            <th className="lightweight tableSingleKey">
-              Record Date{" "}
-              <FontAwesomeIcon
-                className="btnSortOrder"
-                icon={["fas", "sort-amount-up"]}
-                size="sm"
-                color="green"
-                onClick={(e) => sortOrder("recordDate")}
-              ></FontAwesomeIcon>{" "}
-            </th>
-
-            <th className="lightweight tableSingleKey">Gibbon Calls </th>
-            <th className="lightweight tableSingleKey">Comments</th>
-            <th className="lightweight m-2">
-              <Dropdown>
-                <Dropdown.Toggle
-                  className="dropdownBtn"
-                  variant="success"
-                  id="dropdown-basic"
-                >
-                  <FontAwesomeIcon icon={["fas", "filter"]}></FontAwesomeIcon>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={(e) => setOrderBy("recordDate")}>
-                    Record Date
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => setOrderBy("fileName")}>
-                    File Name
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </th>
-          </tr>
-        </thead>
-        <>
-          {audios?.length ? (
-            <tbody className="lightweight">
-              {audios.map((audio, index) => (
-                <tr
-                  key={audio.id}
+      <div className="fullTable">
+        <SearchBar />
+        <Table className="fullTable" responsive="md">
+          <thead className="text-center tableHeader">
+            <tr>
+              {/* <th className="lightweight tableSingleKey">N&deg; </th> */}
+              <th className="lightweight tableSingleKey audioIdKey">
+                Audio Id{" "}
+                {/* <FontAwesomeIcon
+                  className="btnSortOrder"
+                  icon={["fas", "sort-amount-up"]}
+                  size="sm"
+                  color="green"
+                  onClick={(e) => sortOrder("audioId")}
+                ></FontAwesomeIcon>{" "} */}
+              </th>
+              <th className="lightweight tableSingleKey">
+                Record Date{" "}
+                <FontAwesomeIcon
                   className={`${
-                    index % 2 === 0
-                      ? "cardDark text-center  tableInner tableKey "
-                      : "cardWhite text-center tableInner tableKey"
+                    order === "desc"
+                      ? "btnSortOrder btn-desc"
+                      : "btnSortOrder btn-asc"
                   }`}
-                >
-                  <td className="tableSingleKey indexKey">{index + 1}</td>
-                  <td className="tableSingleKey">{audio.id}</td>
-                  <td
-                    onClick={() => toAudioId(audio?.id, audio?.gibbonCallsList)}
-                    className="tableSingleKey audioIdKey"
-                  >
-                    {new Date(
-                      audio.recordDate.seconds * 1000
-                    ).toLocaleDateString()}
-                  </td>
+                  icon={["fas", "sort-up"]}
+                  size="sm"
+                  color="green"
+                  onClick={(e) => sortOrder("recordDate")}
+                ></FontAwesomeIcon>{" "}
+              </th>
 
-                  <td
-                    onClick={() => toAudioId(audio?.id, audio.gibbonCallsList)}
-                    className="tableSingleKey"
+              <th className="lightweight tableSingleKey">Duration </th>
+              <th className="lightweight tableSingleKey">Gibbon Calls </th>
+              <th className="lightweight tableSingleKey">Comments</th>
+            </tr>
+          </thead>
+          <>
+            {audios?.length ? (
+              <tbody className="lightweight">
+                {audios.map((audio, index) => (
+                  <tr
+                    key={audio.id}
+                    className={`${
+                      index % 2 === 0
+                        ? "cardDark text-center  tableInner tableKey "
+                        : "cardWhite text-center tableInner tableKey"
+                    }`}
                   >
-                    {audio.gibbonCallsList?.length > 0
-                      ? audio.gibbonCallsList?.length
-                      : 0}
-                    {/* {audio.correctCalls} */}
-                  </td>
-
-                  <td className="tableSingleKey commentKey">
-                    <form
-                      className="commentForm"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handlesubmit(e);
-                        }
-                      }}
-                      key={audio.id}
-                      id={audio.id}
+                    {/* <td className="tableSingleKey indexKey">{index + 1}</td> */}
+                    <td className="tableSingleKey">{audio.audioLink}</td>
+                    <td
+                      onClick={() =>
+                        toAudioId(audio?.id, audio?.gibbonCallsList)
+                      }
+                      className="tableSingleKey audioIdKey"
                     >
-                      <textarea
-                        className="textareacommentsInput"
-                        onSelect={() => setAudioIdOnComment(audio?.id)}
-                        key={audio.id}
-                        type="textarea"
-                        name="comment"
-                        onChange={handleChange}
-                        id={index + audio.id}
-                        defaultValue={audio.comments}
-                        placeholder="Add comment..."
-                        cols="30"
-                        rows="30"
-                      ></textarea>
-                    </form>
-                  </td>
+                      {new Date(
+                        audio.recordDate.seconds * 1000
+                      ).toLocaleDateString()}
+                    </td>
+                    <td
+                      onClick={() =>
+                        toAudioId(audio?.id, audio.gibbonCallsList)
+                      }
+                      className="tableSingleKey"
+                    >
+                      5:00
+                    </td>
 
-                  <td className="lastCell tableSingleKey">
-                    {" "}
-                    <FontAwesomeIcon
-                      className="btndeleteAudio"
-                      icon={["fas", "trash-alt"]}
-                      // color="#b94242"
-                      onClick={() => deleteAudio(audio.id)}
-                    ></FontAwesomeIcon>{" "}
+                    <td
+                      onClick={() =>
+                        toAudioId(audio?.id, audio.gibbonCallsList)
+                      }
+                      className="tableSingleKey"
+                    >
+                      {audio.gibbonCallsList?.length > 0
+                        ? audio.gibbonCallsList?.length
+                        : 0}
+                      {/* {audio.correctCalls} */}
+                    </td>
+
+                    <td className="tableSingleKey commentKey">
+                      <form
+                        className="commentForm"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handlesubmit(e);
+                          }
+                        }}
+                        key={audio.id}
+                        id={audio.id}
+                      >
+                        <textarea
+                          className="textareacommentsInput"
+                          onSelect={() => setAudioIdOnComment(audio?.id)}
+                          key={audio.id}
+                          type="textarea"
+                          name="comment"
+                          onChange={handleChange}
+                          id={index + audio.id}
+                          defaultValue={audio.comments}
+                          placeholder="Add comment..."
+                          cols="30"
+                          rows="30"
+                        ></textarea>
+                      </form>
+                    </td>
+
+                    {/* <td className="lastCell tableSingleKey">
+                      {" "}
+                      <FontAwesomeIcon
+                        className="btndeleteAudio"
+                        icon={["fas", "trash-alt"]}
+                        // color="#b94242"
+                        onClick={() => deleteAudio(audio.id)}
+                      ></FontAwesomeIcon>{" "}
+                    </td> */}
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <thead className="text-center notfoundAudios">
+                <tr>
+                  <td>
+                    <h5>No more audios found...</h5>
+
+                    <img src={logoFF} width={"100px"} alt="logoFF" />
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          ) : (
-            <thead className="text-center notfoundAudios">
-              <tr>
-                <td>
-                  <h5>No more audios found...</h5>
-
-                  <img src={logoFF} width={"100px"} alt="logoFF" />
-                </td>
-              </tr>
-            </thead>
-          )}
-        </>
-      </Table>
-      <PaginationItem
-        audios={audios}
-        loading={loading}
-        handleClickOnNext={handleClickOnNext}
-        handleClickOnPrev={handleClickOnPrev}
-      />
+              </thead>
+            )}
+          </>
+        </Table>
+        <PaginationItem
+          audios={audios}
+          loading={loading}
+          handleClickOnNext={handleClickOnNext}
+          handleClickOnPrev={handleClickOnPrev}
+        />
+      </div>
       <ModalCall
         showModal={show}
         selectedAudio={selectedAudio}

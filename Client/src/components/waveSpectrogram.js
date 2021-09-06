@@ -9,7 +9,6 @@ import "../Styles/Styles.scss";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  console.log(`selectedAudio`, selectedAudio);
   const regionListRedux = useSelector((state) => state.call.call);
   // const CallsList = useSelector((state) => state.audio.callsList);
   const [labelForNewCall, setLableForNewCall] = useState("");
@@ -21,7 +20,7 @@ export default function Waveform() {
   const [imgUrl, setImgUrl] = useState(null);
   const [Play, setPlay] = useState("Play");
   const regionColor = randomColor(0.1);
-  const [run, setRun] = useState(null);
+  const [run, setRun] = useState(true);
   const SpectrogramRef = useRef(null);
   const playerRef = useRef(null);
   const dispatch = useDispatch();
@@ -46,6 +45,8 @@ export default function Waveform() {
       label: "Female",
     };
     // Update teh state with the single call selected in the spectrogram
+
+    console.log(`regionsArray`, regionsArray);
     setRegionsArray((regionsArray) => [...regionsArray, singleRegion]);
   }
 
@@ -106,17 +107,14 @@ export default function Waveform() {
 
   // Get image from the database
   const getImage = (image) => {
-    console.log("loadimage");
-    // spectrograms/20200926_033000.png
     // console.log(`imageUrl`, imageUrl);
-    if (selectedAudio.spectrogram) {
+    if (selectedAudio?.spectrogram) {
       var storageRef = storage.ref();
       storageRef
         .child(`/${selectedAudio.spectrogram}`)
         .getDownloadURL()
         .then(function (imgUrl) {
           setImgUrl(imgUrl);
-          console.log(`imgUrl`, imgUrl);
         })
         .catch(function (error) {
           console.log(error);
@@ -125,28 +123,26 @@ export default function Waveform() {
   };
 
   // Get Audio from the database
-  const getAudio = (audio) => {
-    const audioUrl = selectedAudio?.audioLink; // spectrograms/20200926_033000.png
-    console.log(`audioUrl`, audioUrl);
-    if (audioUrl) {
-      var storageRef = storage.ref();
-      storageRef
-        .child(`/${audioUrl}`)
-        .getDownloadURL()
-        .then(function (audioUrl) {
-          setAudioUrl(audioUrl);
-          console.log(`audioUrl`, audioUrl);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  };
+  // const getAudio = (audio) => {
+  //   const audioUrl = selectedAudio?.audioLink; // spectrograms/20200926_033000.png
+  //   if (audioUrl) {
+  //     var storageRef = storage.ref();
+  //     storageRef
+  //       .child(`/${audioUrl}`)
+  //       .getDownloadURL()
+  //       .then(function (audioUrl) {
+  //         setAudioUrl(audioUrl);
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   }
+  // };
 
   const onLoadedMetadata = () => {
-    if (playerRef.current) {
-      setDuration(playerRef.current.duration);
-    }
+    // if (playerRef.current) {
+    //   setDuration(playerRef.current.duration);
+    // }
   };
   // selectedAudio?.audioLink;
   // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
@@ -160,7 +156,6 @@ export default function Waveform() {
       regionListRedux.forEach(function (region) {
         if (region.isCorrect === true) {
           console.log(`region`, region);
-          console.log(`ctx`);
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.rect(
@@ -233,7 +228,7 @@ export default function Waveform() {
       mousedown = true;
       newSelection.start = e.offsetX;
       newSelection.end = e.offsetX;
-      drawSelection(newSelection.start, newSelection.end);
+      // drawSelection(newSelection.start, newSelection.end);
     });
     // End the selection
     canvas.addEventListener("mouseup", (e) => {
@@ -241,13 +236,14 @@ export default function Waveform() {
       mousedown = false;
       drawSelection(newSelection.start, newSelection.end);
       let newRegion = {
-        start: newSelection.start / (canvas.width / duration),
-        end: newSelection.end / (canvas.width / duration),
+        start: newSelection.start / canvas.width,
+        end: newSelection.end / canvas.width,
         id: Date.now(),
         color: regionColor,
       };
-
+      console.log(`newRegion`, newRegion);
       saveCreatedRegions(newRegion);
+      newSelection = {};
     });
 
     canvas.addEventListener("mousemove", (e) => {
@@ -293,14 +289,14 @@ export default function Waveform() {
   };
 
   // Load the spectrogram audio
-  // useEffect(() => {
-  //   getAudio();
-  //   playerRef.current.src = audioUrl;
-  // }, []);
+  useEffect(() => {
+    playerRef.current.src = testAudio;
+    // getAudio();
+  });
 
   useEffect(() => {
     // getAudio(selectedAudio);
-    // getImage(selectedAudio);
+    getImage(selectedAudio);
 
     // eslint-disable-next-line
     canvas = SpectrogramRef.current;
@@ -311,7 +307,6 @@ export default function Waveform() {
     context.canvas.height = 200;
     const image = new Image();
     image.src = imgUrl;
-    DrawInCanvas(canvas, context);
     image.onload = () => {
       context.drawImage(
         image,
@@ -324,6 +319,7 @@ export default function Waveform() {
 
     let animationFrameId;
 
+    DrawInCanvas(canvas, context);
     const render = () => {
       if (run === false) {
         loadRegions(canvas, context, regionListRedux);
@@ -358,41 +354,41 @@ export default function Waveform() {
                   >
                     <source id="audioCall" src={testAudio} type="audio/mpeg" />
                   </audio>
-                  <button
-                    className="btnSave "
-                    onClick={() =>
-                      playAudio(run === true ? setRun(false) : setRun(true))
-                    }
-                    type="button"
-                  >
-                    {Play === "Play" ? (
+                  <div className="controls-container">
+                    <div
+                      className="controls"
+                      onClick={() =>
+                        playAudio(run === true ? setRun(false) : setRun(true))
+                      }
+                      type="button"
+                    >
+                      {Play === "Play" ? (
+                        <FontAwesomeIcon
+                          className="controls-icon"
+                          icon={["fas", "play-circle"]}
+                          color="#04c45c"
+                        ></FontAwesomeIcon>
+                      ) : (
+                        <FontAwesomeIcon
+                          className="controls-icon"
+                          icon={["fas", "pause-circle"]}
+                          color="#04c45c"
+                        ></FontAwesomeIcon>
+                      )}
+                    </div>
+                    <div
+                      className="controls "
+                      onClick={() => restartAudio()}
+                      type="button"
+                    >
                       <FontAwesomeIcon
-                        className=""
-                        icon={["fas", "play-circle"]}
+                        className="controls-icon"
+                        icon={["fas", "undo"]}
                         color="#04c45c"
                         size="2x"
                       ></FontAwesomeIcon>
-                    ) : (
-                      <FontAwesomeIcon
-                        className=""
-                        icon={["fas", "pause-circle"]}
-                        color="#04c45c"
-                        size="2x"
-                      ></FontAwesomeIcon>
-                    )}
-                  </button>
-                  <button
-                    className="btnSave "
-                    onClick={() => restartAudio()}
-                    type="button"
-                  >
-                    <FontAwesomeIcon
-                      className=""
-                      icon={["fas", "undo"]}
-                      color="#04c45c"
-                      size="2x"
-                    ></FontAwesomeIcon>
-                  </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

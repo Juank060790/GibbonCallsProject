@@ -50,7 +50,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
 
   return (
     <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton>{selectedAudio?.id}</Modal.Header>
+      <Modal.Header closeButton>{selectedAudio?.audioLink}</Modal.Header>
       <Modal.Body>
         <WaveSpectrogram />
 

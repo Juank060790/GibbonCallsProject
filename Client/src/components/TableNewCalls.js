@@ -110,7 +110,7 @@ export default function TableNewCalls(props) {
                       }}
                       width="100px"
                       src={call?.spectrogram}
-                      alt="spectrogramfrom region"
+                      alt="spectrogram from region"
                     />
                   </td>
 

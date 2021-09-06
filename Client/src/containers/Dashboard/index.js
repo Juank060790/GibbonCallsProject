@@ -1,5 +1,6 @@
 import React from "react";
-import Navbar from "../../components/Navbar";
+import Header from "../../components/Header";
+
 import TableDashboard from "../../components/TableDashboard";
 
 // Dashboard (Main page with the table)
@@ -7,7 +8,7 @@ import TableDashboard from "../../components/TableDashboard";
 function Dashboard() {
   return (
     <div>
-      <Navbar />
+      <Header />
       <TableDashboard />
     </div>
   );
