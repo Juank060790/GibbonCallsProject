@@ -1,5 +1,6 @@
 import * as types from "../constants/audio.constants";
-import { db } from "../../Firebase/firebase";
+import { db, storage } from "../../Firebase/firebase";
+import { toast } from "react-toastify";
 const collectionData = "rawData";
 
 const audiosRequest =
@@ -86,6 +87,8 @@ const audiosRequest =
 const getSingleAudio = (audioId) => (dispatch) => {
   let singleAudio = {};
   dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST, payload: null });
+  dispatch({ type: types.GET_IMAGE_FROM_FIREBASE_REQUEST, payload: null });
+  dispatch({ type: types.GET_AUDIO_FROM_FIREBASE_REQUEST, payload: null });
 
   db.doc(`${collectionData}/${audioId}`)
     .get()
@@ -102,6 +105,49 @@ const getSingleAudio = (audioId) => (dispatch) => {
           payload: "Audio not found",
         });
       }
+    })
+    .then(() => {
+      // get image from firestore with the path of a selected audio
+      if (singleAudio?.spectrogram) {
+        var storageRef = storage.ref();
+        storageRef
+          .child(`/${singleAudio.spectrogram}`)
+          .getDownloadURL()
+          .then(function (imgUrl) {
+            dispatch({
+              type: types.GET_IMAGE_FROM_FIREBASE_SUCCESS,
+              payload: imgUrl,
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+            dispatch({
+              type: types.GET_IMAGE_FROM_FIREBASE_FAILURE,
+              payload: "Image not found",
+            });
+          });
+      }
+    });
+};
+
+// Get audio from firestore with the path of a selected audio
+const getAudioFromFirebase = (audioLink) => (dispatch) => {
+  dispatch({ type: types.GET_AUDIO_FROM_FIREBASE_REQUEST, payload: null });
+  var storageRef = storage.ref(audioLink);
+  storageRef
+    .getDownloadURL()
+    .then(function (url) {
+      dispatch({
+        type: types.GET_AUDIO_FROM_FIREBASE_SUCCESS,
+        payload: url,
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+      dispatch({
+        type: types.GET_AUDIO_FROM_FIREBASE_FAILURE,
+        payload: "Audio not found",
+      });
     });
 };
 
@@ -116,35 +162,17 @@ const addCommentRawAudio = (comment, audioId) => (dispatch) => {
     .then(() => {
       dispatch({
         type: types.CREATE_COMMENT_RAW_AUDIO_SUCCESS,
-        payload: "Comment created ",
+        payload: "Comment saved",
       });
+      toast.success("Comment saved");
+      // dispatch(alertActions.setAlert(`Comment saved`, "success"));
     })
     .catch((err) => {
       dispatch({
         type: types.CREATE_COMMENT_RAW_AUDIO_FAILURE,
         payload: "Comment not created ",
       });
-    });
-};
-
-const deleteCommentAudio = (audioId) => (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
-
-  db.collection(collectionData)
-    .doc(`${audioId}`)
-    .update({
-      comments: "",
-    })
-    .then(() => {
-      dispatch({
-        type: types.DELETE_COMMENT_RAW_AUDIO_SUCCESS,
-      });
-    })
-    .catch((error) => {
-      dispatch({
-        type: types.DELETE_COMMENT_RAW_AUDIO_FAILURE,
-        payload: `Error removing comment from document:${audioId} `,
-      });
+      toast.danger("Comment not saved");
     });
 };
 
@@ -234,8 +262,8 @@ export const audioActions = {
   getSingleAudio,
   clearSelectedAudioReducer,
   addCommentRawAudio,
-  deleteCommentAudio,
   deleteAudio,
   searchDocuments,
   searchByDate,
+  getAudioFromFirebase,
 };

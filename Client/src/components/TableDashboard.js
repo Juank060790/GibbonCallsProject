@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
-import { Container, Dropdown, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { audioActions, callActions } from "../redux/actions";
-import ModalCall from "./ModalCall";
-import PaginationItem from "./Pagination";
-// import Form from "react-bootstrap/Form";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import logoFF from "../images/logo-reduced.png";
+import PaginationItem from "./Pagination";
+import { Table } from "react-bootstrap";
 import SearchBar from "./SearchBar";
+import ModalCall from "./ModalCall";
 
 export default function TableDashboard() {
   const handleClose = () => {
@@ -17,12 +16,11 @@ export default function TableDashboard() {
     setCallsperAudio([]);
     setSpectrogramImage("");
   };
-  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const firstDocumentRedux = useSelector((state) => state.audio.firstDocument);
+  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
   const loading = useSelector((state) => state.audio.loading);
   const audios = useSelector((state) => state.audio.audio);
-  const handleShow = () => setShow(true);
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
   const [spectrogramImage, setSpectrogramImage] = useState("");
   const [formData, setFormData] = useState({ comment: "" });
@@ -30,9 +28,10 @@ export default function TableDashboard() {
   const [orderBy, setOrderBy] = useState("recordDate");
   const [docsPerPage, setDocsPerPage] = useState(15);
   const [lastDoc, setLastDoc] = useState(null);
-  const [order, setOrder] = useState("desc");
   const [firstDoc, setFirstDoc] = useState();
+  const [order, setOrder] = useState("desc");
   const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,15 +67,6 @@ export default function TableDashboard() {
     setFormData({ comment: "" });
   };
 
-  // To load the audios from storage (to be fixed)
-  // const loadAudios = (e) => {
-  //   e.preventDefault();
-  //   setDocsPerPage(15);
-  //   dispatch(
-  //     audioActions.audiosRequest(docsPerPage, "recordDate", "desc", lastDoc)
-  //   );
-  // };
-
   // Pagination
   const handleClickOnNext = () => {
     setFirstDoc(null);
@@ -99,8 +89,9 @@ export default function TableDashboard() {
   };
 
   // Get individual Rawaudio with a Modal.
-  const toAudioId = (audioId, gibbonCallsList) => {
+  const toAudioId = (audioId, gibbonCallsList, audioLink) => {
     dispatch(audioActions.getSingleAudio(audioId));
+    dispatch(audioActions.getAudioFromFirebase(audioLink));
     getCalls(gibbonCallsList);
   };
 
@@ -162,7 +153,7 @@ export default function TableDashboard() {
               </th>
 
               <th className="lightweight tableSingleKey">Duration </th>
-              <th className="lightweight tableSingleKey">Gibbon Calls </th>
+              <th className="lightweight tableSingleKey">Calls </th>
               <th className="lightweight tableSingleKey">Comments</th>
             </tr>
           </thead>
@@ -179,12 +170,18 @@ export default function TableDashboard() {
                     }`}
                   >
                     {/* <td className="tableSingleKey indexKey">{index + 1}</td> */}
-                    <td className="tableSingleKey">{audio.audioLink}</td>
+                    <td className="tableSingleKey audioIdKey">
+                      {audio.audioLink}
+                    </td>
                     <td
                       onClick={() =>
-                        toAudioId(audio?.id, audio?.gibbonCallsList)
+                        toAudioId(
+                          audio?.id,
+                          audio?.gibbonCallsList,
+                          audio.audioLink
+                        )
                       }
-                      className="tableSingleKey audioIdKey"
+                      className="tableSingleKey "
                     >
                       {new Date(
                         audio.recordDate.seconds * 1000
@@ -192,7 +189,11 @@ export default function TableDashboard() {
                     </td>
                     <td
                       onClick={() =>
-                        toAudioId(audio?.id, audio.gibbonCallsList)
+                        toAudioId(
+                          audio?.id,
+                          audio.gibbonCallsList,
+                          audio.audioLink
+                        )
                       }
                       className="tableSingleKey"
                     >
@@ -201,9 +202,13 @@ export default function TableDashboard() {
 
                     <td
                       onClick={() =>
-                        toAudioId(audio?.id, audio.gibbonCallsList)
+                        toAudioId(
+                          audio?.id,
+                          audio.gibbonCallsList,
+                          audio.audioLink
+                        )
                       }
-                      className="tableSingleKey"
+                      className="tableSingleKey gibbonCallsKeys"
                     >
                       {audio.gibbonCallsList?.length > 0
                         ? audio.gibbonCallsList?.length
@@ -233,8 +238,8 @@ export default function TableDashboard() {
                           id={index + audio.id}
                           defaultValue={audio.comments}
                           placeholder="Add comment..."
-                          cols="30"
-                          rows="30"
+                          cols="50"
+                          rows="40"
                         ></textarea>
                       </form>
                     </td>

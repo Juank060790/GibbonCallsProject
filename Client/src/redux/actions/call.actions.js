@@ -2,6 +2,7 @@ import * as types from "../constants/call.constants";
 import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
+import { toast } from "react-toastify";
 
 // Main collection where we store all audio files
 const collectionData = "rawData";
@@ -42,33 +43,14 @@ const addCommentSingleCall = (comment, callId) => async (dispatch) => {
         type: types.CREATE_COMMENT_SINGLE_CALL_SUCCESS,
         payload: "Comment was created successfully ",
       });
+      toast.success("Comment saved");
     })
     .catch((err) => {
       dispatch({
         type: types.CREATE_COMMENT_SINGLE_CALL_FAILURE,
         payload: err,
       });
-    });
-};
-
-const deleteCommentCall = (callId) => async (dispatch) => {
-  dispatch({ type: types.DELETE_COMMENT_CALL_REQUEST, payload: null });
-  db.collection("calls")
-    .doc(`${callId}`)
-    .update({
-      comment: "",
-    })
-    .then(() => {
-      dispatch({
-        type: types.DELETE_COMMENT_CALL_SUCCESS,
-        payload: "Comment has been DELETED!",
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: types.DELETE_COMMENT_CALL_FAILURE,
-        payload: `Error removing comment from document:${callId} `,
-      });
+      toast.success("Comment not saved");
     });
 };
 
@@ -156,7 +138,6 @@ export const callActions = {
   getSingleCall,
   clearCallsReducer,
   addCommentSingleCall,
-  deleteCommentCall,
   deleteCall,
   updateIsCallCorrect,
   saveRegionCall,

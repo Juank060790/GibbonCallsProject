@@ -1,13 +1,12 @@
-import logo from "../images/logo-reduced.png";
-import { logoutUser } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../redux/actions";
+import logo from "../images/logo-reduced.png";
 import { Button } from "react-bootstrap";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Header() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user.email);
+  const user = useSelector((state) => state.auth);
   console.log(`user`, user);
 
   const HandleLogOut = () => {
@@ -26,11 +25,12 @@ export default function Header() {
         <div className="inner-menu-container">
           <ul>
             <div className="inner-menu-column">
-              <div className="inner-menu-item">{user}</div>
+              <div className="inner-menu-item">{user.userName}</div>
+              <div className="inner-menu-item">{user.email}</div>
               <div className="inner-menu-item">
                 <li>
                   <Button
-                    className="m-2"
+                    className="m-1"
                     variant="success"
                     onClick={HandleLogOut}
                   >

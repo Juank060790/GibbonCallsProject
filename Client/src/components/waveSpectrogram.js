@@ -2,22 +2,19 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import { callActions } from "../redux/actions";
-import { storage } from "../Firebase/firebase";
 import TableNewCalls from "./TableNewCalls";
-import testAudio from "../images/testAudio.WAV";
+// import testAudio from "../images/testAudio.WAV";
 import "../Styles/Styles.scss";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  const loadingAudio = useSelector((state) => state.audio.loadingAudio);
   const regionListRedux = useSelector((state) => state.call.call);
-  // const CallsList = useSelector((state) => state.audio.callsList);
+  const loading = useSelector((state) => state.audio.loading);
   const [labelForNewCall, setLableForNewCall] = useState("");
-  // const [regionsInWave, setRegionsInWave] = useState(10);
   const [regionsArray, setRegionsArray] = useState([]);
   const [labelColor, setLabelColor] = useState("");
-  const [audioUrl, setAudioUrl] = useState(null);
   const [duration, setDuration] = useState(null);
-  const [imgUrl, setImgUrl] = useState(null);
   const [Play, setPlay] = useState("Play");
   const regionColor = randomColor(0.1);
   const [run, setRun] = useState(true);
@@ -103,23 +100,6 @@ export default function Waveform() {
   // Clear all the regions from the waveform
   const clearRegions = () => {
     setRegionsArray([]);
-  };
-
-  // Get image from the database
-  const getImage = (image) => {
-    // console.log(`imageUrl`, imageUrl);
-    if (selectedAudio?.spectrogram) {
-      var storageRef = storage.ref();
-      storageRef
-        .child(`/${selectedAudio.spectrogram}`)
-        .getDownloadURL()
-        .then(function (imgUrl) {
-          setImgUrl(imgUrl);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
   };
 
   // Get Audio from the database
@@ -290,52 +270,56 @@ export default function Waveform() {
 
   // Load the spectrogram audio
   useEffect(() => {
-    playerRef.current.src = testAudio;
-    // getAudio();
-  });
+    if (loadingAudio === true) {
+      // console.log("Loading audio");
+    } else {
+      playerRef.current.src = selectedAudio?.audio;
+    }
+  }, [loadingAudio]);
 
   useEffect(() => {
-    // getAudio(selectedAudio);
-    getImage(selectedAudio);
-
     // eslint-disable-next-line
-    canvas = SpectrogramRef.current;
-    // eslint-disable-next-line
-    context = canvas.getContext("2d");
-    resizeCanvasToDisplaySize(context.canvas);
-    context.canvas.width = window.innerWidth;
-    context.canvas.height = 200;
-    const image = new Image();
-    image.src = imgUrl;
-    image.onload = () => {
-      context.drawImage(
-        image,
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height
-      );
-    };
+    if (loading === false) {
+      canvas = SpectrogramRef.current;
+      // eslint-disable-next-line
+      context = canvas.getContext("2d");
+      resizeCanvasToDisplaySize(context.canvas);
+      context.canvas.width = window.innerWidth;
+      context.canvas.height = 200;
+      const image = new Image();
+      image.src = selectedAudio.imageUrl;
+      image.onload = () => {
+        context.drawImage(
+          image,
+          0,
+          0,
+          context.canvas.width,
+          context.canvas.height
+        );
+      };
 
-    let animationFrameId;
+      let animationFrameId;
 
-    DrawInCanvas(canvas, context);
-    const render = () => {
-      if (run === false) {
-        loadRegions(canvas, context, regionListRedux);
-        DrawPlayTracker(context, canvas);
-      }
-    };
-    window.cancelAnimationFrame(animationFrameId);
-    animationFrameId = window.requestAnimationFrame(render);
-    render();
-
-    return () => {
+      DrawInCanvas(canvas, context);
+      const render = () => {
+        if (run === false) {
+          loadRegions(canvas, context, regionListRedux);
+          DrawPlayTracker(context, canvas);
+        }
+      };
       window.cancelAnimationFrame(animationFrameId);
-    };
+      animationFrameId = window.requestAnimationFrame(render);
+      render();
+
+      return () => {
+        window.cancelAnimationFrame(animationFrameId);
+      };
+    } else {
+      // console.log("Not ready yet...");
+    }
 
     // eslint-disable-next-line
-  }, [run]);
+  }, [run, loading]);
 
   return (
     <div>
@@ -347,13 +331,17 @@ export default function Waveform() {
               <div>
                 <div className="Spectrogram-container">
                   <canvas width="100%" ref={SpectrogramRef} />
-                  <audio
-                    ref={playerRef}
-                    id="playCall"
-                    onLoadedMetadata={onLoadedMetadata}
-                  >
-                    <source id="audioCall" src={testAudio} type="audio/mpeg" />
-                  </audio>
+                  {loadingAudio === true ? (
+                    <div>Loading!</div>
+                  ) : (
+                    <audio
+                      ref={playerRef}
+                      id="playCall"
+                      onLoadedMetadata={onLoadedMetadata}
+                    >
+                      <source id="audioCall" type="audio/mpeg" />
+                    </audio>
+                  )}
                   <div className="controls-container">
                     <div
                       className="controls"
