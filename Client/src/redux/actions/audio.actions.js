@@ -154,6 +154,7 @@ const getAudioFromFirebase = (audioLink) => (dispatch) => {
 // Create new comment to audio.
 const addCommentRawAudio = (comment, audioId) => (dispatch) => {
   dispatch({ type: types.CREATE_COMMENT_RAW_AUDIO_REQUEST, payload: null });
+  toast.success("Saving...");
   db.collection(collectionData)
     .doc(`${audioId}`)
     .update({
@@ -172,7 +173,7 @@ const addCommentRawAudio = (comment, audioId) => (dispatch) => {
         type: types.CREATE_COMMENT_RAW_AUDIO_FAILURE,
         payload: "Comment not created ",
       });
-      toast.danger("Comment not saved");
+      toast.warning("Comment not saved");
     });
 };
 

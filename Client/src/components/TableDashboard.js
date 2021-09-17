@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import logoFF from "../images/logo-reduced.png";
 import PaginationItem from "./Pagination";
-import { Table } from "react-bootstrap";
+import { OverlayTrigger, Table } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 import ModalCall from "./ModalCall";
+import { Tooltip } from "react-bootstrap";
 
 export default function TableDashboard() {
   const handleClose = () => {
@@ -119,6 +120,12 @@ export default function TableDashboard() {
     dispatch(audioActions.deleteAudio(audioId));
   };
 
+  const saveCommentTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Press "Enter" to save comment.
+    </Tooltip>
+  );
+
   return (
     <>
       <div className="fullTable">
@@ -228,19 +235,25 @@ export default function TableDashboard() {
                         key={audio.id}
                         id={audio.id}
                       >
-                        <textarea
-                          className="textareacommentsInput"
-                          onSelect={() => setAudioIdOnComment(audio?.id)}
-                          key={audio.id}
-                          type="textarea"
-                          name="comment"
-                          onChange={handleChange}
-                          id={index + audio.id}
-                          defaultValue={audio.comments}
-                          placeholder="Add comment..."
-                          cols="50"
-                          rows="40"
-                        ></textarea>
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 1000, hide: 100 }}
+                          overlay={saveCommentTooltip}
+                        >
+                          <textarea
+                            className="textareacommentsInput"
+                            onSelect={() => setAudioIdOnComment(audio?.id)}
+                            key={audio.id}
+                            type="textarea"
+                            name="comment"
+                            onChange={handleChange}
+                            id={index + audio.id}
+                            defaultValue={audio.comments}
+                            placeholder="Add comment..."
+                            cols="50"
+                            rows="40"
+                          ></textarea>
+                        </OverlayTrigger>
                       </form>
                     </td>
 

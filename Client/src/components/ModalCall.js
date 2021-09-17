@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import WaveSpectrogram from "./waveSpectrogram";
 import logoFF from "../images/logo-reduced.png";
-import { Modal, Table } from "react-bootstrap";
+import { Modal, OverlayTrigger, Table } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 import Loader from "react-spinners/ScaleLoader";
+import { Tooltip } from "react-bootstrap";
 
 export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -49,6 +50,12 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
       callActions.updateIsCallCorrect(callId, selectedAudioId, isCorrect)
     );
   };
+
+  const saveCommentTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Press "Enter" to save comment.
+    </Tooltip>
+  );
 
   return (
     <Modal show={showModal} onHide={handleClose}>
@@ -174,16 +181,22 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                               key={call.id}
                               id={call.id}
                             >
-                              <textarea
-                                className="commentBoxInput  textareacommentsInput"
-                                onSelect={() => setCallIdOnComment(call?.id)}
-                                defaultValue={call.comment}
-                                onChange={handleChange}
-                                id={index + call.id}
-                                type="textarea"
-                                name="comment"
-                                key={call.id}
-                              ></textarea>
+                              <OverlayTrigger
+                                placement="top"
+                                delay={{ show: 1000, hide: 100 }}
+                                overlay={saveCommentTooltip}
+                              >
+                                <textarea
+                                  className="commentBoxInput  textareacommentsInput"
+                                  onSelect={() => setCallIdOnComment(call?.id)}
+                                  defaultValue={call.comment}
+                                  onChange={handleChange}
+                                  id={index + call.id}
+                                  type="textarea"
+                                  name="comment"
+                                  key={call.id}
+                                ></textarea>
+                              </OverlayTrigger>
                             </form>{" "}
                           </td>
                         </tr>

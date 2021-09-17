@@ -50,7 +50,7 @@ const addCommentSingleCall = (comment, callId) => async (dispatch) => {
         type: types.CREATE_COMMENT_SINGLE_CALL_FAILURE,
         payload: err,
       });
-      toast.success("Comment not saved");
+      toast.warning("Comment not saved");
     });
 };
 
