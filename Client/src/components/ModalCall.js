@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import ReactDOM from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,9 +42,8 @@ export default function ModalCall({
   const isCallCorrect = (callId, isCorrect) => {
     const selectedAudioId = selectedAudio?.id;
     // Count the calls if are correct or not
-    const finalCount = callsToCount.call?.filter(
-      (x) => x.isCorrect === true
-    ).length;
+    const finalCount = callsToCount.call?.filter((x) => x.isCorrect === true)
+      .length;
     const restCallCount = finalCount - 1;
 
     dispatch(
