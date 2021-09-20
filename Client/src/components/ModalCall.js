@@ -168,9 +168,16 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                               )}
                             </div>
                           </td>
-                          <td className="tableSingleKey ">{call.label}</td>
-                          <td className="tableSingleKey ">{call.createdBy}</td>
-                          <td className="tableSingleKey "> {call.accuracy}</td>
+                          <td className="tableSingleKey ">
+                            {call.label ? call.label : "N/A"}
+                          </td>
+                          <td className="tableSingleKey ">
+                            {call.createdBy ? call.createdBy : "Manual"}
+                          </td>
+                          <td className="tableSingleKey ">
+                            {" "}
+                            {call.accuracy ? call.accuracy : "-"}
+                          </td>
                           <td className="tableSingleKey commentKey">
                             <form
                               onKeyDown={(e) => {
