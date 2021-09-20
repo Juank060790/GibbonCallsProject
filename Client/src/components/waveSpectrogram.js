@@ -232,7 +232,7 @@ export default function Waveform() {
         dispatch(
           spectrogramActions.updatePlayTracker(
             playtrackerPos +
-              ref.current.getBoundingClientRect().width / 60 / 5 / 100 // Converting time to pixel
+              ref.current.getBoundingClientRect().width / 60 / 5 / 100 // Converting time to pixel, one second in pixels
           )
         );
       }
@@ -295,12 +295,27 @@ export default function Waveform() {
             newSelection.start = 0;
             newSelection.end = 0;
           }
+
           dispatch(spectrogramActions.handleMouseUp(newSelection));
 
           setmousedownPos(0);
           setAction(actions.NONE);
           // dispatch(spectrogramActions.highlightSelection(-1));
         }
+        if (highlightedSelection) {
+          dispatch(
+            spectrogramActions.updatePlayTracker(highlightedSelection.start)
+          );
+        }
+        // if (
+        //   highlightedSelection.start !== 0 &&
+        //   highlightedSelection.end !== 0
+        // ) {
+        //   dispatch(
+        //     spectrogramActions.updatePlayTracker(highlightedSelection.start)
+        //   );
+        //   console.log("highlightedSelection :>> ", highlightedSelection.start);
+        // }
       };
 
       // Mouse Down Event
@@ -495,7 +510,7 @@ export default function Waveform() {
           drawSelection(selection);
         });
 
-        // Draw existing selections  [To do...]
+        // Draw existing selections
         if (calls) {
           calls.forEach((call) => {
             if (call.isCorrect === true) {
