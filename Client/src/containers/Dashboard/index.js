@@ -1,15 +1,31 @@
 import React from "react";
-import Navbar from "../../components/Navbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Header from "../../components/Header";
 import TableDashboard from "../../components/TableDashboard";
 
 // Dashboard (Main page with the table)
 
 function Dashboard() {
   return (
-    <div>
-      <Navbar />
-      <TableDashboard />
-    </div>
+    <>
+      <ToastContainer
+        position="top-left"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
+      <div>
+        <Header />
+        <TableDashboard />
+      </div>
+    </>
   );
 }
 

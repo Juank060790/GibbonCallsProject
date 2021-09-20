@@ -1,11 +1,11 @@
+import { Container, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logoFF from "../images/logo-reduced.png";
-import { Container, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import React, { useState } from "react";
 
 export default function TableNewCalls(props) {
   const {
-    regionsArray,
     labelNewCall,
     saveCommentNewCall,
     saveRegionsDataBase,
@@ -14,6 +14,8 @@ export default function TableNewCalls(props) {
   } = props;
 
   const [imageToShow, setImageToShow] = useState(logoFF);
+  const selections = useSelector((state) => state.spectrogram.selections);
+  const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
 
   const saveBtnTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -40,7 +42,7 @@ export default function TableNewCalls(props) {
               <button
                 className="saveBtn btn-success"
                 onClick={() =>
-                  saveRegionsDataBase(regionsArray, selectedAudio.id)
+                  saveRegionsDataBase(selections, selectedAudio.id)
                 }
               >
                 <FontAwesomeIcon icon="save" />
@@ -63,7 +65,7 @@ export default function TableNewCalls(props) {
         <Table responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
-              <th className="indexCell idNumberModal">Call</th>
+              {/* <th className="indexCell idNumberModal">Call</th> */}
 
               <th>Time Start</th>
               <th>Time End</th>
@@ -74,29 +76,29 @@ export default function TableNewCalls(props) {
             </tr>
           </thead>
           <>
-            {regionsArray?.map((call, index) => (
+            {selections?.map((call, index) => (
               <tbody key={index}>
                 <tr
-                  key={call.callId}
+                  key={call.id}
                   className={`${
                     index % 2 === 0
                       ? "cardDark text-center  tableInner tableKey "
                       : "cardWhite text-center tableInner tableKey"
                   }`}
                 >
-                  <td className="indexandcolor indexCell tableSingleKeyEditCalls">
+                  {/* <td className="indexandcolor indexCell tableSingleKeyEditCalls">
                     <FontAwesomeIcon
                       className="labelColorSquare m-2"
                       icon={["fas", "square"]}
                       color={call?.color}
                     ></FontAwesomeIcon>
-                  </td>
+                  </td> */}
 
                   <td className="tableSingleKeyEditCalls">
-                    {call.start?.toFixed(3)}
+                    {(call.start / (canvasWidth / 300) / 60).toFixed(3)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    {call.end?.toFixed(3)}
+                    {(call.end / (canvasWidth / 300) / 60).toFixed(3)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
                     <img
@@ -110,21 +112,21 @@ export default function TableNewCalls(props) {
                       }}
                       width="100px"
                       src={call?.spectrogram}
-                      alt="spectrogramfrom region"
+                      alt="spectrogram from region"
                     />
                   </td>
 
                   <td className="tableSingleKeyEditCalls commentKey">
-                    {call.callId}
+                    {call.id}
                   </td>
                   <td
-                    key={call.callId}
+                    key={call.id}
                     className=" tableSingleKeyEditCalls dropdownKey"
                   >
                     <select
                       className="dropdownKey"
                       onChange={(event) =>
-                        labelNewCall(event.target.value, call.callId)
+                        labelNewCall(event.target.value, call.id)
                       }
                     >
                       <option value="Female">Female</option>
@@ -135,14 +137,12 @@ export default function TableNewCalls(props) {
                   <td className="lastCell tableSingleKeyEditCalls">
                     <textarea
                       className="textareacommentsInput"
-                      // onSelect={() => saveCommentNewCall(call?.callId)}
-                      key={call.callId}
+                      // onSelect={() => saveCommentNewCall(call?.id)}
+                      key={call.id}
                       type="textarea"
                       name="comment"
-                      onChange={(event) =>
-                        saveCommentNewCall(event, call?.callId)
-                      }
-                      id={index + call.callId}
+                      onChange={(event) => saveCommentNewCall(event, call?.id)}
+                      id={index + call.id}
                       defaultValue={call.comments}
                       placeholder="Add comment..."
                       cols="30"

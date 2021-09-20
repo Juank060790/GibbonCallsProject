@@ -32,6 +32,7 @@ const authReducer = (state = initialState, action) => {
       };
 
     case types.GET_CURRENT_USER_SUCCESS:
+      console.log(`state`, state);
       return {
         ...state,
         user: payload.user,
