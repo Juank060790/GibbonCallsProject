@@ -7,7 +7,6 @@ import React from "react";
 export default function Header() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
-  console.log(`user`, user);
 
   const HandleLogOut = () => {
     dispatch(logoutUser());

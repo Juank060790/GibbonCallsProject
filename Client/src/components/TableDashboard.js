@@ -1,5 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { audioActions, callActions } from "../redux/actions";
+import {
+  audioActions,
+  callActions,
+  spectrogramActions,
+} from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import logoFF from "../images/logo-reduced.png";
@@ -10,20 +14,13 @@ import ModalCall from "./ModalCall";
 import { Tooltip } from "react-bootstrap";
 
 export default function TableDashboard() {
-  const handleClose = () => {
-    setShow(false);
-    dispatch(callActions.clearCallsReducer());
-    dispatch(audioActions.clearSelectedAudioReducer());
-    setCallsperAudio([]);
-    setSpectrogramImage("");
-  };
   const firstDocumentRedux = useSelector((state) => state.audio.firstDocument);
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
   const loading = useSelector((state) => state.audio.loading);
   const audios = useSelector((state) => state.audio.audio);
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
-  const [spectrogramImage, setSpectrogramImage] = useState("");
+
   const [formData, setFormData] = useState({ comment: "" });
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [orderBy, setOrderBy] = useState("recordDate");
@@ -35,6 +32,13 @@ export default function TableDashboard() {
   const handleShow = () => setShow(true);
   const dispatch = useDispatch();
 
+  const handleClose = () => {
+    setShow(false);
+    dispatch(callActions.clearCallsReducer());
+    dispatch(spectrogramActions.clearSelection());
+    setCallsperAudio([]);
+  };
+
   useEffect(() => {
     dispatch(
       // Get audios default limit, order by record date, order desc, null, null,//
@@ -44,11 +48,11 @@ export default function TableDashboard() {
 
   // Spectrogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
-  const showSpectrogram = (spectrogram) => {
-    if (spectrogram) {
-      setSpectrogramImage(spectrogram);
-    }
-  };
+  // const showSpectrogram = (spectrogram) => {
+  //   if (spectrogram) {
+  //     setSpectrogramImage(spectrogram);
+  //   }
+  // };
 
   //Add/Delete RawAudio Comment
 
@@ -115,10 +119,10 @@ export default function TableDashboard() {
 
   // Delete Audio from table
 
-  const deleteAudio = (audioId) => {
-    console.log(`audioId`, audioId);
-    dispatch(audioActions.deleteAudio(audioId));
-  };
+  // const deleteAudio = (audioId) => {
+  //   console.log(`audioId`, audioId);
+  //   dispatch(audioActions.deleteAudio(audioId));
+  // };
 
   const saveCommentTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -291,11 +295,8 @@ export default function TableDashboard() {
       </div>
       <ModalCall
         showModal={show}
-        selectedAudio={selectedAudio}
         callsperAudio={callsperAudio}
         handleClose={handleClose}
-        spectrogramImage={spectrogramImage}
-        showSpectrogram={showSpectrogram}
         getCalls={getCalls}
       />
     </>

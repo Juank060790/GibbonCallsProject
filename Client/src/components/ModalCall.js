@@ -16,6 +16,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const [arrayCalls, setArrayCalls] = useState(null);
   const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
+  const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
 
   // Set the state for the table with the call of each audio
   useEffect(() => {
@@ -109,10 +110,11 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                           </td>
                           <td className="tableSingleKey">{call.id}</td>
                           <td className="tableSingleKey">
-                            {(call.start / 60).toFixed(2)}
+                            {(call.start / (canvasWidth / 300) / 60).toFixed(3)}
                           </td>
                           <td className="tableSingleKey">
-                            {(call.end / 60).toFixed(2)}
+                            {" "}
+                            {(call.end / (canvasWidth / 300) / 60).toFixed(3)}
                           </td>
                           {call.spectrogram ? (
                             <td
