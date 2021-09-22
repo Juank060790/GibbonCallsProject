@@ -95,10 +95,10 @@ export default function TableNewCalls(props) {
                   </td> */}
 
                   <td className="tableSingleKeyEditCalls">
-                    {(call.start / (canvasWidth / 300) / 60).toFixed(3)}
+                    {(call.start / (canvasWidth / 300) / 60).toFixed(2)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    {(call.end / (canvasWidth / 300) / 60).toFixed(3)}
+                    {(call.end / (canvasWidth / 300) / 60).toFixed(2)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
                     <img

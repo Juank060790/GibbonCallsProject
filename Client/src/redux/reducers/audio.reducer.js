@@ -41,9 +41,10 @@ const audioReducer = (state = initialState, action) => {
         loading: false,
       };
     case types.GET_AUDIO_FROM_FIREBASE_SUCCESS:
-      state.selectedAudio.audio = payload;
+      // state.selectedAudio.audio = payload;
       return {
         ...state,
+        selectedAudio: { ...state.selectedAudio, audio: payload },
         loadingAudio: false,
       };
 

@@ -10,6 +10,9 @@ const initialState = {
     end: 0,
     highlighted: false,
     color: { r: 255, g: 0, b: 0 },
+    accuracy: "-",
+    createdBy: "Manual",
+    label: "Female",
   },
   playtrackerPos: 0,
   play: false,
@@ -37,6 +40,9 @@ const spectrogramReducer = (state = initialState, action) => {
           end: 0,
           highlighted: false,
           color: { r: 255, g: 0, b: 0 },
+          accuracy: "-",
+          createdBy: "Manual",
+          label: "Female",
         },
       };
     case types.UPDATE_SELECTION:

@@ -11,13 +11,11 @@ export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const loadingAudio = useSelector((state) => state.audio.loadingAudio);
   const loading = useSelector((state) => state.audio.loading);
-
-  // const regionListRedux = useSelector((state) => state.call.call);
   const [labelForNewCall, setLableForNewCall] = useState("");
   const [labelColor, setLabelColor] = useState("");
   const [duration, setDuration] = useState(null);
   const [Play, setPlay] = useState("Play");
-  const [canvasWidth, setCanvasWidth] = useState();
+  const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
   // const regionColor = randomColor(0.1);
   const [run, setRun] = useState(true);
   const playerRef = useRef(null);
@@ -39,28 +37,6 @@ export default function Waveform() {
 
   const [mousedownPos, setmousedownPos] = useState(0); // Tracking the initial pos of mousedown event with relation to highlighted selection
   const [action, setAction] = useState("NONE");
-
-  // Save the region to be show in the waveform, after needs to be saved to the database.
-
-  // function saveCreatedRegions(region) {
-  //   var d = Date.now();
-  //   let singleRegion = {
-  //     callId: d.toString(),
-  //     SpectrogramAudio: "",
-  //     start: region.start,
-  //     end: region.end,
-  //     spectrogram: "",
-  //     isCorrect: true,
-  //     isDeleted: false,
-  //     color: region.color,
-  //     comment: "",
-  //     label: "Female",
-  //   };
-  //   // Update teh state with the single call selected in the spectrogram
-
-  //   console.log(`regionsArray`, regionsArray);
-  //   setRegionsArray((regionsArray) => [...regionsArray, singleRegion]);
-  // }
 
   // Set Label from new call in the new table
 
@@ -97,11 +73,10 @@ export default function Waveform() {
   // Save regions to data base, label to the save region is added here and add + count to the Raw audio.
   const saveRegionsDataBase = (selections, audioId) => {
     if (selections) {
-      // const addCallCount =
-      //   regionListRedux?.filter((x) => x.isCorrect === true).length + 1;
       selections?.forEach((region) => {
-        // region.start = region.start / (1723 / 300) / 60;
-        // region.end = region.end / (1723 / 300) / 60;
+        // change pixels to second to save in the database
+        region.start = parseInt(region.start / (canvasWidth / 300));
+        region.end = parseInt(region.end / (canvasWidth / 300));
         let singleCall = region;
         console.log("singleCall :>> ", singleCall);
 
@@ -122,53 +97,6 @@ export default function Waveform() {
       setDuration(playerRef.current.duration);
     }
   };
-  // selectedAudio?.audioLink;
-  // "https://firebasestorage.googleapis.com/v0/b/coderschool-project-gibbon.appspot.com/o/calls%2F19700101_013658.WAV?alt=media&token=86c99103-0f75-4adb-a20b-be1e82b2020a";
-
-  // Load regions into the waveform
-  // function loadRegions(canvas, ctx, regionListRedux) {
-  //   if (!ctx || !canvas || !regionListRedux) {
-  //     console.log("ctx and canvas not found");
-  //     return;
-  //   } else {
-  //     regionListRedux.forEach(function (region) {
-  //       if (region.isCorrect === true) {
-  //         console.log(`region`, region);
-  //         ctx.lineWidth = 1;
-  //         ctx.beginPath();
-  //         ctx.rect(
-  //           (canvas.width / duration) * region.start,
-  //           0,
-  //           (canvas.width / duration) * region.start -
-  //             (canvas.width / duration) * region.end,
-  //           canvas.height
-  //         );
-  //         ctx.stroke();
-  //         ctx.fillStyle = region.color;
-  //         ctx.fill();
-  //         ctx.closePath();
-  //       } else {
-  //         console.log("Region Not correct");
-  //       }
-  //     });
-  //   }
-  // }
-
-  // /**
-  //  * Random RGBA color.
-  //  */
-  // function randomColor(alpha) {
-  //   return (
-  //     "rgba(" +
-  //     [
-  //       ~~(Math.random() * 255),
-  //       ~~(Math.random() * 255),
-  //       ~~(Math.random() * 255),
-  //       alpha || 1,
-  //     ] +
-  //     ")"
-  //   );
-  // }
 
   const actions = {
     NONE: "NONE",
@@ -177,19 +105,6 @@ export default function Waveform() {
     DRAG_HIGHLIGHT_SELECTION_START: "DRAG_HIGHLIGHT_SELECTION_START",
     DRAG_HIGHLIGHT_SELECTION_END: "DRAG_HIGHLIGHT_SELECTION_END",
   };
-
-  // Play Audio Button
-  // useCallback hook with a play audio function
-  // const playAudio = useCallback(() => {
-  //   if (run === true) {
-  //     playerRef.current.play();
-  //     setPlay("Pause");
-  //   } else {
-  //     console.log(`run`, run);
-  //     playerRef.current.pause();
-  //     setPlay("Play");
-  //   }
-  // }, [setPlay, run]);
 
   const playButton = () => {
     if (!play) {
@@ -306,7 +221,10 @@ export default function Waveform() {
           dispatch(
             spectrogramActions.updatePlayTracker(highlightedSelection.start)
           );
+          playerRef.current.currentTime =
+            highlightedSelection.start / (canvasWidth / 300);
         }
+
         // if (
         //   highlightedSelection.start !== 0 &&
         //   highlightedSelection.end !== 0
@@ -326,9 +244,9 @@ export default function Waveform() {
         let overlappingX = 0;
         if (mousedown) {
           // Moving a highlghted selection
-          console.log(highlightedSelection);
-          console.log(eX);
-          console.log(mousedownPos);
+          // console.log(highlightedSelection);
+          // console.log(eX);
+          // console.log(mousedownPos);
           if (action === actions.DRAG_HIGHLIGHT_SELECTION_START) {
             // Expand start of highlighted selection
             dispatch(
@@ -494,6 +412,28 @@ export default function Waveform() {
         ctx.closePath();
       };
 
+      // Draw the time line
+
+      const drawTimeLines = (xPos, yPos, LineHeight, text) => {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        ctx.rect(
+          xPos, // x
+          yPos, // y
+          0, // width
+          LineHeight // height
+        );
+        ctx.stroke();
+        ctx.closePath();
+        if (text) {
+          ctx.fillStyle = "white";
+          ctx.font = "13px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText(xPos / (canvasWidth / duration) / 60, xPos, 175);
+        }
+      };
+
       let render = () => {
         // Background Image
         if (selectedAudio.imageUrl) {
@@ -521,6 +461,17 @@ export default function Waveform() {
 
         // Play Tracker
         drawPlayTracker(ctx);
+        console.log("canvasWidth :>> ", canvasWidth);
+        // Time Lines
+        if (canvasWidth) {
+          for (let i = 0; i < canvasWidth; i += canvasWidth / 300) {
+            if (i % (canvasWidth / 10) === 0) {
+              drawTimeLines(i, 180, 20, "10");
+            } else if (i % (canvasWidth / 100) === 0) {
+              drawTimeLines(i, 190, 10);
+            }
+          }
+        }
 
         requestId = requestAnimationFrame(render);
       };
@@ -605,7 +556,6 @@ export default function Waveform() {
               labelColor={labelColor}
               saveCommentNewCall={saveCommentNewCall}
               saveRegionsDataBase={saveRegionsDataBase}
-              canvasWidth={canvasWidth}
             />
           </div>
         </div>

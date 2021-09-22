@@ -110,15 +110,15 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                           </td>
                           <td className="tableSingleKey">{call.id}</td>
                           <td className="tableSingleKey">
-                            {(call.start / (canvasWidth / 300) / 60).toFixed(3)}
+                            {(call.start / 60).toFixed(2)}
                           </td>
                           <td className="tableSingleKey">
                             {" "}
-                            {(call.end / (canvasWidth / 300) / 60).toFixed(3)}
+                            {(call.end / 60).toFixed(2)}
                           </td>
                           {call.spectrogram ? (
                             <td
-                              onClick={() => showSpectrogram(call.spectrogram)}
+                              // onClick={() => showSpectrogram(call.spectrogram)}
                               className="tableSingleKey"
                             >
                               <img
@@ -130,7 +130,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                             </td>
                           ) : (
                             <td
-                              onClick={() => showSpectrogram(call.spectrogram)}
+                              // onClick={() => showSpectrogram(call.spectrogram)}
                               className="tableSingleKey"
                             >
                               <FontAwesomeIcon
@@ -171,13 +171,8 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                           <td className="tableSingleKey ">
                             {call.label ? call.label : "N/A"}
                           </td>
-                          <td className="tableSingleKey ">
-                            {call.createdBy ? call.createdBy : "Manual"}
-                          </td>
-                          <td className="tableSingleKey ">
-                            {" "}
-                            {call.accuracy ? call.accuracy : "-"}
-                          </td>
+                          <td className="tableSingleKey ">{call.createdBy}</td>
+                          <td className="tableSingleKey "> {call.accuracy}</td>
                           <td className="tableSingleKey commentKey">
                             <form
                               onKeyDown={(e) => {
