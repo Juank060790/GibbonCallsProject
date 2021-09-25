@@ -16,7 +16,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const [arrayCalls, setArrayCalls] = useState(null);
   const calls = useSelector((state) => state.call);
   const dispatch = useDispatch();
-  const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
+  // const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
 
   // Set the state for the table with the call of each audio
   useEffect(() => {

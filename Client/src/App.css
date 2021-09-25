@@ -255,6 +255,12 @@ body {
   border-top: 1px solid rgba(0, 0, 0, 0.068);
   padding: 1rem !important;
 }
+.tableKey-newcalls {
+  color: #333333;
+  font-size: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.068);
+  padding: 1rem !important;
+}
 
 .tableKey:hover {
   background-color: #6acc9349;
@@ -280,6 +286,12 @@ body {
 /* Create Or edit table  */
 
 /* Buttons */
+
+.dropdownKey {
+  margin: 5px;
+  border: 1px solid rgba(197, 197, 197, 0.674);
+  border-radius: 5px;
+}
 
 .controls-container {
   display: flex;
@@ -428,7 +440,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 0.75fr;
   height: auto;
-  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(800px, 1fr));
 }
 
 /* Pagination */
@@ -495,17 +507,6 @@ body {
   width: 100%;
 }
 
-.spectrogramOptions {
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.dropdownButonsSpectrogram {
-  background-color: #adadad79 !important;
-  border-color: none !important;
-}
 #waveform {
   /* width: 100%; */
   background: rgba(0, 0, 0, 0.8);

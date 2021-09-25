@@ -21,6 +21,9 @@ export default function Waveform() {
   const playerRef = useRef(null);
   const dispatch = useDispatch();
   const calls = useSelector((state) => state.call.call);
+  const audioCurrentTime = useSelector(
+    (state) => state.spectrogram.audioCurrentTime
+  );
 
   const ref = useRef();
 
@@ -70,13 +73,19 @@ export default function Waveform() {
     }
   };
 
-  // Save regions to data base, label to the save region is added here and add + count to the Raw audio.
+  // Save regions to data base
+
   const saveRegionsDataBase = (selections, audioId) => {
     if (selections) {
       selections?.forEach((region) => {
         // change pixels to second to save in the database
         region.start = parseInt(region.start / (canvasWidth / 300));
         region.end = parseInt(region.end / (canvasWidth / 300));
+        region.color = {
+          r: region.color.r ? region.color.r : 255,
+          g: region.color.g ? region.color.g : 0,
+          b: region.color.b ? region.color.b : 0,
+        };
         let singleCall = region;
         console.log("singleCall :>> ", singleCall);
 
@@ -107,6 +116,11 @@ export default function Waveform() {
   };
 
   const playButton = () => {
+    if (run === true) {
+      setRun(false);
+    } else {
+      setRun(true);
+    }
     if (!play) {
       dispatch(spectrogramActions.playAudio());
       playerRef.current.play();
@@ -121,6 +135,8 @@ export default function Waveform() {
   const restartAudio = () => {
     dispatch(spectrogramActions.stopAudio());
     dispatch(spectrogramActions.updatePlayTracker(0));
+    dispatch(spectrogramActions.updateAudioTime(0));
+    playerRef.current.currentTime = audioCurrentTime;
   };
 
   // Load the spectrogram audio
@@ -128,7 +144,7 @@ export default function Waveform() {
     if (!loadingAudio) {
       playerRef.current.src = selectedAudio?.audio;
     } else {
-      // console.log("Loading audio");
+      console.log("Loading audio");
     }
   }, [loadingAudio, selectedAudio]);
 
@@ -147,14 +163,50 @@ export default function Waveform() {
         dispatch(
           spectrogramActions.updatePlayTracker(
             playtrackerPos +
-              ref.current.getBoundingClientRect().width / 60 / 5 / 100 // Converting time to pixel, one second in pixels
+              ref.current.getBoundingClientRect().width / 300 / 10 // Converting time to pixel, one second in pixels
           )
         );
       }
-    }, 10);
+    }, 100);
 
     return () => clearInterval(interval);
   }, [play, playtrackerPos, dispatch]);
+
+  // function scaleCanvas(canvas, context, width, height) {
+  //   // assume the device pixel ratio is 1 if the browser doesn't specify it
+  //   const devicePixelRatio = window.devicePixelRatio || 1;
+
+  //   // determine the 'backing store ratio' of the canvas context
+  //   const backingStoreRatio =
+  //     context.webkitBackingStorePixelRatio ||
+  //     context.mozBackingStorePixelRatio ||
+  //     context.msBackingStorePixelRatio ||
+  //     context.oBackingStorePixelRatio ||
+  //     context.backingStorePixelRatio ||
+  //     1;
+
+  //   // determine the actual ratio we want to draw at
+  //   const ratio = devicePixelRatio / backingStoreRatio;
+
+  //   if (devicePixelRatio !== backingStoreRatio) {
+  //     // set the 'real' canvas size to the higher width/height
+  //     canvas.width = width * ratio;
+  //     canvas.height = height * ratio;
+
+  //     // ...then scale it back down with CSS
+  //     canvas.style.width = width + "px";
+  //     canvas.style.height = height + "px";
+  //   } else {
+  //     // this is a normal 1:1 device; just scale it simply
+  //     canvas.width = width;
+  //     canvas.height = height;
+  //     canvas.style.width = "";
+  //     canvas.style.height = "";
+  //   }
+
+  //   // scale the drawing context so everything will work at the higher ratio
+  //   context.scale(ratio, ratio);
+  // }
 
   useEffect(() => {
     if (!loading) {
@@ -166,10 +218,13 @@ export default function Waveform() {
       const canvasBBox = canvas.getBoundingClientRect(); // Canvas Margin to Modal
       canvas.style.width = "100%";
       canvas.width = canvas.offsetWidth;
-      canvas.height = 200;
+      canvas.height = 205;
       let ctx = canvas.getContext("2d");
 
+      // scaleCanvas(canvas, ctx, canvasBBox.width, canvas.height);
+
       const handleMouseDown = (e) => {
+        console.log("e :>> ", e);
         e.preventDefault();
         let eX = e.clientX - canvasBBox.x;
         if (selections.length > 0) {
@@ -428,9 +483,9 @@ export default function Waveform() {
         ctx.closePath();
         if (text) {
           ctx.fillStyle = "white";
-          ctx.font = "13px Arial";
+          ctx.font = "12px Arial";
           ctx.textAlign = "center";
-          ctx.fillText(xPos / (canvasWidth / duration) / 60, xPos, 175);
+          ctx.fillText(xPos / (canvasWidth / duration), xPos, 175);
         }
       };
 
@@ -451,18 +506,40 @@ export default function Waveform() {
         });
 
         // Draw existing selections
+
+        const drawExistingSelection = (selection) => {
+          if (selection.start < selection.end) {
+            ctx.lineWidth = 1; // Stroke Width
+            ctx.strokeStyle = "red";
+            ctx.beginPath();
+            ctx.rect(
+              selection.start * (canvasWidth / 300), // x
+              0, // y
+              selection.end * (canvasWidth / 300), // width
+              canvas.height // height
+            );
+            ctx.stroke();
+            ctx.fillStyle = selection.highlighted
+              ? `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.5)`
+              : `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.2)`;
+            ctx.fill();
+            ctx.closePath();
+          }
+        };
+
         if (calls) {
           calls.forEach((call) => {
             if (call.isCorrect === true) {
-              drawSelection(call);
+              drawExistingSelection(call);
             }
           });
         }
 
         // Play Tracker
         drawPlayTracker(ctx);
-        console.log("canvasWidth :>> ", canvasWidth);
-        // Time Lines
+
+        // Draw Time Lines
+
         if (canvasWidth) {
           for (let i = 0; i < canvasWidth; i += canvasWidth / 300) {
             if (i % (canvasWidth / 10) === 0) {
@@ -511,9 +588,7 @@ export default function Waveform() {
                   <div className="controls-container">
                     <div
                       className="controls"
-                      onClick={() =>
-                        playButton(run === true ? setRun(false) : setRun(true))
-                      }
+                      onClick={() => playButton()}
                       type="button"
                     >
                       {Play === "Play" ? (

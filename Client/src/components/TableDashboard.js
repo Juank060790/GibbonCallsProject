@@ -15,7 +15,7 @@ import { Tooltip } from "react-bootstrap";
 
 export default function TableDashboard() {
   const firstDocumentRedux = useSelector((state) => state.audio.firstDocument);
-  const selectedAudio = useSelector((state) => state.audio.selectedAudio);
+  // const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
   const loading = useSelector((state) => state.audio.loading);
   const audios = useSelector((state) => state.audio.audio);
@@ -24,6 +24,7 @@ export default function TableDashboard() {
   const [formData, setFormData] = useState({ comment: "" });
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [orderBy, setOrderBy] = useState("recordDate");
+  // eslint-disable-next-line
   const [docsPerPage, setDocsPerPage] = useState(15);
   const [lastDoc, setLastDoc] = useState(null);
   const [firstDoc, setFirstDoc] = useState();

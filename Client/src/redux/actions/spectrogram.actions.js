@@ -49,6 +49,11 @@ const updateCanvasWidth = (w) => (dispatch) => {
   dispatch({ type: types.UPDATE_CANVAS_WIDTH, payload: w });
 };
 
+const updateAudioTime = (w) => (dispatch) => {
+  console.log("w :>> ", w);
+  dispatch({ type: types.UPDATE_AUDIO_CURRENT_TIME, payload: w });
+};
+
 export const spectrogramActions = {
   playAudio,
   stopAudio,
@@ -60,4 +65,5 @@ export const spectrogramActions = {
   updatePlayTracker,
   updateHighlightedSelection,
   updateCanvasWidth,
+  updateAudioTime,
 };

@@ -17,6 +17,7 @@ const initialState = {
   playtrackerPos: 0,
   play: false,
   canvasWidth: 0,
+  audioCurrentTime: 0,
 };
 
 const spectrogramReducer = (state = initialState, action) => {
@@ -80,6 +81,8 @@ const spectrogramReducer = (state = initialState, action) => {
       };
     case types.UPDATE_PLAYTRACKER_POS:
       return { ...state, playtrackerPos: payload };
+    case types.UPDATE_AUDIO_CURRENT_TIME:
+      return { ...state, audioCurrentTime: payload };
     case types.PLAY:
       return { ...state, play: true };
     case types.STOP:

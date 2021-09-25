@@ -82,8 +82,8 @@ export default function TableNewCalls(props) {
                   key={call.id}
                   className={`${
                     index % 2 === 0
-                      ? "cardDark text-center  tableInner tableKey "
-                      : "cardWhite text-center tableInner tableKey"
+                      ? "cardDark text-center  tableInner tableKey-newcalls "
+                      : "cardWhite text-center tableInner tableKey-newcalls"
                   }`}
                 >
                   {/* <td className="indexandcolor indexCell tableSingleKeyEditCalls">
@@ -119,12 +119,9 @@ export default function TableNewCalls(props) {
                   <td className="tableSingleKeyEditCalls commentKey">
                     {call.id}
                   </td>
-                  <td
-                    key={call.id}
-                    className=" tableSingleKeyEditCalls dropdownKey"
-                  >
+                  <td key={call.id} className=" tableSingleKeyEditCalls ">
                     <select
-                      className="dropdownKey"
+                      className="dropdownKey "
                       onChange={(event) =>
                         labelNewCall(event.target.value, call.id)
                       }

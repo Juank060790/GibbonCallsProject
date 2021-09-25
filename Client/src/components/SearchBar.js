@@ -3,7 +3,9 @@ import { audioActions } from "../redux/actions";
 import { useDispatch } from "react-redux";
 
 export default function SearchBar() {
+  // eslint-disable-next-line
   const [category, setCategory] = useState("recordDate");
+  // eslint-disable-next-line
   const [inputType, setInputType] = useState("date");
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
