@@ -163,7 +163,7 @@ export default function TableNewCalls(props) {
         </Table>
       </div>
 
-      {imageToShow === logoFF ? (
+      {/* {imageToShow === logoFF ? (
         <div className="spectrogramImageContainer">
           <img
             className="spectrogramImage fade-in"
@@ -179,7 +179,7 @@ export default function TableNewCalls(props) {
             alt="Spectrogram"
           />
         </div>
-      )}
+      )} */}
     </Container>
   );
 }
