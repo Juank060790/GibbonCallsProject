@@ -6,7 +6,6 @@ import TableNewCalls from "./TableNewCalls";
 import { spectrogramActions } from "../redux/actions";
 
 import "../Styles/Styles.scss";
-import toTimeString from "../helpers/utils";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -225,7 +224,7 @@ export default function Waveform() {
       const handleMouseDown = (e) => {
         console.log("e :>> ", e);
         e.preventDefault();
-        let eX = e.clientX - canvasBBox.x;
+        let eX = (e.clientX - canvasBBox.x) / (canvasWidth / 300);
         if (selections.length > 0) {
           for (let i = 0; i < selections.length; i++) {
             let sel = selections[i];
@@ -261,7 +260,7 @@ export default function Waveform() {
       const handleMouseUp = (e) => {
         e.preventDefault();
         if (mousedown) {
-          if (newSelection.start + 5 > newSelection.end) {
+          if (newSelection.start + 5 / (canvasWidth / 300) > newSelection.end) {
             newSelection.start = 0;
             newSelection.end = 0;
           }
@@ -274,7 +273,9 @@ export default function Waveform() {
         }
         if (highlightedSelection) {
           dispatch(
-            spectrogramActions.updatePlayTracker(highlightedSelection.start)
+            spectrogramActions.updatePlayTracker(
+              highlightedSelection.start * (canvasWidth / 300)
+            )
           );
           playerRef.current.currentTime =
             highlightedSelection.start / (canvasWidth / 300);
@@ -294,14 +295,12 @@ export default function Waveform() {
       // Mouse Down Event
       const handleMouseMove = (e) => {
         e.preventDefault();
-        let eX = e.clientX - canvasBBox.x;
+        let eX = (e.clientX - canvasBBox.x) / (canvasWidth / 300);
         let overlapping = false;
         let overlappingX = 0;
+
         if (mousedown) {
           // Moving a highlghted selection
-          // console.log(highlightedSelection);
-          // console.log(eX);
-          // console.log(mousedownPos);
           if (action === actions.DRAG_HIGHLIGHT_SELECTION_START) {
             // Expand start of highlighted selection
             dispatch(
@@ -320,15 +319,27 @@ export default function Waveform() {
             );
           } else if (action === actions.DRAG_HIGHLIGHT_SELECTION) {
             // Move selection
-            dispatch(
-              spectrogramActions.updateHighlightedSelection(
-                eX - mousedownPos,
-                highlightedSelection.end -
-                  highlightedSelection.start +
-                  eX -
-                  mousedownPos
-              )
-            );
+            // Handling collision with boundary
+            if (
+              eX - mousedownPos <= 0 ||
+              highlightedSelection.end -
+                highlightedSelection.start +
+                eX -
+                mousedownPos >=
+                300
+            ) {
+              return;
+            } else {
+              dispatch(
+                spectrogramActions.updateHighlightedSelection(
+                  eX - mousedownPos,
+                  highlightedSelection.end -
+                    highlightedSelection.start +
+                    eX -
+                    mousedownPos
+                )
+              );
+            }
           }
 
           // Handling overlapping between highlight selection with other selections
@@ -439,9 +450,9 @@ export default function Waveform() {
           ctx.strokeStyle = "red";
           ctx.beginPath();
           ctx.rect(
-            selection.start, // x
+            selection.start * (canvasWidth / 300), // x
             0, // y
-            selection.end - selection.start, // width
+            (selection.end - selection.start) * (canvasWidth / 300), // width
             canvas.height // height
           );
           ctx.stroke();
@@ -469,29 +480,29 @@ export default function Waveform() {
 
       // Draw the time line
 
-      const drawTimeLines = (xPos, yPos, LineHeight, text) => {
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "white";
-        ctx.beginPath();
-        ctx.rect(
-          xPos, // x
-          yPos, // y
-          0, // width
-          LineHeight // height
-        );
-        ctx.stroke();
-        ctx.closePath();
-        if (text) {
-          ctx.fillStyle = "white";
-          ctx.font = "12px Arial";
-          ctx.textAlign = "center";
-          ctx.fillText(
-            toTimeString(xPos / (canvasWidth / (duration ? duration : 300))),
-            xPos,
-            185
-          );
-        }
-      };
+      // const drawTimeLines = (xPos, yPos, LineHeight, text) => {
+      //   ctx.lineWidth = 1;
+      //   ctx.strokeStyle = "white";
+      //   ctx.beginPath();
+      //   ctx.rect(
+      //     xPos, // x
+      //     yPos, // y
+      //     0, // width
+      //     LineHeight // height
+      //   );
+      //   ctx.stroke();
+      //   ctx.closePath();
+      //   if (text) {
+      //     ctx.fillStyle = "white";
+      //     ctx.font = "12px Arial";
+      //     ctx.textAlign = "center";
+      //     ctx.fillText(
+      //       toTimeString(xPos / (canvasWidth / (duration ? duration : 300))),
+      //       xPos,
+      //       185
+      //     );
+      //   }
+      // };
 
       let render = () => {
         // Background Image
@@ -542,17 +553,43 @@ export default function Waveform() {
         // Play Tracker
         drawPlayTracker(ctx);
 
-        // Draw Time Lines
+        const drawTimeLines = () => {
+          for (let i = 0; i < 30; i++) {
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "white";
 
-        if (canvasWidth) {
-          for (let i = 0; i < canvasWidth; i += canvasWidth / 300) {
-            if (i % (canvasWidth / 10) === 0) {
-              drawTimeLines(i, 190, 15, "10");
-            } else if (i % (canvasWidth / 60) === 0) {
-              drawTimeLines(i, 195, 10);
+            ctx.beginPath();
+            ctx.rect(
+              i * (canvasWidth / 30), // x
+              canvas.height - 5, // y
+              0, // width
+              5 // height
+            );
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.stroke();
+
+            let seconds = i * 10;
+
+            if (seconds % 30 === 0 && seconds !== 0) {
+              ctx.fillStyle = "white";
+              ctx.font = "12px Arial";
+              ctx.textAlign = "center";
+
+              let text;
+              if (seconds % 60 === 0) {
+                text = `${Math.floor(seconds / 60)}:00`;
+              } else {
+                text = `${Math.floor(seconds / 60)}:30`;
+              }
+
+              ctx.fillText(text, i * (canvasWidth / 30), canvas.height - 10);
             }
           }
-        }
+        };
+
+        drawTimeLines();
 
         requestId = requestAnimationFrame(render);
       };

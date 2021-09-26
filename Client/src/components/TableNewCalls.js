@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logoFF from "../images/logo-reduced.png";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
-import toTimeString from "../helpers/utils";
+import NewCallSpectrogram from "./NewCallSpectrogram.js";
 
 export default function TableNewCalls(props) {
   const {
@@ -14,9 +14,10 @@ export default function TableNewCalls(props) {
     clearRegions,
   } = props;
 
-  const [imageToShow, setImageToShow] = useState(logoFF);
+  // const [imageToShow, setImageToShow] = useState(logoFF);
   const selections = useSelector((state) => state.spectrogram.selections);
-  const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
+
+  // const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
 
   const saveBtnTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -28,6 +29,13 @@ export default function TableNewCalls(props) {
       Delete regions
     </Tooltip>
   );
+
+  const secondsToTime = (seconds) => {
+    var date = new Date(null);
+    date.setSeconds(seconds);
+
+    return date.toISOString().substr(11, 8);
+  };
 
   return (
     <Container fluid className=" MediaPlayerContainer">
@@ -96,13 +104,14 @@ export default function TableNewCalls(props) {
                   </td> */}
 
                   <td className="tableSingleKeyEditCalls">
-                    {toTimeString(call.start / (canvasWidth / 300))}
+                    {secondsToTime(call.start)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    {toTimeString(call.end / (canvasWidth / 300))}
+                    {secondsToTime(call.end)}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    <img
+                    <NewCallSpectrogram call={call}></NewCallSpectrogram>
+                    {/* <img
                       onMouseEnter={() => {
                         setTimeout(() => {
                           setImageToShow(call.spectrogram);
@@ -114,7 +123,7 @@ export default function TableNewCalls(props) {
                       width="100px"
                       src={call?.spectrogram}
                       alt="spectrogram from region"
-                    />
+                    /> */}
                   </td>
 
                   <td className="tableSingleKeyEditCalls commentKey">
@@ -155,7 +164,7 @@ export default function TableNewCalls(props) {
         </Table>
       </div>
 
-      {imageToShow === logoFF ? (
+      {/* {imageToShow === logoFF ? (
         <div className="spectrogramImageContainer">
           <img
             className="spectrogramImage fade-in"
@@ -171,7 +180,7 @@ export default function TableNewCalls(props) {
             alt="Spectrogram"
           />
         </div>
-      )}
+      )} */}
     </Container>
   );
 }
