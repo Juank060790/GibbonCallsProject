@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logoFF from "../images/logo-reduced.png";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
+import toTimeString from "../helpers/utils";
 
 export default function TableNewCalls(props) {
   const {
@@ -95,10 +96,10 @@ export default function TableNewCalls(props) {
                   </td> */}
 
                   <td className="tableSingleKeyEditCalls">
-                    {(call.start / (canvasWidth / 300) / 60).toFixed(2)}
+                    {toTimeString(call.start / (canvasWidth / 300))}
                   </td>
                   <td className="tableSingleKeyEditCalls">
-                    {(call.end / (canvasWidth / 300) / 60).toFixed(2)}
+                    {toTimeString(call.end / (canvasWidth / 300))}
                   </td>
                   <td className="tableSingleKeyEditCalls">
                     <img

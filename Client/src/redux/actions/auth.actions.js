@@ -1,5 +1,6 @@
 import * as types from "../constants/auth.constants";
 import { myFirebase } from "../../Firebase/firebase";
+import { toast } from "react-toastify";
 
 // Firebase Auth
 
@@ -61,6 +62,7 @@ export const loginUser = (email, password) => (dispatch) => {
       dispatch(receiveLogin(user));
     })
     .catch((error) => {
+      toast.warning("Username/ password incorrect");
       dispatch({ type: types.LOGIN_FAILURE, payload: error });
       dispatch(loginError());
     });

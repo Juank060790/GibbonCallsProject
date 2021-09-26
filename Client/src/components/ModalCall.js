@@ -7,6 +7,7 @@ import { Modal, OverlayTrigger, Table } from "react-bootstrap";
 import { callActions } from "../redux/actions";
 import Loader from "react-spinners/ScaleLoader";
 import { Tooltip } from "react-bootstrap";
+import toTimeString from "../helpers/utils";
 
 export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -57,6 +58,20 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
       Press "Enter" to save comment.
     </Tooltip>
   );
+
+  // function addZero(i) {
+  //   if (i < 10) {
+  //     i = "0" + i;
+  //   }
+  //   return i;
+  // }
+
+  // function toTimeString(seconds) {
+  //   var d = new Date(seconds * 1000);
+  //   var m = addZero(d.getMinutes());
+  //   var s = addZero(d.getSeconds()); // Add leading zero
+  //   return m + ":" + s;
+  // }
 
   return (
     <Modal show={showModal} onHide={handleClose}>
@@ -110,11 +125,11 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                           </td>
                           <td className="tableSingleKey">{call.id}</td>
                           <td className="tableSingleKey">
-                            {(call.start / 60).toFixed(2)}
+                            {toTimeString(call.start)}
                           </td>
                           <td className="tableSingleKey">
                             {" "}
-                            {(call.end / 60).toFixed(2)}
+                            {toTimeString(call.end)}
                           </td>
                           {call.spectrogram ? (
                             <td

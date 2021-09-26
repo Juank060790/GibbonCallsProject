@@ -6,6 +6,7 @@ import TableNewCalls from "./TableNewCalls";
 import { spectrogramActions } from "../redux/actions";
 
 import "../Styles/Styles.scss";
+import toTimeString from "../helpers/utils";
 
 export default function Waveform() {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
@@ -485,7 +486,11 @@ export default function Waveform() {
           ctx.fillStyle = "white";
           ctx.font = "12px Arial";
           ctx.textAlign = "center";
-          ctx.fillText(xPos / (canvasWidth / duration), xPos, 175);
+          ctx.fillText(
+            toTimeString(xPos / (canvasWidth / (duration ? duration : 300))),
+            xPos,
+            180
+          );
         }
       };
 
@@ -543,7 +548,7 @@ export default function Waveform() {
         if (canvasWidth) {
           for (let i = 0; i < canvasWidth; i += canvasWidth / 300) {
             if (i % (canvasWidth / 10) === 0) {
-              drawTimeLines(i, 180, 20, "10");
+              drawTimeLines(i, 185, 15, "10");
             } else if (i % (canvasWidth / 100) === 0) {
               drawTimeLines(i, 190, 10);
             }
