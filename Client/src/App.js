@@ -7,6 +7,8 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer } from "react-toastify";
+
 // import AlertMsg from "./layouts/Alerts";
 
 library.add(fas);
@@ -16,6 +18,17 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer
+        position="top-left"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <>
         {isAuthenticated === undefined ? (
           <div className="vh-100 vw-100 d-flex justify-content-center align-items-center">
