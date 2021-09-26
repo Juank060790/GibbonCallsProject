@@ -222,8 +222,6 @@ export default function Waveform() {
       canvas.height = 205;
       let ctx = canvas.getContext("2d");
 
-      // scaleCanvas(canvas, ctx, canvasBBox.width, canvas.height);
-
       const handleMouseDown = (e) => {
         console.log("e :>> ", e);
         e.preventDefault();
@@ -234,6 +232,7 @@ export default function Waveform() {
             if (action === actions.NONE) {
             }
             if (sel.start < eX && eX < sel.end) {
+              console.log("sel :>> ", sel);
               dispatch(spectrogramActions.highlightSelection(sel.id));
               if (mousedownPos === 0) {
                 setmousedownPos(eX - sel.start);
@@ -489,7 +488,7 @@ export default function Waveform() {
           ctx.fillText(
             toTimeString(xPos / (canvasWidth / (duration ? duration : 300))),
             xPos,
-            180
+            185
           );
         }
       };
@@ -548,9 +547,9 @@ export default function Waveform() {
         if (canvasWidth) {
           for (let i = 0; i < canvasWidth; i += canvasWidth / 300) {
             if (i % (canvasWidth / 10) === 0) {
-              drawTimeLines(i, 185, 15, "10");
-            } else if (i % (canvasWidth / 100) === 0) {
-              drawTimeLines(i, 190, 10);
+              drawTimeLines(i, 190, 15, "10");
+            } else if (i % (canvasWidth / 60) === 0) {
+              drawTimeLines(i, 195, 10);
             }
           }
         }

@@ -1,5 +1,4 @@
 import * as types from "../constants/call.constants";
-import { alertActions } from "./alert.actions";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
 import { toast } from "react-toastify";
@@ -90,10 +89,7 @@ const updateIsCallCorrect =
           type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
           payload: "Call update it successfully ",
         });
-        dispatch(alertActions.setAlert("Call has been updated it", "success"));
-        // db.collection(collectionData).doc(`${slectedAudioId}`).update({
-        //   correctCalls: restCallCount,
-        // });
+        toast.success("Call has been updated it", "success");
       })
       .catch(() => {
         dispatch({
