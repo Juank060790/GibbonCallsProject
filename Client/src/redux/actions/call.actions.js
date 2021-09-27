@@ -53,23 +53,29 @@ const addCommentSingleCall = (comment, callId) => async (dispatch) => {
     });
 };
 
-const deleteCall = (callId) => (dispatch) => {
+const deleteCall = (callId, selectedAudio) => (dispatch) => {
   dispatch({ type: types.DELETE_CALL_REQUEST, payload: null });
   db.collection("calls")
     .doc(`${callId}`)
-    .update({
-      isDeleted: true,
-    })
+    .delete()
     .then(() => {
+      db.collection(collectionData)
+        .doc(selectedAudio)
+        .update({
+          gibbonCallsList: firebase.firestore.FieldValue.arrayRemove(callId),
+        });
+
       dispatch({
         type: types.DELETE_CALL_SUCCESS,
-        payload: "Audio deleted successfully ",
+        payload: "Call deleted successfully ",
       });
+      getSingleCall(selectedAudio);
     })
     .catch((err) => {
       dispatch({
         type: types.DELETE_CALL_FAILURE,
         payload: `Error removing document:${callId}`,
+        err,
       });
     });
 };

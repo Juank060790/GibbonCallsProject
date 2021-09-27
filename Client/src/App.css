@@ -362,7 +362,7 @@ body {
 }
 
 .buttons-actions {
-  margin: 10px;
+  /* margin: 10px; */
   height: 60px;
   display: flex;
   flex-grow: 1;

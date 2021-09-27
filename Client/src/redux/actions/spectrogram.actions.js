@@ -55,11 +55,9 @@ const updateCanvasWidth = (w) => (dispatch) => {
 };
 
 const updateAudioTime = (w) => (dispatch) => {
-  // console.log("w :>> ", w);
   dispatch({ type: types.UPDATE_AUDIO_CURRENT_TIME, payload: w });
 };
 const showImage = (call) => (dispatch) => {
-  console.log("w :>> ", call);
   dispatch({ type: types.SHOW_IMAGE, payload: call });
 };
 

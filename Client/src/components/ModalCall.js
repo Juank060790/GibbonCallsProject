@@ -56,6 +56,17 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
     </Tooltip>
   );
 
+  const deleteBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Remove
+    </Tooltip>
+  );
+
+  const confirmDelete = (e, callId, selectedAudio) => {
+    e.preventDefault();
+    dispatch(callActions.deleteCall(callId, selectedAudio));
+  };
+
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>{selectedAudio?.audioLink}</Modal.Header>
@@ -85,7 +96,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                   <th>Created by</th>
                   <th>%</th>
                   <th>Comments</th>
-                  <th className="text-center"></th>
+                  <th className="text-center">Remove</th>
                 </tr>
               </thead>
               <>
@@ -205,6 +216,31 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                   ></textarea>
                                 </OverlayTrigger>
                               </form>{" "}
+                            </td>
+                            <td className="tableSingleKey buttons-actions">
+                              <OverlayTrigger
+                                placement="top"
+                                delay={{ show: 100, hide: 100 }}
+                                overlay={deleteBtnTooltip}
+                              >
+                                <button
+                                  className="remove-btn btn-warning"
+                                  onClick={(e) => {
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you want to delete this call from the database?"
+                                      )
+                                    )
+                                      confirmDelete(
+                                        e,
+                                        call.id,
+                                        selectedAudio.id
+                                      );
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon="trash-alt" />
+                                </button>
+                              </OverlayTrigger>
                             </td>
                           </tr>
                         ) : null}

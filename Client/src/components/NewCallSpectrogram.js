@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 export default function NewCallSpectrogram({ call }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const ref = useRef(null);
-  console.log("call :>> ", call, selectedAudio);
 
   useEffect(() => {
     if (call && selectedAudio) {
