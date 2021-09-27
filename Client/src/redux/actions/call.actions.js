@@ -1,4 +1,4 @@
-import * as types from "../constants/call.constants";
+import * as types from "../constants/spectrogram.constants";
 import { db } from "../../Firebase/firebase";
 import firebase from "firebase/app";
 import { toast } from "react-toastify";
@@ -11,7 +11,7 @@ const getSingleCall = (callId) => (dispatch) => {
   db.doc(`calls/${callId}`).onSnapshot((doc) => {
     let singleCall = [];
     if (doc.exists) {
-      singleCall = { id: doc.id, ...doc.data() };
+      singleCall = { id: doc.id, ...doc.data(), dataBase: true };
       dispatch({
         type: types.GET_SINGLE_CALL_SUCCESS,
         payload: singleCall,
@@ -89,7 +89,7 @@ const updateIsCallCorrect =
           type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
           payload: "Call update it successfully ",
         });
-        toast.success("Call has been updated it", "success");
+        // toast.success("Call has been updated it", "success");
       })
       .catch(() => {
         dispatch({

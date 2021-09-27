@@ -82,6 +82,3 @@ Ex. Spectrogram of a Call Displayed on the Top Section of the Modal
 
 **JuanCarlosDuran**
 **Nguyễn Minh Anh**
-
-- [Profile](https://github.com/Juank060790 "Juan Carlos")
-- [Email](mailto:juank060790@gmail.com?subject=Hi "Hi!")

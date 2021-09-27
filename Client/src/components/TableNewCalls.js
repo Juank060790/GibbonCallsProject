@@ -1,8 +1,8 @@
 import { Container, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import logoFF from "../images/logo-reduced.png";
+// import logoFF from "../images/logo-reduced.png";
 import { useSelector } from "react-redux";
-import React, { useState } from "react";
+import React from "react";
 import NewCallSpectrogram from "./NewCallSpectrogram.js";
 
 export default function TableNewCalls(props) {
@@ -26,7 +26,7 @@ export default function TableNewCalls(props) {
   );
   const deleteBtnTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      Delete regions
+      Remove
     </Tooltip>
   );
 
@@ -57,7 +57,7 @@ export default function TableNewCalls(props) {
                 <FontAwesomeIcon icon="save" />
               </button>
             </OverlayTrigger>
-            <OverlayTrigger
+            {/* <OverlayTrigger
               placement="top"
               delay={{ show: 100, hide: 100 }}
               overlay={deleteBtnTooltip}
@@ -68,7 +68,7 @@ export default function TableNewCalls(props) {
               >
                 <FontAwesomeIcon icon="trash-alt" />
               </button>
-            </OverlayTrigger>
+            </OverlayTrigger> */}
           </div>
         </div>
         <Table responsive>
@@ -82,20 +82,22 @@ export default function TableNewCalls(props) {
               <th>Call Id</th>
               <th>Label</th>
               <th>Comments</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <>
             {selections?.map((call, index) => (
               <tbody key={index}>
-                <tr
-                  key={call.id}
-                  className={`${
-                    index % 2 === 0
-                      ? "cardDark text-center  tableInner tableKey-newcalls "
-                      : "cardWhite text-center tableInner tableKey-newcalls"
-                  }`}
-                >
-                  {/* <td className="indexandcolor indexCell tableSingleKeyEditCalls">
+                {call.dataBase === undefined ? (
+                  <tr
+                    key={call.id + index}
+                    className={`${
+                      index % 2 === 0
+                        ? "cardDark text-center  tableInner tableKey-newcalls "
+                        : "cardWhite text-center tableInner tableKey-newcalls"
+                    }`}
+                  >
+                    {/* <td className="indexandcolor indexCell tableSingleKeyEditCalls">
                     <FontAwesomeIcon
                       className="labelColorSquare m-2"
                       icon={["fas", "square"]}
@@ -103,15 +105,15 @@ export default function TableNewCalls(props) {
                     ></FontAwesomeIcon>
                   </td> */}
 
-                  <td className="tableSingleKeyEditCalls">
-                    {secondsToTime(call.start)}
-                  </td>
-                  <td className="tableSingleKeyEditCalls">
-                    {secondsToTime(call.end)}
-                  </td>
-                  <td className="tableSingleKeyEditCalls">
-                    <NewCallSpectrogram call={call}></NewCallSpectrogram>
-                    {/* <img
+                    <td className="tableSingleKeyEditCalls">
+                      {secondsToTime(call.start)}
+                    </td>
+                    <td className="tableSingleKeyEditCalls">
+                      {secondsToTime(call.end)}
+                    </td>
+                    <td className="tableSingleKeyEditCalls">
+                      <NewCallSpectrogram call={call}></NewCallSpectrogram>
+                      {/* <img
                       onMouseEnter={() => {
                         setTimeout(() => {
                           setImageToShow(call.spectrogram);
@@ -124,40 +126,58 @@ export default function TableNewCalls(props) {
                       src={call?.spectrogram}
                       alt="spectrogram from region"
                     /> */}
-                  </td>
+                    </td>
 
-                  <td className="tableSingleKeyEditCalls commentKey">
-                    {call.id}
-                  </td>
-                  <td key={call.id} className=" tableSingleKeyEditCalls ">
-                    <select
-                      className="dropdownKey "
-                      onChange={(event) =>
-                        labelNewCall(event.target.value, call.id)
-                      }
-                    >
-                      <option value="Female">Female</option>
-                      <option value="Male">Male</option>
-                    </select>
-                  </td>
+                    <td className="tableSingleKeyEditCalls commentKey">
+                      {call.id}
+                    </td>
+                    <td key={call.id} className=" tableSingleKeyEditCalls ">
+                      <select
+                        className="dropdownKey "
+                        onChange={(event) =>
+                          labelNewCall(event.target.value, call.id)
+                        }
+                      >
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                      </select>
+                    </td>
 
-                  <td className="lastCell tableSingleKeyEditCalls">
-                    <textarea
-                      className="textareacommentsInput"
-                      // onSelect={() => saveCommentNewCall(call?.id)}
-                      key={call.id}
-                      type="textarea"
-                      name="comment"
-                      onChange={(event) => saveCommentNewCall(event, call?.id)}
-                      id={index + call.id}
-                      defaultValue={call.comments}
-                      placeholder="Add comment..."
-                      cols="30"
-                      rows="30"
-                    ></textarea>
-                    {/* </form> */}
-                  </td>
-                </tr>
+                    <td className="lastCell tableSingleKeyEditCalls">
+                      <textarea
+                        className="textareacommentsInput"
+                        // onSelect={() => saveCommentNewCall(call?.id)}
+                        key={call.id}
+                        type="textarea"
+                        name="comment"
+                        onChange={(event) =>
+                          saveCommentNewCall(event, call?.id)
+                        }
+                        id={index + call.id}
+                        defaultValue={call.comments}
+                        placeholder="Add comment..."
+                        cols="30"
+                        rows="30"
+                      ></textarea>
+                      {/* </form> */}
+                    </td>
+                    <td className="buttons-actions">
+                      {" "}
+                      <OverlayTrigger
+                        placement="top"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={deleteBtnTooltip}
+                      >
+                        <button
+                          className="remove-btn btn-warning"
+                          onClick={() => clearRegions(call.id)}
+                        >
+                          <FontAwesomeIcon icon="trash-alt" />
+                        </button>
+                      </OverlayTrigger>
+                    </td>
+                  </tr>
+                ) : null}
               </tbody>
             ))}
           </>

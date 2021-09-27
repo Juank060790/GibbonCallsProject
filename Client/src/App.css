@@ -192,10 +192,6 @@ body {
   opacity: 1;
 }
 
-.savebutton {
-  border-color: currentColor !important;
-  margin: auto;
-}
 .validationBtn {
   font-size: 22px;
 }
@@ -352,6 +348,23 @@ body {
 .spectrogramImageFull {
   margin: auto;
   width: 60%;
+}
+
+.buttons-actions {
+  margin: 10px;
+  height: 60px;
+  display: flex;
+  flex-grow: 1;
+  /* centering the button */
+  align-items: center;
+  justify-content: center;
+}
+.remove-btn {
+  border-radius: 10px;
+  display: flex;
+  /* centering the text inside the button */
+  align-items: center;
+  justify-content: center;
 }
 
 .fade-in {

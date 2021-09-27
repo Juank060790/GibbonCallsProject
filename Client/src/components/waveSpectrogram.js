@@ -16,11 +16,10 @@ export default function Waveform() {
   const [duration, setDuration] = useState(null);
   const [Play, setPlay] = useState("Play");
   const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
-  // const regionColor = randomColor(0.1);
   const [run, setRun] = useState(true);
   const playerRef = useRef(null);
   const dispatch = useDispatch();
-  const calls = useSelector((state) => state.call.call);
+
   const audioCurrentTime = useSelector(
     (state) => state.spectrogram.audioCurrentTime
   );
@@ -78,27 +77,24 @@ export default function Waveform() {
   const saveRegionsDataBase = (selections, audioId) => {
     if (selections) {
       selections?.forEach((region) => {
-        // change pixels to second to save in the database
-        region.start = parseInt(region.start / (canvasWidth / 300));
-        region.end = parseInt(region.end / (canvasWidth / 300));
-        region.color = {
-          r: region.color.r ? region.color.r : 255,
-          g: region.color.g ? region.color.g : 0,
-          b: region.color.b ? region.color.b : 0,
-        };
-        let singleCall = region;
-        console.log("singleCall :>> ", singleCall);
+        if (region.dataBase === undefined) {
+          region.color = {
+            r: region.color.r ? region.color.r : 255,
+            g: region.color.g ? region.color.g : 0,
+            b: region.color.b ? region.color.b : 0,
+          };
+          let singleCall = region;
 
-        dispatch(callActions.saveRegionCall(singleCall, audioId));
-        dispatch(callActions.getSingleCall(singleCall.id));
-        dispatch(spectrogramActions.clearSelection());
+          dispatch(callActions.saveRegionCall(singleCall, audioId));
+          dispatch(callActions.getSingleCall(singleCall.id));
+        }
       });
     }
   };
 
   // Clear all the regions from the waveform
-  const clearRegions = () => {
-    dispatch(spectrogramActions.clearSelection());
+  const clearRegions = (callId) => {
+    dispatch(spectrogramActions.clearSingleSelection(callId));
   };
 
   const onLoadedMetadata = () => {
@@ -172,42 +168,6 @@ export default function Waveform() {
     return () => clearInterval(interval);
   }, [play, playtrackerPos, dispatch]);
 
-  // function scaleCanvas(canvas, context, width, height) {
-  //   // assume the device pixel ratio is 1 if the browser doesn't specify it
-  //   const devicePixelRatio = window.devicePixelRatio || 1;
-
-  //   // determine the 'backing store ratio' of the canvas context
-  //   const backingStoreRatio =
-  //     context.webkitBackingStorePixelRatio ||
-  //     context.mozBackingStorePixelRatio ||
-  //     context.msBackingStorePixelRatio ||
-  //     context.oBackingStorePixelRatio ||
-  //     context.backingStorePixelRatio ||
-  //     1;
-
-  //   // determine the actual ratio we want to draw at
-  //   const ratio = devicePixelRatio / backingStoreRatio;
-
-  //   if (devicePixelRatio !== backingStoreRatio) {
-  //     // set the 'real' canvas size to the higher width/height
-  //     canvas.width = width * ratio;
-  //     canvas.height = height * ratio;
-
-  //     // ...then scale it back down with CSS
-  //     canvas.style.width = width + "px";
-  //     canvas.style.height = height + "px";
-  //   } else {
-  //     // this is a normal 1:1 device; just scale it simply
-  //     canvas.width = width;
-  //     canvas.height = height;
-  //     canvas.style.width = "";
-  //     canvas.style.height = "";
-  //   }
-
-  //   // scale the drawing context so everything will work at the higher ratio
-  //   context.scale(ratio, ratio);
-  // }
-
   useEffect(() => {
     if (!loading) {
       // requestId
@@ -222,7 +182,7 @@ export default function Waveform() {
       let ctx = canvas.getContext("2d");
 
       const handleMouseDown = (e) => {
-        console.log("e :>> ", e);
+        // console.log("e :>> ", e);
         e.preventDefault();
         let eX = (e.clientX - canvasBBox.x) / (canvasWidth / 300);
         if (selections.length > 0) {
@@ -231,7 +191,7 @@ export default function Waveform() {
             if (action === actions.NONE) {
             }
             if (sel.start < eX && eX < sel.end) {
-              console.log("sel :>> ", sel);
+              // console.log("sel :>> ", sel);
               dispatch(spectrogramActions.highlightSelection(sel.id));
               if (mousedownPos === 0) {
                 setmousedownPos(eX - sel.start);
@@ -277,19 +237,17 @@ export default function Waveform() {
               highlightedSelection.start * (canvasWidth / 300)
             )
           );
-          playerRef.current.currentTime =
-            highlightedSelection.start / (canvasWidth / 300);
-        }
+          playerRef.current.currentTime = highlightedSelection.start;
 
-        // if (
-        //   highlightedSelection.start !== 0 &&
-        //   highlightedSelection.end !== 0
-        // ) {
-        //   dispatch(
-        //     spectrogramActions.updatePlayTracker(highlightedSelection.start)
-        //   );
-        //   console.log("highlightedSelection :>> ", highlightedSelection.start);
-        // }
+          // Updates the selection in the database
+          dispatch(
+            spectrogramActions.updateSelectionTime(
+              highlightedSelection.start,
+              highlightedSelection.end,
+              highlightedSelection.id
+            )
+          );
+        }
       };
 
       // Mouse Down Event
@@ -359,7 +317,7 @@ export default function Waveform() {
                 highlightedSelection.start <= sel.end &&
                 highlightedSelection.start > sel.start
               ) {
-                console.log("Left");
+                // console.log("Left");
                 dispatch(
                   spectrogramActions.updateHighlightedSelection(
                     sel.end,
@@ -478,32 +436,6 @@ export default function Waveform() {
         ctx.closePath();
       };
 
-      // Draw the time line
-
-      // const drawTimeLines = (xPos, yPos, LineHeight, text) => {
-      //   ctx.lineWidth = 1;
-      //   ctx.strokeStyle = "white";
-      //   ctx.beginPath();
-      //   ctx.rect(
-      //     xPos, // x
-      //     yPos, // y
-      //     0, // width
-      //     LineHeight // height
-      //   );
-      //   ctx.stroke();
-      //   ctx.closePath();
-      //   if (text) {
-      //     ctx.fillStyle = "white";
-      //     ctx.font = "12px Arial";
-      //     ctx.textAlign = "center";
-      //     ctx.fillText(
-      //       toTimeString(xPos / (canvasWidth / (duration ? duration : 300))),
-      //       xPos,
-      //       185
-      //     );
-      //   }
-      // };
-
       let render = () => {
         // Background Image
         if (selectedAudio.imageUrl) {
@@ -517,42 +449,15 @@ export default function Waveform() {
 
         // Existing Selections
         selections.forEach((selection) => {
-          drawSelection(selection);
-        });
-
-        // Draw existing selections
-
-        const drawExistingSelection = (selection) => {
-          if (selection.start < selection.end) {
-            ctx.lineWidth = 1; // Stroke Width
-            ctx.strokeStyle = "red";
-            ctx.beginPath();
-            ctx.rect(
-              selection.start * (canvasWidth / 300), // x
-              0, // y
-              selection.end * (canvasWidth / 300), // width
-              canvas.height // height
-            );
-            ctx.stroke();
-            ctx.fillStyle = selection.highlighted
-              ? `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.5)`
-              : `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.2)`;
-            ctx.fill();
-            ctx.closePath();
+          if (selection.isCorrect === true) {
+            drawSelection(selection);
           }
-        };
-
-        if (calls) {
-          calls.forEach((call) => {
-            if (call.isCorrect === true) {
-              drawExistingSelection(call);
-            }
-          });
-        }
+        });
 
         // Play Tracker
         drawPlayTracker(ctx);
 
+        // Draw the time line
         const drawTimeLines = () => {
           for (let i = 0; i < 30; i++) {
             ctx.lineWidth = 1;

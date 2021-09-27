@@ -1,4 +1,6 @@
 import * as types from "../constants/spectrogram.constants";
+import { db } from "../../Firebase/firebase";
+// import { toast } from "react-toastify";
 
 const playAudio = () => (dispatch) => {
   dispatch({ type: types.PLAY, payload: null });
@@ -13,8 +15,11 @@ const createSelection = (start, end) => (dispatch) => {
   dispatch({ type: types.UPDATE_SELECTION, payload: { start, end } });
 };
 
-const clearSelection = (start, end) => (dispatch) => {
-  dispatch({ type: types.CLEAR_SELECTION, payload: null });
+const clearSelection = (callId) => (dispatch) => {
+  dispatch({ type: types.CLEAR_SELECTION, payload: callId });
+};
+const clearSingleSelection = (callId) => (dispatch) => {
+  dispatch({ type: types.CLEAR_SINGLE_SELECTION, payload: callId });
 };
 
 const handleMouseUp = (selection) => (dispatch) => {
@@ -50,8 +55,32 @@ const updateCanvasWidth = (w) => (dispatch) => {
 };
 
 const updateAudioTime = (w) => (dispatch) => {
-  console.log("w :>> ", w);
+  // console.log("w :>> ", w);
   dispatch({ type: types.UPDATE_AUDIO_CURRENT_TIME, payload: w });
+};
+
+const updateSelectionTime = (start, end, callId) => (dispatch) => {
+  dispatch({ type: types.UPDATE_SELECTION_TIME_REQUEST, payload: null });
+
+  db.collection("calls")
+    .doc(`${callId}`)
+    .update({
+      start: start,
+      end: end,
+    })
+    .then(() => {
+      dispatch({
+        type: types.UPDATE_SELECTION_TIME_SUCCESS,
+        payload: "Call update it successfully ",
+      });
+      // toast.success("Call has been updated it", "success");
+    })
+    .catch(() => {
+      dispatch({
+        type: types.UPDATE_SELECTION_TIME_FAILURE,
+        payload: `Error updating call:${callId}`,
+      });
+    });
 };
 
 export const spectrogramActions = {
@@ -66,4 +95,6 @@ export const spectrogramActions = {
   updateHighlightedSelection,
   updateCanvasWidth,
   updateAudioTime,
+  clearSingleSelection,
+  updateSelectionTime,
 };

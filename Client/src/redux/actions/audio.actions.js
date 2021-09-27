@@ -178,7 +178,7 @@ const addCommentRawAudio = (comment, audioId) => (dispatch) => {
 };
 
 const deleteAudio = (audioId) => (dispatch) => {
-  console.log(`audioId`, audioId);
+  // console.log(`audioId`, audioId);
   dispatch({ type: types.DELETE_RAW_AUDIO_REQUEST, payload: null });
   db.collection(collectionData)
     .doc(audioId)

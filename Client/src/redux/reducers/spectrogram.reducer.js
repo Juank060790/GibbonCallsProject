@@ -13,11 +13,13 @@ const initialState = {
     accuracy: "-",
     createdBy: "Manual",
     label: "Female",
+    isCorrect: true,
   },
   playtrackerPos: 0,
   play: false,
   canvasWidth: 0,
   audioCurrentTime: 0,
+  loading: false,
 };
 
 const spectrogramReducer = (state = initialState, action) => {
@@ -44,6 +46,7 @@ const spectrogramReducer = (state = initialState, action) => {
           accuracy: "-",
           createdBy: "Manual",
           label: "Female",
+          isCorrect: true,
         },
       };
     case types.UPDATE_SELECTION:
@@ -55,6 +58,15 @@ const spectrogramReducer = (state = initialState, action) => {
       return {
         ...state,
         selections: [],
+      };
+    case types.CLEAR_SINGLE_SELECTION:
+      // remove item in array
+      const selectionsArray = state.selections.filter(function (item) {
+        return item.id !== payload;
+      });
+      return {
+        ...state,
+        selections: selectionsArray,
       };
     case types.HIGHLIGHT_SELECTION:
       return {
@@ -90,6 +102,58 @@ const spectrogramReducer = (state = initialState, action) => {
 
     case types.UPDATE_CANVAS_WIDTH:
       return { ...state, canvasWidth: payload };
+
+    case types.SAVE_REGION_CALL_REQUEST:
+    case types.GET_SINGLE_CALL_REQUEST:
+      return { ...state, loading: true };
+    case types.SAVE_REGION_CALL_SUCCESS:
+      return { ...state, loading: false };
+    case types.GET_SINGLE_CALL_SUCCESS:
+      const callArray = state.selections;
+      const isCallInTheArray = (el) => el.id === payload.id;
+      const findIndexOfCall = callArray.findIndex(isCallInTheArray);
+      if (callArray[findIndexOfCall]?.id === payload.id) {
+        callArray[findIndexOfCall] = payload;
+      } else {
+        callArray.push(payload);
+      }
+      return {
+        ...state,
+        selections: callArray,
+      };
+
+    case types.UPDATE_IS_CORRECT_CALL_REQUEST:
+    case types.UPDATE_SELECTION_TIME_REQUEST:
+    case types.DELETE_COMMENT_CALL_REQUEST:
+      return { ...state, loading: true };
+
+    case types.DELETE_COMMENT_CALL_SUCCESS:
+      return { ...state, payload };
+
+    case types.GET_SINGLE_CALL_FAILURE:
+      return { ...state, loading: false };
+
+    case types.UPDATE_IS_CORRECT_CALL_SUCCESS:
+    case types.UPDATE_SELECTION_TIME_SUCCESS:
+      return { ...state, loading: false };
+
+    case types.SAVE_REGION_CALL_FAILURE:
+    case types.DELETE_COMMENT_CALL_FAILURE:
+    case types.UPDATE_IS_CORRECT_CALL_FAILURE:
+    case types.UPDATE_SELECTION_TIME_FAILURE:
+      return { ...state, loading: false };
+
+    case types.CREATE_COMMENT_SINGLE_CALL_SUCCESS:
+    case types.DELETE_CALL_SUCCESS:
+      return {
+        ...state,
+        selections: [...state.selections],
+        payload,
+        loading: false,
+      };
+
+    case types.CLEAR_CALLS:
+      return { ...state, selections: [] };
 
     default:
       return state;
