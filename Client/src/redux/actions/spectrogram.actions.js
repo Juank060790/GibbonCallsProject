@@ -15,8 +15,8 @@ const createSelection = (start, end) => (dispatch) => {
   dispatch({ type: types.UPDATE_SELECTION, payload: { start, end } });
 };
 
-const clearSelection = (callId) => (dispatch) => {
-  dispatch({ type: types.CLEAR_SELECTION, payload: callId });
+const clearSelection = () => (dispatch) => {
+  dispatch({ type: types.CLEAR_SELECTION, payload: null });
 };
 const clearSingleSelection = (callId) => (dispatch) => {
   dispatch({ type: types.CLEAR_SINGLE_SELECTION, payload: callId });
@@ -58,6 +58,10 @@ const updateAudioTime = (w) => (dispatch) => {
   // console.log("w :>> ", w);
   dispatch({ type: types.UPDATE_AUDIO_CURRENT_TIME, payload: w });
 };
+const showImage = (call) => (dispatch) => {
+  console.log("w :>> ", call);
+  dispatch({ type: types.SHOW_IMAGE, payload: call });
+};
 
 const updateSelectionTime = (start, end, callId) => (dispatch) => {
   dispatch({ type: types.UPDATE_SELECTION_TIME_REQUEST, payload: null });
@@ -97,4 +101,5 @@ export const spectrogramActions = {
   updateAudioTime,
   clearSingleSelection,
   updateSelectionTime,
+  showImage,
 };

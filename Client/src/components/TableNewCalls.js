@@ -14,10 +14,10 @@ export default function TableNewCalls(props) {
     clearRegions,
   } = props;
 
-  // const [imageToShow, setImageToShow] = useState(logoFF);
-  const selections = useSelector((state) => state.spectrogram.selections);
+  const imageToShow = useSelector((state) => state.spectrogram.showImage);
+  console.log("imageToShow :>> ", imageToShow);
 
-  // const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
+  const selections = useSelector((state) => state.spectrogram.selections);
 
   const saveBtnTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -57,25 +57,11 @@ export default function TableNewCalls(props) {
                 <FontAwesomeIcon icon="save" />
               </button>
             </OverlayTrigger>
-            {/* <OverlayTrigger
-              placement="top"
-              delay={{ show: 100, hide: 100 }}
-              overlay={deleteBtnTooltip}
-            >
-              <button
-                className="saveBtn btn-success"
-                onClick={() => clearRegions()}
-              >
-                <FontAwesomeIcon icon="trash-alt" />
-              </button>
-            </OverlayTrigger> */}
           </div>
         </div>
         <Table responsive>
           <thead className="text-center tableSaveRegionHeader">
             <tr>
-              {/* <th className="indexCell idNumberModal">Call</th> */}
-
               <th>Time Start</th>
               <th>Time End</th>
               <th>Spectrogram</th>
@@ -112,7 +98,7 @@ export default function TableNewCalls(props) {
                       {secondsToTime(call.end)}
                     </td>
                     <td className="tableSingleKeyEditCalls">
-                      <NewCallSpectrogram call={call}></NewCallSpectrogram>
+                      <NewCallSpectrogram call={call} />
                       {/* <img
                       onMouseEnter={() => {
                         setTimeout(() => {
@@ -184,20 +170,16 @@ export default function TableNewCalls(props) {
         </Table>
       </div>
 
-      {/* {imageToShow === logoFF ? (
+      {/* {imageToShow ? (
+        <div className="spectrogramImageContainer">
+          <NewCallSpectrogram call={imageToShow} />
+        </div>
+      ) : (
         <div className="spectrogramImageContainer">
           <img
             className="spectrogramImage fade-in"
             src={logoFF}
             alt="Spectrogram "
-          />
-        </div>
-      ) : (
-        <div className="spectrogramImageContainer">
-          <img
-            className=" spectrogramImageFull fade-in"
-            src={imageToShow}
-            alt="Spectrogram"
           />
         </div>
       )} */}

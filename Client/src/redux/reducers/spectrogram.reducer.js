@@ -20,6 +20,7 @@ const initialState = {
   canvasWidth: 0,
   audioCurrentTime: 0,
   loading: false,
+  showImage: [],
 };
 
 const spectrogramReducer = (state = initialState, action) => {
@@ -122,6 +123,9 @@ const spectrogramReducer = (state = initialState, action) => {
         selections: callArray,
       };
 
+    case types.SHOW_IMAGE:
+      return { ...state, showImage: payload };
+
     case types.UPDATE_IS_CORRECT_CALL_REQUEST:
     case types.UPDATE_SELECTION_TIME_REQUEST:
     case types.DELETE_COMMENT_CALL_REQUEST:
@@ -153,7 +157,7 @@ const spectrogramReducer = (state = initialState, action) => {
       };
 
     case types.CLEAR_CALLS:
-      return { ...state, selections: [] };
+      return { ...state, selections: [], playtrackerPos: 0 };
 
     default:
       return state;

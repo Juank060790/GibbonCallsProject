@@ -569,7 +569,6 @@ export default function Waveform() {
             </div>
 
             <TableNewCalls
-              // loadRegions={loadRegions}
               clearRegions={clearRegions}
               selectedAudio={selectedAudio}
               labelForNewCall={labelForNewCall}

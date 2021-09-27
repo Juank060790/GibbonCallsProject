@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import WaveSpectrogram from "./waveSpectrogram";
 import logoFF from "../images/logo-reduced.png";
 import { Modal, OverlayTrigger, Table } from "react-bootstrap";
-import { callActions } from "../redux/actions";
+import { callActions, spectrogramActions } from "../redux/actions";
 import Loader from "react-spinners/ScaleLoader";
 import { Tooltip } from "react-bootstrap";
 import toTimeString from "../helpers/utils";
@@ -45,11 +45,6 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   // To Do[count how many calls are correct]
   const isCallCorrect = (callId, isCorrect) => {
     const selectedAudioId = selectedAudio?.id;
-    // Count the calls if are correct or not
-    // const finalCount = callsToCount.call?.filter(
-    //   (x) => x.isCorrect === true
-    // ).length;
-    // const restCallCount = finalCount - 1;
     dispatch(
       callActions.updateIsCallCorrect(callId, selectedAudioId, isCorrect)
     );
@@ -123,12 +118,19 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
 
                             <td
                               // onClick={() => showSpectrogram(call.spectrogram)}
-                              className="tableSingleKey"
+                              className="tableSingleKey key-spectrogram"
+                              onMouseEnter={() => {
+                                setTimeout(() => {
+                                  dispatch(spectrogramActions.showImage(call));
+                                }, 300);
+                              }}
+                              onMouseOut={() => {
+                                dispatch(spectrogramActions.showImage(null));
+                              }}
                             >
-                              {/* <NewCallSpectrogram
-                                  call={call}
-                                ></NewCallSpectrogram> */}
-                              TO DO
+                              <NewCallSpectrogram
+                                call={call}
+                              ></NewCallSpectrogram>
                             </td>
 
                             <td className="tableSingleKey commentKey">
