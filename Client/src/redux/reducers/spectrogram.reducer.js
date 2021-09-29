@@ -130,6 +130,7 @@ const spectrogramReducer = (state = initialState, action) => {
       return {
         ...state,
         selections: callArray,
+        loading: false,
       };
 
     case types.SHOW_IMAGE:

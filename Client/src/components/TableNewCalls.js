@@ -24,12 +24,6 @@ export default function TableNewCalls(props) {
     clearRegions,
   } = props;
 
-<<<<<<< HEAD
-  // const imageToShow = useSelector((state) => state.spectrogram.showImage);
-  // console.log("imageToShow :>> ", imageToShow);
-
-=======
->>>>>>> 83750d152dfebc633416b97cc69f7d80e19879a3
   const selections = useSelector((state) => state.spectrogram.selections);
   const highlightedSelection = useSelector((state) =>
     state.spectrogram.selections.find((selection) => selection.highlighted)

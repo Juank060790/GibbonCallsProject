@@ -5,11 +5,12 @@ import WaveSpectrogram from "./waveSpectrogram";
 import logoFF from "../images/logo-reduced.png";
 import { Modal, OverlayTrigger, Table } from "react-bootstrap";
 import { callActions, spectrogramActions } from "../redux/actions";
-import Loader from "react-spinners/ScaleLoader";
+// import Loader from "react-spinners/ScaleLoader";
 import { Tooltip } from "react-bootstrap";
 import toTimeString from "../helpers/utils";
 import NewCallSpectrogram from "./NewCallSpectrogram";
 import ScaleLoader from "react-spinners/ScaleLoader";
+
 export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const loadingAudio = useSelector((state) => state.audio.loadingAudio);
@@ -17,6 +18,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const [formData, setFormData] = useState({ comment: "" });
   const [arrayCalls, setArrayCalls] = useState(null);
   const selections = useSelector((state) => state.spectrogram);
+  const loading = useSelector((state) => state.audio.loading);
 
   const dispatch = useDispatch();
   // const canvasWidth = useSelector((state) => state.spectrogram.canvasWidth);
@@ -99,11 +101,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                   <th>Created by</th>
                   <th>%</th>
                   <th>Comments</th>
-<<<<<<< HEAD
-                  <th className="text-center">Remove</th>
-=======
                   <th></th>
->>>>>>> 83750d152dfebc633416b97cc69f7d80e19879a3
                 </tr>
               </thead>
               <>
@@ -151,7 +149,11 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                               //   dispatch(spectrogramActions.showImage(null));
                               // }}
                             >
-                              <NewCallSpectrogram call={call} />
+                              {loading ? (
+                                <div>Loading</div>
+                              ) : (
+                                <NewCallSpectrogram call={call} />
+                              )}
                             </td>
 
                             <td className="tableSingleKey commentKey">
@@ -232,33 +234,6 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                 </OverlayTrigger>
                               </form>{" "}
                             </td>
-<<<<<<< HEAD
-                            <td className="tableSingleKey buttons-actions">
-                              <OverlayTrigger
-                                placement="top"
-                                delay={{ show: 100, hide: 100 }}
-                                overlay={deleteBtnTooltip}
-                              >
-                                <button
-                                  className="remove-btn btn-warning"
-                                  onClick={(e) => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this call from the database?"
-                                      )
-                                    )
-                                      confirmDelete(
-                                        e,
-                                        call.id,
-                                        selectedAudio.id
-                                      );
-                                  }}
-                                >
-                                  <FontAwesomeIcon icon="trash-alt" />
-                                </button>
-                              </OverlayTrigger>
-                            </td>
-=======
 
                             {call.createdBy === "Manual" && (
                               <td className="tableSingleKey buttons-actions">
@@ -287,7 +262,6 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                 </OverlayTrigger>
                               </td>
                             )}
->>>>>>> 83750d152dfebc633416b97cc69f7d80e19879a3
                           </tr>
                         ) : null}
                       </tbody>
