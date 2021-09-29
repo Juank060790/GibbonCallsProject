@@ -59,7 +59,6 @@ const updateAudioTime = (w) => (dispatch) => {
   dispatch({ type: types.UPDATE_AUDIO_CURRENT_TIME, payload: w });
 };
 const showImage = (call) => (dispatch) => {
-  console.log("w :>> ", call);
   dispatch({ type: types.SHOW_IMAGE, payload: call });
 };
 

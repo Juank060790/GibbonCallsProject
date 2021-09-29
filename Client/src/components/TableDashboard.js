@@ -12,11 +12,11 @@ import { OverlayTrigger, Table } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 import ModalCall from "./ModalCall";
 import { Tooltip } from "react-bootstrap";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 export default function TableDashboard() {
-  const firstDocumentRedux = useSelector((state) => state.audio.firstDocument);
-  // const selectedAudio = useSelector((state) => state.audio.selectedAudio);
-  const lastDocumentRedux = useSelector((state) => state.audio.latestDoc);
+  const firstDoc = useSelector((state) => state.audio.firstDoc);
+  const lastDoc = useSelector((state) => state.audio.lastDoc);
   const loading = useSelector((state) => state.audio.loading);
   const audios = useSelector((state) => state.audio.audio);
   const [audioIdOnComment, setAudioIdOnComment] = useState("");
@@ -25,11 +25,11 @@ export default function TableDashboard() {
   const [callsperAudio, setCallsperAudio] = useState([]);
   const [orderBy, setOrderBy] = useState("recordDate");
   // eslint-disable-next-line
-  const [docsPerPage, setDocsPerPage] = useState(15);
-  const [lastDoc, setLastDoc] = useState(null);
-  const [firstDoc, setFirstDoc] = useState();
+  const [docsPerPage, setDocsPerPage] = useState(10);
+
   const [order, setOrder] = useState("desc");
   const [show, setShow] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
   const handleShow = () => setShow(true);
   const dispatch = useDispatch();
 
@@ -45,7 +45,7 @@ export default function TableDashboard() {
       // Get audios default limit, order by record date, order desc, null, null,//
       audioActions.audiosRequest(docsPerPage, orderBy, order, lastDoc, firstDoc)
     );
-  }, [dispatch, docsPerPage, orderBy, order, lastDoc, firstDoc]);
+  }, []);
 
   // Spectrogram
   // Set the image to show in the modal of single calls, same as clear the img when you close the modal
@@ -75,13 +75,37 @@ export default function TableDashboard() {
 
   // Pagination
   const handleClickOnNext = () => {
-    setFirstDoc(null);
-    setLastDoc(lastDocumentRedux);
+    console.log("Next");
+    // setFirstDoc(null);
+    // setLastDoc(lastDocumentRedux);
+    dispatch(
+      audioActions.audiosRequest(
+        docsPerPage,
+        orderBy,
+        order,
+        lastDoc,
+        firstDoc,
+        "next"
+      )
+    );
+    setPageNumber(pageNumber + 1);
   };
 
   const handleClickOnPrev = () => {
-    setLastDoc(null);
-    setFirstDoc(firstDocumentRedux);
+    console.log("Prev");
+    // setLastDoc(null);
+    // setFirstDoc(firstDocumentRedux);
+    dispatch(
+      audioActions.audiosRequest(
+        docsPerPage,
+        orderBy,
+        order,
+        lastDoc,
+        firstDoc,
+        "previous"
+      )
+    );
+    setPageNumber(pageNumber - 1);
   };
 
   // Get an individual calls  inside of a RawAudio
@@ -97,7 +121,10 @@ export default function TableDashboard() {
   // Get individual Rawaudio with a Modal.
   const toAudioId = (audioId, gibbonCallsList, audioLink) => {
     dispatch(audioActions.getSingleAudio(audioId));
-    dispatch(audioActions.getAudioFromFirebase(audioLink));
+
+    // console.log(audioLink);
+    // dispatch(audioActions.getAudioFromFirebase(audioLink));
+    console.log(audioLink);
     getCalls(gibbonCallsList);
   };
 
@@ -132,137 +159,154 @@ export default function TableDashboard() {
   );
 
   return (
-    <>
-      <div className="fullTable">
-        <SearchBar />
-        <Table className="fullTable" responsive="md">
-          <thead className="text-center tableHeader">
-            <tr>
-              {/* <th className="lightweight tableSingleKey">N&deg; </th> */}
-              <th className="lightweight tableSingleKey audioIdKey">
-                Audio Id{" "}
-                {/* <FontAwesomeIcon
+    <div className="dashboard">
+      {loading ? (
+        <>
+          <p style={{ color: "#56c597ab", fontSize: "1.5rem" }}>Loading...</p>
+          <ScaleLoader color="#56c597ab" height="4rem" width="0.8rem" />
+        </>
+      ) : (
+        <div className="fullTable">
+          {/* <SearchBar /> */}
+          <Table responsive="md">
+            <thead className="text-center tableHeader">
+              <tr>
+                {/* <th className="lightweight tableSingleKey">N&deg; </th> */}
+                <th className="lightweight tableSingleKey audioIdKey">
+                  Audio Id{" "}
+                  {/* <FontAwesomeIcon
                   className="btnSortOrder"
                   icon={["fas", "sort-amount-up"]}
                   size="sm"
                   color="green"
                   onClick={(e) => sortOrder("audioId")}
                 ></FontAwesomeIcon>{" "} */}
-              </th>
-              <th className="lightweight tableSingleKey">
-                Record Date{" "}
-                <FontAwesomeIcon
-                  className={`${
-                    order === "desc"
-                      ? "btnSortOrder btn-desc"
-                      : "btnSortOrder btn-asc"
-                  }`}
-                  icon={["fas", "sort-up"]}
-                  size="sm"
-                  color="green"
-                  onClick={(e) => sortOrder("recordDate")}
-                ></FontAwesomeIcon>{" "}
-              </th>
-
-              <th className="lightweight tableSingleKey">Duration </th>
-              <th className="lightweight tableSingleKey">Calls </th>
-              <th className="lightweight tableSingleKey">Comments</th>
-            </tr>
-          </thead>
-          <>
-            {audios?.length ? (
-              <tbody className="lightweight">
-                {audios.map((audio, index) => (
-                  <tr
-                    key={audio.id}
+                </th>
+                <th className="lightweight tableSingleKey">
+                  Record Date{" "}
+                  <FontAwesomeIcon
                     className={`${
-                      index % 2 === 0
-                        ? "cardDark text-center  tableInner tableKey "
-                        : "cardWhite text-center tableInner tableKey"
+                      order === "desc"
+                        ? "btnSortOrder btn-desc"
+                        : "btnSortOrder btn-asc"
                     }`}
-                  >
-                    {/* <td className="tableSingleKey indexKey">{index + 1}</td> */}
-                    <td className="tableSingleKey audioIdKey">
-                      {audio.audioLink}
-                    </td>
-                    <td
-                      onClick={() =>
-                        toAudioId(
-                          audio?.id,
-                          audio?.gibbonCallsList,
-                          audio.audioLink
-                        )
-                      }
-                      className="tableSingleKey "
-                    >
-                      {new Date(
-                        audio.recordDate.seconds * 1000
-                      ).toLocaleDateString()}
-                    </td>
-                    <td
-                      onClick={() =>
-                        toAudioId(
-                          audio?.id,
-                          audio.gibbonCallsList,
-                          audio.audioLink
-                        )
-                      }
-                      className="tableSingleKey"
-                    >
-                      5:00
-                    </td>
+                    icon={["fas", "sort-up"]}
+                    size="sm"
+                    color="green"
+                    onClick={(e) => sortOrder("recordDate")}
+                  ></FontAwesomeIcon>{" "}
+                </th>
 
-                    <td
-                      onClick={() =>
-                        toAudioId(
-                          audio?.id,
-                          audio.gibbonCallsList,
-                          audio.audioLink
-                        )
-                      }
-                      className="tableSingleKey gibbonCallsKeys"
-                    >
-                      {audio.gibbonCallsList?.length > 0
-                        ? audio.gibbonCallsList?.length
-                        : 0}
-                      {/* {audio.correctCalls} */}
-                    </td>
-
-                    <td className="tableSingleKey commentKey">
-                      <form
-                        className="commentForm"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handlesubmit(e);
-                          }
-                        }}
+                <th className="lightweight tableSingleKey">Duration </th>
+                <th className="lightweight tableSingleKey">Calls </th>
+                <th className="lightweight tableSingleKey">Comments</th>
+              </tr>
+            </thead>
+            <>
+              {audios?.length ? (
+                <tbody className="lightweight">
+                  {audios
+                    .slice(0, docsPerPage) // Offset the extra document to check for last page
+                    .map((audio, index) => (
+                      <tr
                         key={audio.id}
-                        id={audio.id}
+                        className="cardWhite text-center  tableInner tableKey"
                       >
-                        <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 1000, hide: 100 }}
-                          overlay={saveCommentTooltip}
+                        {/* <td className="tableSingleKey indexKey">{index + 1}</td> */}
+                        <td
+                          className="tableSingleKey audioIdKey"
+                          onClick={() =>
+                            toAudioId(
+                              audio?.id,
+                              audio?.gibbonCallsList,
+                              audio.audioLink
+                            )
+                          }
                         >
-                          <textarea
-                            className="textareacommentsInput"
-                            onSelect={() => setAudioIdOnComment(audio?.id)}
-                            key={audio.id}
-                            type="textarea"
-                            name="comment"
-                            onChange={handleChange}
-                            id={index + audio.id}
-                            defaultValue={audio.comments}
-                            placeholder="Add comment..."
-                            cols="50"
-                            rows="40"
-                          ></textarea>
-                        </OverlayTrigger>
-                      </form>
-                    </td>
+                          {audio.audioLink}
+                        </td>
+                        <td
+                          onClick={() =>
+                            toAudioId(
+                              audio?.id,
+                              audio?.gibbonCallsList,
+                              audio.audioLink
+                            )
+                          }
+                          className="tableSingleKey "
+                        >
+                          {new Date(
+                            audio.recordDate.seconds * 1000
+                          ).toLocaleDateString("en-GB", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          })}
+                        </td>
+                        <td
+                          onClick={() =>
+                            toAudioId(
+                              audio?.id,
+                              audio.gibbonCallsList,
+                              audio.audioLink
+                            )
+                          }
+                          className="tableSingleKey"
+                        >
+                          5:00
+                        </td>
 
-                    {/* <td className="lastCell tableSingleKey">
+                        <td
+                          onClick={() =>
+                            toAudioId(
+                              audio?.id,
+                              audio.gibbonCallsList,
+                              audio.audioLink
+                            )
+                          }
+                          className="tableSingleKey gibbonCallsKeys"
+                        >
+                          {audio.gibbonCallsList?.length > 0
+                            ? audio.gibbonCallsList?.length
+                            : 0}
+                          {/* {audio.correctCalls} */}
+                        </td>
+
+                        <td className="tableSingleKey commentKey">
+                          <form
+                            className="commentForm"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handlesubmit(e);
+                              }
+                            }}
+                            key={audio.id}
+                            id={audio.id}
+                          >
+                            <OverlayTrigger
+                              placement="top"
+                              delay={{ show: 1000, hide: 100 }}
+                              overlay={saveCommentTooltip}
+                            >
+                              <textarea
+                                className="textareacommentsInput"
+                                onSelect={() => setAudioIdOnComment(audio?.id)}
+                                key={audio.id}
+                                type="textarea"
+                                name="comment"
+                                onChange={handleChange}
+                                id={index + audio.id}
+                                defaultValue={audio.comments}
+                                placeholder="Add comment..."
+                                cols="50"
+                                rows="40"
+                              ></textarea>
+                            </OverlayTrigger>
+                          </form>
+                        </td>
+
+                        {/* <td className="lastCell tableSingleKey">
                       {" "}
                       <FontAwesomeIcon
                         className="btndeleteAudio"
@@ -271,35 +315,39 @@ export default function TableDashboard() {
                         onClick={() => deleteAudio(audio.id)}
                       ></FontAwesomeIcon>{" "}
                     </td> */}
-                  </tr>
-                ))}
-              </tbody>
-            ) : (
-              <thead className="text-center notfoundAudios">
-                <tr>
-                  <td>
-                    <h5>No more audios found...</h5>
+                      </tr>
+                    ))}
+                </tbody>
+              ) : (
+                <thead className="text-center notfoundAudios">
+                  <tr>
+                    <td>
+                      <h5>No more audios found...</h5>
 
-                    <img src={logoFF} width={"100px"} alt="logoFF" />
-                  </td>
-                </tr>
-              </thead>
-            )}
-          </>
-        </Table>
-        <PaginationItem
-          audios={audios}
-          loading={loading}
-          handleClickOnNext={handleClickOnNext}
-          handleClickOnPrev={handleClickOnPrev}
-        />
-      </div>
+                      <img src={logoFF} width={"100px"} alt="logoFF" />
+                    </td>
+                  </tr>
+                </thead>
+              )}
+            </>
+          </Table>
+          <PaginationItem
+            audios={audios}
+            // loading={loading}
+            handleClickOnNext={handleClickOnNext}
+            handleClickOnPrev={handleClickOnPrev}
+            pageNumber={pageNumber}
+            lastPage={audios.length < docsPerPage}
+          />
+        </div>
+      )}
+
       <ModalCall
         showModal={show}
         callsperAudio={callsperAudio}
         handleClose={handleClose}
         getCalls={getCalls}
       />
-    </>
+    </div>
   );
 }

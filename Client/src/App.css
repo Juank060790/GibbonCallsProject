@@ -11,10 +11,20 @@ body {
     #7be49538 69%,
     #56c59731 90%
   );
-  background-repeat: no-repeat;
-  color: rgb(231, 230, 230);
+
+  background-size: cover;
+  /* background-repeat: repeat; */
 }
 
+#root {
+  height: 100%;
+}
+.App {
+  height: 100%;
+}
+.main {
+  height: 100%;
+}
 /* utils */
 
 .lightweight {
@@ -73,7 +83,7 @@ body {
 /* Header */
 
 .header-container {
-  padding: 3rem;
+  padding: 1rem;
 }
 
 /* Dashboard */
@@ -83,17 +93,11 @@ body {
 }
 
 .titleDashboard {
-  color: #575756;
-  font-style: italic;
-  font-weight: 400;
-  text-align: center;
-  width: 60%;
+  color: #089c44;
+  font-weight: 300;
   margin: auto;
-}
-
-.NavBar {
-  display: flex;
-  justify-content: space-between;
+  /* text-transform: uppercase; */
+  font-size: 1.5rem;
 }
 
 /* Not Found Page */
@@ -113,6 +117,7 @@ body {
   width: 90%;
   margin: auto;
   box-shadow: 0px 0px 10px 0px #04c45e29;
+  height: 100%;
 }
 
 /* Table edit call */
@@ -120,11 +125,14 @@ body {
 .tableSingleKeyEditCalls {
   max-height: min-content;
   vertical-align: middle !important;
+  padding: 3px;
+  min-width: 50px;
 }
 
 .tableSingleKeyEditCalls > div {
   width: 50%;
   margin: auto;
+  padding: 3px;
 }
 
 .notfoundAudios {
@@ -172,10 +180,18 @@ body {
 }
 
 .textareacommentsInput {
-  height: 30px;
+  max-height: 30px;
+  height: 100%;
   border-radius: 5px;
-  width: 100%;
+  width: 95%;
   border: none;
+}
+
+.textareacommentsInput:focus {
+  outline: none !important;
+  border: 1px solid #56c597ab;
+  box-shadow: 0 0 10px #56c597ab;
+  /* border: 1px solid #56c597ab; */
 }
 
 .textareacommentsInput::placeholder {
@@ -247,7 +263,6 @@ body {
 
 .tableSingleKey {
   vertical-align: middle !important;
-  border: 1px solid rgba(197, 197, 197, 0.274);
 }
 
 .tableKey {
@@ -266,6 +281,10 @@ body {
 .tableKey:hover {
   background-color: #6acc9349;
   cursor: pointer;
+}
+
+.highlighted {
+  background-color: #6acc9349;
 }
 
 .audioIdKey {
@@ -289,9 +308,9 @@ body {
 /* Buttons */
 
 .dropdownKey {
-  margin: 5px;
   border: 1px solid rgba(197, 197, 197, 0.674);
   border-radius: 5px;
+  min-height: 30px;
 }
 
 .controls-container {
@@ -300,6 +319,7 @@ body {
   background-image: radial-gradient(#cff4d254 40%, #7be49549 90%);
   max-width: fit-content;
 }
+
 .controls {
   margin: auto;
 }
@@ -320,8 +340,7 @@ body {
 .saveBtn {
   font-size: 14px;
   padding: 6px;
-  width: 30px;
-  height: 35px;
+  width: 5rem;
   margin: 5px;
   border-radius: 10px;
 }
@@ -331,18 +350,18 @@ body {
 }
 
 .spectrogramImageContainer {
-  min-height: 300px;
+  min-height: 10rem;
   border: 1px solid #56c597ab;
   padding: 10px;
   width: 100%;
-  margin-left: 10px;
+
   border-radius: 5px;
   display: flex;
 }
 
 .spectrogramImageContainer > div {
   margin: auto;
-  width: 400px;
+  width: 100%;
 }
 
 .subTableNewCall {
@@ -473,9 +492,8 @@ body {
 
 /* Pagination */
 
-.marginNone {
-  margin-top: 1rem !important;
-  margin-bottom: none;
+.marginNone p {
+  margin: 0 10px 0 10px;
 }
 
 .footerPagination {
@@ -683,11 +701,33 @@ button:focus {
   cursor: pointer;
 }
 
-.imgLogo {
-  width: 100%;
-  height: 100%;
-  margin: auto;
+/* .saturate {
+  filter: saturate(3);
 }
+.grayscale {
+  filter: grayscale(100%);
+}
+.contrast {
+  filter: contrast(160%);
+}
+.brightness {
+  filter: brightness(0.25);
+}
+.blur {
+  filter: blur(3px);
+}
+.invert {
+  filter: invert(100%);
+}
+.sepia {
+  filter: sepia(100%);
+}
+.huerotate {
+  filter: hue-rotate(180deg);
+}
+.rss.opacity {
+  filter: opacity(50%);
+} */
 
 input[type="checkbox"] {
   display: none;
@@ -829,4 +869,43 @@ input[type="checkbox"] {
 .inner-menu-column {
   display: flex;
   flex-direction: column;
+}
+
+.navbar {
+  justify-content: space-between !important;
+  background-color: #56c597ab;
+  height: 5rem;
+  -webkit-box-shadow: 0px 2px 13px 3px rgba(0, 0, 0, 0.29);
+  box-shadow: 0px 2px 13px 3px rgba(0, 0, 0, 0.29);
+}
+.navbar div {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard {
+  margin-top: 100px;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.call-modal {
+  background-image: linear-gradient(
+    to bottom,
+    #cff4d23a 30%,
+    #7be49538 69%,
+    #56c59731 90%
+  );
+
+  background-size: cover;
+}
+
+.call-modal-header {
+  background-color: #56c597ab;
+  color: #089c44;
+  font-weight: 400;
+  font-size: 1.3rem;
 }

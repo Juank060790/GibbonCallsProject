@@ -53,51 +53,58 @@ const addCommentSingleCall = (comment, callId) => async (dispatch) => {
     });
 };
 
-const deleteCall = (callId) => (dispatch) => {
+const deleteCall = (callId, selectedAudio) => (dispatch) => {
   dispatch({ type: types.DELETE_CALL_REQUEST, payload: null });
   db.collection("calls")
     .doc(`${callId}`)
-    .update({
-      isDeleted: true,
-    })
+    .delete()
     .then(() => {
+      db.collection(collectionData)
+        .doc(selectedAudio)
+        .update({
+          gibbonCallsList: firebase.firestore.FieldValue.arrayRemove(callId),
+        });
+
       dispatch({
         type: types.DELETE_CALL_SUCCESS,
-        payload: "Audio deleted successfully ",
+        payload: "Call deleted successfully ",
       });
+      getSingleCall(selectedAudio);
     })
     .catch((err) => {
       dispatch({
         type: types.DELETE_CALL_FAILURE,
         payload: `Error removing document:${callId}`,
+        err,
       });
     });
 };
 
-const updateIsCallCorrect =
-  (callId, slectedAudioId, isCorrect) => (dispatch) => {
-    let validate = isCorrect;
+const updateIsCallCorrect = (callId, slectedAudioId, isCorrect) => (
+  dispatch
+) => {
+  let validate = isCorrect;
 
-    dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
-    db.collection("calls")
-      .doc(`${callId}`)
-      .update({
-        isCorrect: validate,
-      })
-      .then(() => {
-        dispatch({
-          type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
-          payload: "Call update it successfully ",
-        });
-        // toast.success("Call has been updated it", "success");
-      })
-      .catch(() => {
-        dispatch({
-          type: types.UPDATE_IS_CORRECT_CALL_FAILURE,
-          payload: `Error updating call:${callId}`,
-        });
+  dispatch({ type: types.UPDATE_IS_CORRECT_CALL_REQUEST, payload: null });
+  db.collection("calls")
+    .doc(`${callId}`)
+    .update({
+      isCorrect: validate,
+    })
+    .then(() => {
+      dispatch({
+        type: types.UPDATE_IS_CORRECT_CALL_SUCCESS,
+        payload: "Call update it successfully ",
       });
-  };
+      // toast.success("Call has been updated it", "success");
+    })
+    .catch(() => {
+      dispatch({
+        type: types.UPDATE_IS_CORRECT_CALL_FAILURE,
+        payload: `Error updating call:${callId}`,
+      });
+    });
+};
 
 const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
   let singleCallId = singleCall.id;
@@ -115,7 +122,7 @@ const saveRegionCall = (singleCall, audioId, addCallCount) => (dispatch) => {
 
       dispatch({
         type: types.SAVE_REGION_CALL_SUCCESS,
-        payload: null,
+        payload: singleCallId,
       });
     })
     .catch(() => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
-export default function NewCallSpectrogram({ call }) {
+export default function HighlightedSpectrogram({ call }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const ref = useRef(null);
 
@@ -10,8 +10,8 @@ export default function NewCallSpectrogram({ call }) {
       let canvas = ref.current;
 
       canvas.style.width = "100%";
-      canvas.width = 200;
-      canvas.height = 100;
+      canvas.width = canvas.getBoundingClientRect().width;
+      canvas.height = canvas.getBoundingClientRect().height;
       let ctx = canvas.getContext("2d");
       // Load image
       let image = new Image();
