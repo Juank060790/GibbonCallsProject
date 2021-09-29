@@ -9,7 +9,7 @@ import Loader from "react-spinners/ScaleLoader";
 import { Tooltip } from "react-bootstrap";
 import toTimeString from "../helpers/utils";
 import NewCallSpectrogram from "./NewCallSpectrogram";
-
+import ScaleLoader from "react-spinners/ScaleLoader";
 export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   const selectedAudio = useSelector((state) => state.audio.selectedAudio);
   const loadingAudio = useSelector((state) => state.audio.loadingAudio);
@@ -68,16 +68,19 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton>{selectedAudio?.audioLink}</Modal.Header>
-      {loadingAudio ? (
-        <Modal.Body className="loader-container">
+    <Modal show={showModal} onHide={handleClose} dialogClassName="call-modal">
+      <Modal.Header closeButton className="call-modal-header">
+        {`${selectedAudio?.audioLink}`}
+      </Modal.Header>
+      {loadingAudio && !selectedAudio?.audio ? (
+        <Modal.Body className="loader-container call-modal">
           <div className="loader">
-            <Loader color="black" height={85} width={4} radius={2} margin={5} />
+            <p style={{ color: "#56c597ab", fontSize: "1.5rem" }}>Loading...</p>
+            <ScaleLoader color="#56c597ab" height="4rem" width="0.8rem" />
           </div>
         </Modal.Body>
       ) : (
-        <Modal.Body>
+        <Modal.Body className="call-modal">
           <WaveSpectrogram />
 
           <div className="callsTable">
@@ -87,7 +90,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
               <thead className="text-center tableHeader">
                 <tr>
                   <th>Num</th>
-                  <th className="idNumberModal">Id N&deg;</th>
+
                   <th>Time Start</th>
                   <th>Time End</th>
                   <th>Spectrogram</th>
@@ -96,7 +99,11 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                   <th>Created by</th>
                   <th>%</th>
                   <th>Comments</th>
+<<<<<<< HEAD
                   <th className="text-center">Remove</th>
+=======
+                  <th></th>
+>>>>>>> 83750d152dfebc633416b97cc69f7d80e19879a3
                 </tr>
               </thead>
               <>
@@ -113,12 +120,17 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                   <>
                     {arrayCalls?.map((call, index) => (
                       <tbody key={index + 1}>
-                        {call.dataBase === true ? (
-                          <tr className="text-center tableKey" key={call.id}>
+                        {call.dataBase ? (
+                          <tr
+                            className={`text-center tableKey ${
+                              call.highlighted ? "highlighted" : ""
+                            }`}
+                            key={call.id}
+                          >
                             <td className="tableSingleKey indexKey">
                               {index + 1}
                             </td>
-                            <td className="tableSingleKey">{call.id}</td>
+
                             <td className="tableSingleKey">
                               {toTimeString(call.start)}
                             </td>
@@ -130,50 +142,52 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                             <td
                               // onClick={() => showSpectrogram(call.spectrogram)}
                               className="tableSingleKey key-spectrogram"
-                              onMouseEnter={() => {
-                                setTimeout(() => {
-                                  dispatch(spectrogramActions.showImage(call));
-                                }, 300);
-                              }}
-                              onMouseOut={() => {
-                                dispatch(spectrogramActions.showImage(null));
-                              }}
+                              // onMouseEnter={() => {
+                              //   setTimeout(() => {
+                              //     dispatch(spectrogramActions.showImage(call));
+                              //   }, 300);
+                              // }}
+                              // onMouseOut={() => {
+                              //   dispatch(spectrogramActions.showImage(null));
+                              // }}
                             >
-                              <NewCallSpectrogram
-                                call={call}
-                              ></NewCallSpectrogram>
+                              <NewCallSpectrogram call={call} />
                             </td>
 
                             <td className="tableSingleKey commentKey">
-                              <div className="buttonscomments">
-                                {call?.isCorrect === false ? (
-                                  <div
-                                    className="commentBtns commentBtnsDelete"
-                                    onClick={() =>
-                                      isCallCorrect(call?.id, true)
-                                    }
-                                  >
-                                    <FontAwesomeIcon
-                                      className="validationBtn"
-                                      icon={["fas", "times-circle"]}
-                                    ></FontAwesomeIcon>{" "}
-                                  </div>
-                                ) : (
-                                  <div
-                                    className="commentBtns commentBtnsSave"
-                                    onClick={() =>
-                                      isCallCorrect(call?.id, false)
-                                    }
-                                  >
-                                    {" "}
-                                    <FontAwesomeIcon
-                                      icon={["fas", "check-circle"]}
-                                      className="validationBtn"
-                                      color="#04c45c"
-                                    ></FontAwesomeIcon>
-                                  </div>
-                                )}
-                              </div>
+                              {call.createdBy === "Manual" ? (
+                                <p>-</p>
+                              ) : (
+                                <div className="buttonscomments">
+                                  {call?.isCorrect === false ? (
+                                    <div
+                                      className="commentBtns commentBtnsDelete"
+                                      onClick={() =>
+                                        isCallCorrect(call?.id, true)
+                                      }
+                                    >
+                                      <FontAwesomeIcon
+                                        className="validationBtn"
+                                        icon={["fas", "times-circle"]}
+                                      ></FontAwesomeIcon>{" "}
+                                    </div>
+                                  ) : (
+                                    <div
+                                      className="commentBtns commentBtnsSave"
+                                      onClick={() =>
+                                        isCallCorrect(call?.id, false)
+                                      }
+                                    >
+                                      {" "}
+                                      <FontAwesomeIcon
+                                        icon={["fas", "check-circle"]}
+                                        className="validationBtn"
+                                        color="#04c45c"
+                                      ></FontAwesomeIcon>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </td>
                             <td className="tableSingleKey ">
                               {call.label ? call.label : "N/A"}
@@ -208,6 +222,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                       setCallIdOnComment(call?.id)
                                     }
                                     defaultValue={call.comment}
+                                    placeholder="Add comment..."
                                     onChange={handleChange}
                                     id={index + call.id}
                                     type="textarea"
@@ -217,6 +232,7 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                 </OverlayTrigger>
                               </form>{" "}
                             </td>
+<<<<<<< HEAD
                             <td className="tableSingleKey buttons-actions">
                               <OverlayTrigger
                                 placement="top"
@@ -242,6 +258,36 @@ export default function ModalCall({ handleClose, showModal, showSpectrogram }) {
                                 </button>
                               </OverlayTrigger>
                             </td>
+=======
+
+                            {call.createdBy === "Manual" && (
+                              <td className="tableSingleKey buttons-actions">
+                                <OverlayTrigger
+                                  placement="top"
+                                  delay={{ show: 100, hide: 100 }}
+                                  overlay={deleteBtnTooltip}
+                                >
+                                  <button
+                                    className="remove-btn btn-warning"
+                                    onClick={(e) => {
+                                      if (
+                                        window.confirm(
+                                          "Are you sure you want to delete this call from the database?"
+                                        )
+                                      )
+                                        confirmDelete(
+                                          e,
+                                          call.id,
+                                          selectedAudio.id
+                                        );
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon="trash-alt" />
+                                  </button>
+                                </OverlayTrigger>
+                              </td>
+                            )}
+>>>>>>> 83750d152dfebc633416b97cc69f7d80e19879a3
                           </tr>
                         ) : null}
                       </tbody>

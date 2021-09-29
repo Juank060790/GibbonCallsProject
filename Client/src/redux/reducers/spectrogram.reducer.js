@@ -85,7 +85,7 @@ const spectrogramReducer = (state = initialState, action) => {
       return {
         ...state,
         selections: state.selections.map((sel) => {
-          if (sel.highlighted) {
+          if (sel.highlighted && sel.createdBy === "Manual") {
             sel.start = payload.start;
             sel.end = payload.end;
           }
@@ -108,7 +108,16 @@ const spectrogramReducer = (state = initialState, action) => {
     case types.GET_SINGLE_CALL_REQUEST:
       return { ...state, loading: true };
     case types.SAVE_REGION_CALL_SUCCESS:
-      return { ...state, loading: false };
+      return {
+        ...state,
+        loading: false,
+        selections: state.selections.map((sel) => {
+          if (sel.id === payload) {
+            sel.dataBase = true;
+          }
+          return sel;
+        }),
+      };
     case types.GET_SINGLE_CALL_SUCCESS:
       const callArray = state.selections;
       const isCallInTheArray = (el) => el.id === payload.id;

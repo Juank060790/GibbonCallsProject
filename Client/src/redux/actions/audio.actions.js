@@ -3,92 +3,144 @@ import { db, storage } from "../../Firebase/firebase";
 import { toast } from "react-toastify";
 const collectionData = "rawData";
 
-const audiosRequest =
-  (limit, sortBy, order, lastDoc, firstDoc) => (dispatch) => {
-    dispatch({ type: types.AUDIO_REQUEST, payload: null });
-    let query = {
-      limit: parseInt(limit) || 5,
-      sortBy: sortBy || "recordDate",
-      order: order || "desc",
-      lastDocument: lastDoc || null,
-      firstDocument: firstDoc || null,
-    };
-
-    const refIsDeleted = db
-      .collection(collectionData)
-      .where("isDeleted", "==", false)
-      .orderBy(query.sortBy, query.order);
-    if (query.lastDocument) {
-      refIsDeleted
-        .limit(query.limit)
-        .startAt(query.lastDocument)
-        .onSnapshot((querySnapshot) => {
-          let filteredaudioList = [];
-          let latestDoc = [];
-          let firstDocument = [];
-          querySnapshot.docChanges().forEach(() => {
-            filteredaudioList = [];
-            querySnapshot.forEach((doc) => {
-              filteredaudioList.push({ id: doc.id, ...doc.data() });
-            });
-          });
-          latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-          firstDocument = querySnapshot.docs[0];
-
-          dispatch({
-            type: types.AUDIO_REQUEST_SUCCESS,
-            payload: { filteredaudioList, latestDoc, firstDocument },
-          });
-        });
-    }
-    if (query.firstDocument) {
-      refIsDeleted
-        .endBefore(query.firstDocument)
-        .limitToLast(query.limit)
-        .onSnapshot((querySnapshot) => {
-          let filteredaudioList = [];
-          let latestDoc = [];
-          let firstDocument = [];
-          querySnapshot.docChanges().forEach(() => {
-            filteredaudioList = [];
-            querySnapshot.forEach((doc) => {
-              filteredaudioList.push({ id: doc.id, ...doc.data() });
-            });
-          });
-          latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-          firstDocument = querySnapshot.docs[0];
-          dispatch({
-            type: types.AUDIO_REQUEST_SUCCESS,
-            payload: { filteredaudioList, latestDoc, firstDocument },
-          });
-        });
-    }
-    if (query.firstDocument === null && query.lastDocument === null) {
-      refIsDeleted.limit(query.limit).onSnapshot((querySnapshot) => {
-        let filteredaudioList = [];
-        let latestDoc = [];
-        let firstDocument = [];
-        querySnapshot.docChanges().forEach(() => {
-          filteredaudioList = [];
-          querySnapshot.forEach((doc) => {
-            filteredaudioList.push({ id: doc.id, ...doc.data() });
-          });
-        });
-        latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-        firstDocument = querySnapshot.docs[0];
-        dispatch({
-          type: types.AUDIO_REQUEST_SUCCESS,
-          payload: { filteredaudioList, latestDoc, firstDocument },
-        });
-      });
-    }
+const audiosRequest = (limit, sortBy, order, lastDoc, firstDoc, pagination) => (
+  dispatch
+) => {
+  dispatch({ type: types.AUDIO_REQUEST, payload: null });
+  let queryConfigs = {
+    limit: parseInt(limit + 1) || 11, // Take one more document to check for end of collection
+    sortBy: sortBy || "audioLink",
+    order: order || "desc",
+    lastDoc: lastDoc || null,
+    firstDoc: firstDoc || null,
   };
+
+  let ref = db
+    .collection(collectionData)
+    .where("isDeleted", "==", false)
+    .orderBy(queryConfigs.sortBy, queryConfigs.order);
+
+  switch (pagination) {
+    case "next":
+      ref = ref.startAfter(queryConfigs.lastDoc).limit(queryConfigs.limit);
+
+      break;
+    case "previous":
+      ref = ref
+        .endBefore(queryConfigs.firstDoc)
+        .limitToLast(queryConfigs.limit - 1);
+
+      break;
+
+    default:
+      ref = ref.limit(queryConfigs.limit);
+  }
+
+  try {
+    ref.get().then((documents) => {
+      let audioList = [];
+      documents.forEach((doc) => {
+        audioList.push(doc);
+      });
+
+      const lastDoc = audioList[queryConfigs.limit - 2]; // Offset the extra document
+      const firstDoc = audioList[0];
+
+      audioList = audioList.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      dispatch({
+        type: types.AUDIO_REQUEST_SUCCESS,
+        payload: { audioList, lastDoc, firstDoc },
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: types.AUDIO_REQUEST_FAILURE,
+      payload: null,
+    });
+  }
+
+  // const refIsDeleted = db
+  //   .collection(collectionData)
+  //   .where("isDeleted", "==", false)
+  //   .orderBy(queryConfigs.sortBy, queryConfigs.order);
+  // if (queryConfigs.lastDocument) {
+  //   refIsDeleted
+  //     .limit(queryConfigs.limit)
+  //     .startAfter(queryConfigs.lastDocument)
+  //     .get((querySnapshot) => {
+  //       let filteredaudioList = [];
+  //       let latestDoc = [];
+  //       let firstDocument = [];
+  //       querySnapshot.docChanges().forEach(() => {
+  //         filteredaudioList = [];
+  //         querySnapshot.forEach((doc) => {
+  //           filteredaudioList.push({ id: doc.id, ...doc.data() });
+  //         });
+  //       });
+  //       latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+  //       firstDocument = querySnapshot.docs[0];
+
+  //       dispatch({
+  //         type: types.AUDIO_REQUEST_SUCCESS,
+  //         payload: { filteredaudioList, latestDoc, firstDocument },
+  //       });
+  //     });
+  // }
+  // if (queryConfigs.firstDocument) {
+  //   refIsDeleted
+  //     .endBefore(queryConfigs.firstDocument)
+  //     .limitToLast(queryConfigs.limit)
+  //     .get((querySnapshot) => {
+  //       let filteredaudioList = [];
+  //       let latestDoc = [];
+  //       let firstDocument = [];
+  //       querySnapshot.docChanges().forEach(() => {
+  //         filteredaudioList = [];
+  //         querySnapshot.forEach((doc) => {
+  //           filteredaudioList.push({ id: doc.id, ...doc.data() });
+  //         });
+  //       });
+  //       latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+  //       firstDocument = querySnapshot.docs[0];
+  //       dispatch({
+  //         type: types.AUDIO_REQUEST_SUCCESS,
+  //         payload: { filteredaudioList, latestDoc, firstDocument },
+  //       });
+  //     });
+  // }
+  // if (
+  //   queryConfigs.firstDocument === null &&
+  //   queryConfigs.lastDocument === null
+  // ) {
+  //   refIsDeleted.limit(queryConfigs.limit).get((querySnapshot) => {
+  //     let filteredaudioList = [];
+  //     let latestDoc = [];
+  //     let firstDocument = [];
+  //     querySnapshot.docChanges().forEach(() => {
+  //       filteredaudioList = [];
+  //       querySnapshot.forEach((doc) => {
+  //         filteredaudioList.push({ id: doc.id, ...doc.data() });
+  //       });
+  //     });
+  //     latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+  //     firstDocument = querySnapshot.docs[0];
+  //     dispatch({
+  //       type: types.AUDIO_REQUEST_SUCCESS,
+  //       payload: { filteredaudioList, latestDoc, firstDocument },
+  //     });
+  //   });
+  // }
+};
 
 const getSingleAudio = (audioId) => (dispatch) => {
   let singleAudio = {};
   dispatch({ type: types.GET_SINGLE_AUDIO_REQUEST, payload: null });
-  dispatch({ type: types.GET_IMAGE_FROM_FIREBASE_REQUEST, payload: null });
-  dispatch({ type: types.GET_AUDIO_FROM_FIREBASE_REQUEST, payload: null });
+
+  var storageRef = storage.ref();
 
   db.doc(`${collectionData}/${audioId}`)
     .get()
@@ -104,12 +156,13 @@ const getSingleAudio = (audioId) => (dispatch) => {
           type: types.GET_SINGLE_AUDIO_REQUEST_FAILURE,
           payload: "Audio not found",
         });
+        return;
       }
     })
     .then(() => {
+      dispatch({ type: types.GET_IMAGE_FROM_FIREBASE_REQUEST, payload: null });
       // get image from firestore with the path of a selected audio
       if (singleAudio?.spectrogram) {
-        var storageRef = storage.ref();
         storageRef
           .child(`/${singleAudio.spectrogram}`)
           .getDownloadURL()
@@ -127,6 +180,25 @@ const getSingleAudio = (audioId) => (dispatch) => {
             });
           });
       }
+
+      dispatch({ type: types.GET_AUDIO_FROM_FIREBASE_REQUEST, payload: null });
+      storageRef
+        .child(singleAudio.audioLink)
+        .getDownloadURL()
+        .then(function (url) {
+          console.log(url);
+          dispatch({
+            type: types.GET_AUDIO_FROM_FIREBASE_SUCCESS,
+            payload: url,
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+          dispatch({
+            type: types.GET_AUDIO_FROM_FIREBASE_FAILURE,
+            payload: "Audio not found",
+          });
+        });
     });
 };
 
@@ -137,6 +209,7 @@ const getAudioFromFirebase = (audioLink) => (dispatch) => {
   storageRef
     .getDownloadURL()
     .then(function (url) {
+      console.log(url);
       dispatch({
         type: types.GET_AUDIO_FROM_FIREBASE_SUCCESS,
         payload: url,

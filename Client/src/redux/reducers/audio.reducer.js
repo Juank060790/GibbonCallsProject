@@ -5,15 +5,14 @@ const initialState = {
   loadingAudio: false,
   selectedAudio: null,
   audio: [],
-  lastDocument: null,
-  firstDocument: null,
+  lastDoc: null,
+  firstDoc: null,
   callsList: [],
 };
 
 const audioReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case types.AUDIO_REQUEST:
     case types.GET_SINGLE_AUDIO_REQUEST:
     case types.GET_IMAGE_FROM_FIREBASE_REQUEST:
     case types.CREATE_COMMENT_RAW_AUDIO_REQUEST:
@@ -24,14 +23,15 @@ const audioReducer = (state = initialState, action) => {
     case types.GET_AUDIO_FROM_FIREBASE_REQUEST:
       return { ...state, loading: true, loadingAudio: true };
     case types.AUDIO_SEARCHBYDATE_REQUEST:
+    case types.AUDIO_REQUEST:
       return { ...state, loading: true, audio: [] };
 
     case types.AUDIO_REQUEST_SUCCESS:
       return {
         ...state,
-        audio: payload.filteredaudioList,
-        latestDoc: payload.latestDoc,
-        firstDocument: payload.firstDocument,
+        audio: payload.audioList,
+        lastDoc: payload.lastDoc,
+        firstDoc: payload.firstDoc,
         loading: false,
       };
     case types.GET_IMAGE_FROM_FIREBASE_SUCCESS:

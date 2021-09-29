@@ -133,6 +133,14 @@ export default function Waveform() {
     dispatch(spectrogramActions.updatePlayTracker(0));
     dispatch(spectrogramActions.updateAudioTime(0));
     playerRef.current.currentTime = audioCurrentTime;
+    playerRef.current.pause();
+    setPlay("Pause");
+  };
+
+  const moveTracker = () => {
+    dispatch(
+      spectrogramActions.updatePlayTracker(playerRef.current.currentTime)
+    );
   };
 
   // Load the spectrogram audio
@@ -140,7 +148,6 @@ export default function Waveform() {
     if (!loadingAudio) {
       playerRef.current.src = selectedAudio?.audio;
     } else {
-      console.log("Loading audio");
     }
   }, [loadingAudio, selectedAudio]);
 
@@ -154,18 +161,18 @@ export default function Waveform() {
       )
     );
     // Run Audio
-    const interval = setInterval(() => {
-      if (play) {
-        dispatch(
-          spectrogramActions.updatePlayTracker(
-            playtrackerPos +
-              ref.current.getBoundingClientRect().width / 300 / 10 // Converting time to pixel, one second in pixels
-          )
-        );
-      }
-    }, 100);
+    // const interval = setInterval(() => {
+    //   if (play) {
+    //     dispatch(
+    //       spectrogramActions.updatePlayTracker(
+    //         playtrackerPos +
+    //           ref.current.getBoundingClientRect().width / 300 / 10 // Converting time to pixel, one second in pixels
+    //       )
+    //     );
+    //   }
+    // }, 100);
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [play, playtrackerPos, dispatch]);
 
   useEffect(() => {
@@ -182,7 +189,6 @@ export default function Waveform() {
       let ctx = canvas.getContext("2d");
 
       const handleMouseDown = (e) => {
-        // console.log("e :>> ", e);
         e.preventDefault();
         let eX = (e.clientX - canvasBBox.x) / (canvasWidth / 300);
         if (selections.length > 0) {
@@ -197,9 +203,9 @@ export default function Waveform() {
                 setmousedownPos(eX - sel.start);
               }
 
-              if (eX <= sel.start + 5) {
+              if (eX <= sel.start + 1) {
                 setAction(actions.DRAG_HIGHLIGHT_SELECTION_START);
-              } else if (eX >= sel.end - 5) {
+              } else if (eX >= sel.end - 1) {
                 setAction(actions.DRAG_HIGHLIGHT_SELECTION_END);
               } else {
                 setAction(actions.DRAG_HIGHLIGHT_SELECTION);
@@ -414,9 +420,21 @@ export default function Waveform() {
             canvas.height // height
           );
           ctx.stroke();
-          ctx.fillStyle = selection.highlighted
-            ? `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.5)`
-            : `rgba(${selection.color.r},${selection.color.g},${selection.color.b}, 0.2)`;
+          let fillColor;
+          if (selection.highlighted) {
+            if (!selection.dataBase) {
+              fillColor = `rgba(0,180,0, 0.7)`;
+            } else {
+              fillColor = `rgba(180,180,0, 0.7)`;
+            }
+          } else {
+            if (!selection.dataBase) {
+              fillColor = `rgba(0,180,0, 0.4)`;
+            } else {
+              fillColor = `rgba(180,180,0, 0.4)`;
+            }
+          }
+          ctx.fillStyle = fillColor;
           ctx.fill();
           ctx.closePath();
         }
@@ -427,7 +445,7 @@ export default function Waveform() {
         ctx.strokeStyle = "orange";
         ctx.beginPath();
         ctx.rect(
-          playtrackerPos, // x
+          playtrackerPos * (canvasWidth / 300), // x
           0, // y
           0, // width
           canvas.height // height
@@ -449,9 +467,7 @@ export default function Waveform() {
 
         // Existing Selections
         selections.forEach((selection) => {
-          if (selection.isCorrect === true) {
-            drawSelection(selection);
-          }
+          drawSelection(selection);
         });
 
         // Play Tracker
@@ -527,6 +543,7 @@ export default function Waveform() {
                       ref={playerRef}
                       id="playCall"
                       onLoadedMetadata={onLoadedMetadata}
+                      onTimeUpdate={moveTracker}
                     >
                       <source id="audioCall" type="audio/mpeg" />
                     </audio>

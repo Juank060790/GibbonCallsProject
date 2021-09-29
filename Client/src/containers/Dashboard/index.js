@@ -8,7 +8,7 @@ import TableDashboard from "../../components/TableDashboard";
 function Dashboard() {
   return (
     <>
-      <div>
+      <div className="main">
         <Header />
         <TableDashboard />
       </div>
